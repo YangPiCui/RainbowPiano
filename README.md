@@ -17,4 +17,4 @@ Option 1:
 Repent​, be baptize​d in Jesus Christ's name, and become as a little child. [3 Nephi 11:38 | Mosiah 3:19]  
 
 Option 2:  
-Bitcoin Satoshi Vision (BSV) Address: 
+Bitcoin Satoshi Vision (BSV) Address: 1QCedBfwVH12BTPrCqE8yB3mq3Jt55iJXH
