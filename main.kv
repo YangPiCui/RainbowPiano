@@ -1,0 +1,1373 @@
+#:import Factory kivy.factory.Factory
+#:import ScrollEffect kivy.effects.scroll.ScrollEffect
+
+<ButtonMain@ButtonBehavior+BoxLayout>:
+<BImage@ButtonBehavior+Image>:
+ScreenManager:
+    MainScreen:
+        id: main_screen
+    FileChooserIns:
+<Check@MDCheckbox>:
+    group: 'group'
+    size_hint: None, None
+    color_inactive: "white"
+    size: dp(48), dp(48)
+    pos_hint: {"center_x": .5, "center_y": .5}
+                            
+<LabelPopup>:
+    id: lbl_popup
+    auto_dismiss: True
+    size_hint_x: 0.8
+    size_hint_y:0.9
+    title:"Modify Label"
+    title_color: 1,1,1,1
+    on_open: root.write_custom()
+    BoxLayout:
+        orientation:"vertical"
+        ScrollView:       
+            id: label_scroll 
+            effect_cls: ScrollEffect                 
+            BoxLayout:
+                orientation:"vertical"
+                size_hint_y:None
+                height:1280
+                Label:
+                    size_hint_y:None
+                    height:60
+
+                BoxLayout:
+                    orientation:"horizontal"
+                    size_hint_y: None
+                    height:40
+                    Check:
+                        id: f_1
+                        
+                    MDLabel:
+                        text:"Display '1','2' Label on Kyes"
+                        theme_text_color: "Custom"
+                        text_color: 1, 1, 1, 1
+                        text_size:self.size
+                        halign:"left"
+                Label:
+                    size_hint_y:None
+                    height:25
+                BoxLayout:
+                    orientation:"horizontal"
+                    size_hint_y: None
+                    height:40
+                    Check:
+                        id: f_2
+                        
+                        
+                    MDLabel:
+                        text:"Display 'A','B' Label on Kyes"
+                        theme_text_color: "Custom"
+                        text_color: 1, 1, 1, 1
+                        text_size:self.size
+                        halign:"left"
+                Label:
+                    size_hint_y:None
+                    height:25
+                    
+                BoxLayout:
+                    orientation:"horizontal"
+                    size_hint_y: None
+                    height:40
+                    Check:
+                        id: f_3
+                        
+                        
+                    MDLabel:
+                        text:"Display 'a','b' Label on Kyes"
+                        theme_text_color: "Custom"
+                        text_color: 1, 1, 1, 1
+                        text_size:self.size
+                        halign:"left"
+                Label:
+                    size_hint_y:None
+                    height:25
+                    
+                BoxLayout:
+                    orientation:"horizontal"
+                    size_hint_y: None
+                    height:40
+                    Check:
+                        id: f_4
+                        
+                        
+                    MDLabel:
+                        text:"Display 'Notes' Label on Kyes"
+                        theme_text_color: "Custom"
+                        text_color: 1, 1, 1, 1
+                        text_size:self.size
+                        halign:"left"
+                Label:
+                    size_hint_y:None
+                    height:25
+                BoxLayout:
+                    orientation:"horizontal"
+                    size_hint_y: None
+                    height:40
+                    Check:
+                        id: f_5
+                        
+                        
+                    MDLabel:
+                        text:"Disable"
+                        theme_text_color: "Custom"
+                        text_color: 1, 1, 1, 1
+                        text_size:self.size
+                        halign:"left"   
+                Label:
+                    size_hint_y:None
+                    height:25
+                BoxLayout:
+                    orientation:"horizontal"
+                    size_hint_y: None
+                    height:40
+                    Check:
+                        id: f_6
+                        
+                        
+                    MDLabel:
+                        text:"Add Custom Label"
+                        theme_text_color: "Custom"
+                        text_color: 1, 1, 1, 1
+                        text_size:self.size
+                        halign:"left"   
+                BoxLayout:
+                    orientation:"vertical"
+                    size_hint_y:None
+                    height: self.minimum_height
+                    padding:[100,0,100,0]
+                    MDTextField:
+                        id:lbl_1
+                        hint_text: "Add Label 1" 
+                        line_color_normal: "white"
+                        line_color_focus: "white"
+                        hint_text_color_normal:"white"
+                        hint_text_color_focus:"white"
+                        text_color_normal:1,1,1,1
+                       # text_color_focus:1,1,1,1
+                    MDTextField:
+                        hint_text: "Add Label 2" 
+                        id:lbl_2
+                        line_color_normal: "white"
+                        line_color_focus: "white"
+                        hint_text_color_normal:"white"
+                        hint_text_color_focus:"white"
+                        text_color_normal:1,1,1,1
+    
+                    MDTextField:
+                        hint_text: "Add Label 3" 
+                        id:lbl_3
+                        line_color_normal: "white"
+                        line_color_focus: "white"
+                        hint_text_color_normal:"white"
+                        hint_text_color_focus:"white"
+                        text_color_normal:1,1,1,1
+                    MDTextField:
+                        hint_text: "Add Label 4" 
+                        id:lbl_4
+                        line_color_normal: "white"
+                        line_color_focus: "white"
+                        hint_text_color_normal:"white"
+                        hint_text_color_focus:"white"
+                        text_color_normal:1,1,1,1
+                    MDTextField:
+                        hint_text: "Add Label 5" 
+                        id:lbl_5
+                        line_color_normal: "white"
+                        line_color_focus: "white"
+                        hint_text_color_normal:"white"
+                        hint_text_color_focus:"white"
+                        text_color_normal:1,1,1,1
+
+                    MDTextField:
+                        hint_text: "Add Label 6" 
+                        id:lbl_6
+                        line_color_normal: "white"
+                        line_color_focus: "white"
+                        hint_text_color_normal:"white"
+                        hint_text_color_focus:"white"
+                        text_color_normal:1,1,1,1
+                    MDTextField:
+                        hint_text: "Add Label 7" 
+                        id:lbl_7
+                        line_color_normal: "white"
+                        line_color_focus: "white"
+                        hint_text_color_normal:"white"
+                        hint_text_color_focus:"white"
+                        text_color_normal:1,1,1,1
+    
+                Label:
+        BoxLayout:
+            orientation:"horizontal"
+            size_hint_y:None
+            height:60
+            Label:
+                size_hint_x:None
+                width:10
+            Label:
+                id: error_msg
+                color:1,0,0,1
+                text_size:self.size
+                halign:"left"
+            Button:
+                text:"Cancel"
+                size_hint_x:None
+                width:120
+                on_release:root.dismiss_dialog()
+                
+            Label:
+                size_hint_x:None
+                width:10
+            Button:
+                text:"OK" 
+                size_hint_x:None
+                width:100 
+                on_release:root.apply_changes()      
+
+<InstrumentPopup>:
+    id: cls_popup
+    auto_dismiss: True
+    size_hint_x: 0.8
+    size_hint_y:0.9
+    title:"Select Instruments"
+    title_color: 1,1,1,1
+    on_open: root.create_popup()
+    BoxLayout:
+        orientation:"vertical"
+        ScrollView:
+            effect_cls: ScrollEffect
+            GridLayout:
+                id: ins_container
+                cols:4
+                
+                spacing:30
+                size_hint_y:None
+                height: self.minimum_height
+        BoxLayout:
+            orientation:"horizontal"
+            size_hint_y:None
+            height:60
+            
+            Label:
+            Button:
+                text:"Cancel"
+                size_hint_x:None
+                width:120
+                on_release:root.dismiss_dia()
+                
+            Label:
+                size_hint_x:None
+                width:10
+            Button:
+                text:"Apply" 
+                size_hint_x:None
+                width:120 
+                on_release:root.apply_changes()      
+<EqualizerPopup>:
+    id: cls_popup
+    auto_dismiss: True
+    size_hint_x: 0.8
+    size_hint_y:0.9
+    title:"Equalizer"
+    title_color: 1,1,1,1
+    on_open: root.create_popup()
+    BoxLayout:
+        orientation:"vertical"
+        size_hint_y:1
+        Label:
+            size_hint_y:None
+            height:20
+        BoxLayout:
+            orientation:"horizontal"
+            size_hint_y:None
+            height:40
+            Label:
+                text:"Equalizer"
+                size_hint_x:None
+                width:220
+                halign: 'left'  # Align text to the left
+                valign: 'middle'  # Center text vertically
+                text_size: self.size  # Set the text area to match the label's size
+                
+            Switch:
+                id: eq_switch
+                size_hint_x:None
+                width:60
+                active: app.equalizer
+                on_active:root.change_eqstate()
+                
+            Label:
+            
+        BoxLayout:
+            orientation:"vertical"
+        
+            size_hint_y:0.5
+            size_hint_x:1
+            id: slide_hold
+        
+        Label:
+            size_hint_y:0.3
+        BoxLayout:
+            orientation:"horizontal"
+            size_hint_y:None
+            height:60
+            
+            Label:
+            Button:
+                text:"Reset"
+                size_hint_x:None
+                width:120
+                on_release:root.reset()
+                
+            Label:
+                size_hint_x:None
+                width:10
+            Button:
+                text:"OK" 
+                size_hint_x:None
+                width:100 
+                on_release:root.dismiss_dia()      
+
+                
+            
+
+
+<ColorPopup>:
+    id: cls_popup
+    auto_dismiss: True
+    size_hint_x: 0.8
+    size_hint_y:0.9
+    title:"Modify Colors"
+    title_color: 1,1,1,1
+                      
+    on_open: root.create_popup()
+    BoxLayout:
+        orientation:"vertical"
+        Label:
+            size_hint_y:None
+            height:20
+        BoxLayout:
+            orientation:"horizontal"
+            size_hint_y:None
+            height:40
+            Label:
+                text:"Color Pattern:"
+                size_hint_y:None
+                size_hint_x:None
+                width: 210
+                height:30
+            Label:
+                size_hint_x:None
+                width:10
+            Button:
+                id: switchx
+                text:''
+                size_hint_x:None
+                width: 150
+                
+                on_release: root.change_cusmeth()
+            
+            # Switch:
+            #     id:switchx
+            #     size_hint_x:None
+            #     size_hint_y:None
+            #     active: app.color_pattern_active
+            #     on_active:root.change_cusmeth()
+            #     height:40
+            #     width:150
+            Label:
+        Label:
+            size_hint_y:None
+            height:10
+        Widget:
+            id: separator
+            size_hint_y: None
+            height: 6
+            canvas:
+                Color:
+                    rgb: 0., 0., 1.
+                Rectangle:
+                    pos: self.pos
+                    size: separator.width, 2
+        Label:
+            size_hint_y:None
+            height:5
+        ScrollView:
+            
+            id: pattern_cls 
+            effect_cls: ScrollEffect 
+        Label:
+            size_hint_y:None
+            height:5
+        BoxLayout:
+            orientation:"horizontal"
+            size_hint_y:None
+            height:40
+            Label:
+                text:"Custom Color:"
+                size_hint_y:None
+                size_hint_x:None
+                width: 210
+                height:30
+            Label:
+                size_hint_x:None
+                width:10
+            #CheckBox:
+            Button:
+                id:switchy
+                text:''
+                size_hint_x:None
+                width: 150
+                on_release: root.change_method()
+            # Switch:
+            #     id:switchy
+            #     size_hint_x:None
+            #     size_hint_y:None
+            #     active: app.custom_color_active
+            #     on_active:root.change_method()
+            #     height:40
+            #     width:150
+            Label:
+            
+        Widget:
+            id: separator
+            size_hint_y: None
+            height: 6
+            canvas:
+                Color:
+                    rgb: 0., 0., 1.
+                Rectangle:
+                    pos: self.pos
+                    size: separator.width, 2
+        Label:
+            size_hint_y:None
+            height:5
+             
+        ScrollView:
+            id: custom_cls
+            effect_cls: ScrollEffect
+
+<MyPopup>:
+    auto_dismiss: True
+    size_hint_x: 0.8
+    size_hint_y:0.8
+    title:"Layout"
+    title_color: 1,1,1,1
+    BoxLayout:
+        orientation:"vertical"
+        Label:
+            size_hint_y:None
+            height:10
+        BoxLayout:
+            orientation:"horizontal"
+            size_hint_y:None
+            height:40
+            Label:
+                size_hint_x:None
+                width:20
+            Label:
+                text:"Add Row"
+                size_hint_x:None
+                width:100
+            Label:
+            Button:
+                text:"-"
+                size_hint_x:None
+                width:50
+                on_release: root.dec_number()
+            Label:
+                id: number_row
+                text:app.numberof_row
+                size_hint_x:None
+                width:80
+           
+            Button:
+                text:"+"
+                size_hint_x:None
+                width:50
+                on_release: root.inc_number()
+        Label:
+            size_hint_y:None
+            height:30
+        BoxLayout:
+            orientation:"horizontal"
+            size_hint_y:None
+            height:40       
+            Label:
+                text: "White keys only"
+                size_hint_x:None
+                size_hint_y:None
+                height:40
+                width:230
+            Label:
+            Switch:
+                id:switch
+                size_hint_x:None
+                size_hint_y:None
+                active: app.white_key
+                on_active:root.change_white()
+                #on_touch_up:root.change_white()
+                #on_touch_down:root.change_white()
+                height:40
+                width:150
+            Label:
+                size_hint_x:None
+                width:10
+        Label:
+            size_hint_y:None
+            height:20
+        BoxLayout:
+            orientation:"horizontal"
+            size_hint_y:None
+            height:40       
+            Label:
+                text: "Evenly black keys"
+                size_hint_x:None
+                size_hint_y:None
+                height:40
+                width:250
+            Label:
+            Switch:
+                id:switch2
+                size_hint_x:None
+                size_hint_y:None
+                active: app.black_key
+                on_active:root.change_black()
+                height:40
+                width:150
+            Label:
+                size_hint_x:None
+                width:10
+        Label:
+            size_hint_y:None
+            height:30
+        BoxLayout:
+            orientation:"horizontal"
+            size_hint_y:None
+            height:40
+            Label:
+                size_hint_x:None
+                width:20
+            Label:
+                text:"Visible keys"
+                size_hint_x:None
+                width:135
+            Label:
+            Button:
+                text:"-"
+                size_hint_x:None
+                width:50
+                on_release: root.visible_keys(False)
+            Label:
+                id: visible_key
+                text:app.visible_keys
+                size_hint_x:None
+                width:80
+           
+            Button:
+                text:"+"
+                size_hint_x:None
+                width:50
+                on_release: root.visible_keys(True)
+        Label:
+            size_hint_y:None
+            height:20
+        BoxLayout:
+            orientation:"horizontal"
+            size_hint_y:None
+            height:40       
+            Label:
+                text: "Keyboard lock"
+                size_hint_x:None
+                size_hint_y:None
+                height:40
+                width:215
+            Label:
+            Switch:
+                id:switch3
+                size_hint_x:None
+                size_hint_y:None
+                active: app.keyboard_lock
+                on_active:root.keyboard_lock()
+                height:40
+                width:150
+            Label:
+                size_hint_x:None
+                width:10
+           
+        Label:
+        BoxLayout:
+            size_hint_y:None
+            height:50
+            orientation:"horizontal"
+            Label:
+            Button:
+                text: "Ok"
+                background_color:0,0,0,0
+                size_hint_x:None
+                width:100
+                on_release:root.dismiss()
+            Label:
+                size_hint_x:None
+                width:10
+        
+                
+<MySlider>:
+    min: 0
+    max: 1
+    step: 0.001
+    orientation: 'horizontal'
+    size_hint_y:None
+    height: dp(30)
+    background_width:25
+    cursor_height:30
+    cursor_width:30
+<MyScrollView>:
+    do_scroll_x: False
+    do_scroll_y: False
+    BoxLayout:
+        size_hint_x:None
+        width: app.wid*88.5
+        orientation:"horizontal"
+        SinglePianoButton:
+        PaddingLabel:
+        DoublePianoButton:
+        PaddingLabel:
+        TripalPianoButton:
+        PaddingLabel:
+        DoublePianoButton:
+        PaddingLabel:
+        TripalPianoButton:
+        PaddingLabel:
+        DoublePianoButton:
+        PaddingLabel:
+        TripalPianoButton:
+        PaddingLabel:
+        DoublePianoButton:
+        PaddingLabel:
+        TripalPianoButton:
+        PaddingLabel:
+        DoublePianoButton:
+        PaddingLabel:
+        TripalPianoButton:
+        PaddingLabel:
+        DoublePianoButton:
+        PaddingLabel:
+        TripalPianoButton:
+        PaddingLabel:
+        DoublePianoButton:
+        PaddingLabel:
+        TripalPianoButton:
+        PaddingLabel:
+        WhitePianoButon:
+
+   
+
+<WhitePianoButon>:
+    ButtonMain:
+        size_hint_x:None
+        width:app.wid
+        on_press: root.bpress()
+        orientation:"vertical"
+    
+        canvas:
+            Color: 
+                rgba:0,0,1,1
+            Rectangle:
+                size: self.size
+                pos:self.pos
+        # Label:
+        #     text:"C1"
+<PaddingLabel>:
+    size_hint_x:None
+    width: dp(1)
+    canvas:
+        Color: 
+            rgba:0 , 0, 0, 1
+        Rectangle:
+            size: self.size
+            pos:self.pos
+
+<SinglePianoButton>:
+    orientation: 'horizontal'
+    size_hint_x:None
+    width:app.wid*3
+        
+    ButtonMain:
+        on_press: root.bpress()
+        size_hint_x:None
+        width:app.wid
+        canvas:
+            Color: 
+                rgba:1,0,1,1
+            Rectangle:
+                size: self.size
+                pos:self.pos
+    BoxLayout:
+        orientation:"vertical"
+        size_hint_x:None
+        width:app.wid
+        
+    
+        BoxLayout:
+
+            canvas:
+                Color: 
+                    rgba:0,0,0,1
+                Rectangle:
+                    size: self.size
+                    pos:self.pos
+        BoxLayout:
+            orientation:"horizontal"
+            size_hint_y: 0.4
+            BoxLayout:
+
+                canvas:
+                    Color: 
+                        rgba:1,0,1,1
+                    Rectangle:
+                        size: self.size
+                        pos:self.pos
+            Label:
+                size_hint_x:None
+                width: dp(1)
+                canvas:
+                    Color: 
+                        rgba:0 , 0, 0, 1
+                    Rectangle:
+                        size: self.size
+                        pos:self.pos
+            BoxLayout:
+
+                canvas:
+                    Color:
+                        rgba: 0,0,1,1
+                    Rectangle:
+                        size: self.size
+                        pos:self.pos
+    
+
+    BoxLayout:
+        size_hint_x:None
+        width:app.wid
+        
+        canvas:
+            Color:
+                rgba: 0,0,1,1
+            Rectangle:
+                size: self.size
+                pos:self.pos
+<DoublePianoButton>:
+    orientation: 'horizontal'
+    size_hint_x:None
+    width:app.wid*5
+        
+    
+    ButtonMain:
+        size_hint_x:None
+        width:app.wid
+        
+        on_press: root.bpress()
+        canvas:
+            Color: 
+                rgba:1,0,1,1
+            Rectangle:
+                size: self.size
+                pos:self.pos
+    BoxLayout:
+        orientation:"vertical"
+        size_hint_x:None
+        width:app.wid
+        
+    
+        BoxLayout:
+
+            canvas:
+                Color: 
+                    rgba:0,0,0,1
+                Rectangle:
+                    size: self.size
+                    pos:self.pos
+        BoxLayout:
+            orientation:"horizontal"
+            size_hint_y: 0.4
+            BoxLayout:
+
+                canvas:
+                    Color: 
+                        rgba:1,0,1,1
+                    Rectangle:
+                        size: self.size
+                        pos:self.pos
+            Label:
+                size_hint_x:None
+                width: dp(1)
+                canvas:
+                    Color: 
+                        rgba:0 , 0, 0, 1
+                    Rectangle:
+                        size: self.size
+                        pos:self.pos
+            BoxLayout:
+
+                canvas:
+                    Color:
+                        rgba: 0,0,1,1
+                    Rectangle:
+                        size: self.size
+                        pos:self.pos
+    
+
+    BoxLayout:
+        size_hint_x:None
+        width:app.wid
+        
+        canvas:
+            Color:
+                rgba: 0,0,1,1
+            Rectangle:
+                size: self.size
+                pos:self.pos
+    BoxLayout:
+        orientation:"vertical"
+        size_hint_x:None
+        width:app.wid
+        
+    
+        BoxLayout:
+
+            canvas:
+                Color: 
+                    rgba:0,0,0,1
+                Rectangle:
+                    size: self.size
+                    pos:self.pos
+        BoxLayout:
+            orientation:"horizontal"
+            size_hint_y: 0.4
+            BoxLayout:
+
+                canvas:
+                    Color: 
+                        rgba:0,0,1,1
+                    Rectangle:
+                        size: self.size
+                        pos:self.pos
+            Label:
+                size_hint_x:None
+                width: dp(1)
+                canvas:
+                    Color: 
+                        rgba:0, 0, 0, 1
+                    Rectangle:
+                        size: self.size
+                        pos:self.pos
+            BoxLayout:
+
+                canvas:
+                    Color:
+                        rgba: 1,0,1,1
+                    Rectangle:
+                        size: self.size
+                        pos:self.pos
+    ButtonMain:
+        size_hint_x:None
+        width:app.wid
+        
+        on_press: root.bpress()
+        canvas:
+            Color: 
+                rgba:1,0,1,1
+            Rectangle:
+                size: self.size
+                pos:self.pos
+<TripalPianoButton>:
+    size_hint_x:None
+    width:app.wid*7
+        
+    orientation: 'horizontal'
+    ButtonMain:
+        size_hint_x:None
+        width:app.wid
+        
+        on_press: root.bpress()
+        canvas:
+            Color: 
+                rgba:0,0,1,1
+            Rectangle:
+                size: self.size
+                pos:self.pos
+    BoxLayout:
+        orientation:"vertical"
+        size_hint_x:None
+        width:app.wid
+        
+    
+        BoxLayout:
+
+            canvas:
+                Color: 
+                    rgba:0,0,0,1
+                Rectangle:
+                    size: self.size
+                    pos:self.pos
+        BoxLayout:
+            orientation:"horizontal"
+            size_hint_y: 0.4
+            BoxLayout:
+
+                canvas:
+                    Color: 
+                        rgba:0,0,1,1
+                    Rectangle:
+                        size: self.size
+                        pos:self.pos
+            Label:
+                size_hint_x:None
+                width: dp(1)
+                canvas:
+                    Color: 
+                        rgba:0 , 0, 0, 1
+                    Rectangle:
+                        size: self.size
+                        pos:self.pos
+            BoxLayout:
+
+                canvas:
+                    Color:
+                        rgba: 1,0,1,1
+                    Rectangle:
+                        size: self.size
+                        pos:self.pos
+    
+
+    BoxLayout:
+        size_hint_x:None
+        width:app.wid
+        
+        canvas:
+            Color:
+                rgba: 1,0,1,1
+            Rectangle:
+                size: self.size
+                pos:self.pos
+    BoxLayout:
+        orientation:"vertical"
+        size_hint_x:None
+        width:app.wid
+        
+    
+        BoxLayout:
+
+            canvas:
+                Color: 
+                    rgba:0,0,0,1
+                Rectangle:
+                    size: self.size
+                    pos:self.pos
+        BoxLayout:
+            orientation:"horizontal"
+            size_hint_y: 0.4
+            BoxLayout:
+
+                canvas:
+                    Color: 
+                        rgba:1,0,1,1
+                    Rectangle:
+                        size: self.size
+                        pos:self.pos
+            Label:
+                size_hint_x:None
+                width: dp(1)
+                canvas:
+                    Color: 
+                        rgba:0, 0, 0, 1
+                    Rectangle:
+                        size: self.size
+                        pos:self.pos
+            BoxLayout:
+
+                canvas:
+                    Color:
+                        rgba: 0,0,1,1
+                    Rectangle:
+                        size: self.size
+                        pos:self.pos
+    ButtonMain:
+        size_hint_x:None
+        width:app.wid
+        
+        on_press: root.bpress()
+        canvas:
+            Color: 
+                rgba:0,0,1,1
+            Rectangle:
+                size: self.size
+                pos:self.pos
+    BoxLayout:
+        orientation:"vertical"
+        size_hint_x:None
+        width:app.wid
+        
+    
+        BoxLayout:
+
+            canvas:
+                Color: 
+                    rgba:0,0,0,1
+                Rectangle:
+                    size: self.size
+                    pos:self.pos
+        BoxLayout:
+            orientation:"horizontal"
+            size_hint_y: 0.4
+            BoxLayout:
+
+                canvas:
+                    Color: 
+                        rgba:0,0,1,1
+                    Rectangle:
+                        size: self.size
+                        pos:self.pos
+            Label:
+                size_hint_x:None
+                width: dp(1)
+                canvas:
+                    Color: 
+                        rgba:0 , 0, 0, 1
+                    Rectangle:
+                        size: self.size
+                        pos:self.pos
+            BoxLayout:
+
+                canvas:
+                    Color:
+                        rgba: 1,0,1,1
+                    Rectangle:
+                        size: self.size
+                        pos:self.pos
+    
+
+    BoxLayout:
+        size_hint_x:None
+        width:app.wid
+        
+        canvas:
+            Color:
+                rgba: 1,0,1,1
+            Rectangle:
+                size: self.size
+                pos:self.pos
+
+    
+    
+
+            
+
+
+<MainScreen>:
+    name:"MainScreen"
+    MDNavigationLayout:
+        MDScreenManager:
+            MDScreen:
+                BoxLayout:
+                    orientation:"vertical"
+                    id: main_container
+                    canvas:
+                        Color:
+                            rgba: 1,1,1,1
+                        Rectangle:
+                            size: self.size
+                            pos:self.pos
+                    MDCard:
+                        orientation:"horizontal"
+                        size_hint_y:None
+                        height: 80
+                        elevation: 2.5
+                        shadow_offset: 0, 1
+                        radius:0,0,0,0
+                        padding:[0,10,0,15]
+                        Label:
+                            size_hint_x:None
+                            width: 10
+                        Label:
+                            text:"Rainbow Piano"
+                            color:0,0,0,1
+                            size_hint_x:None
+                            width:200
+                            bold:True
+                        Label:
+                        # BImage:
+                        #     source: "images/color.png"
+                        #     size_hint: None, None
+                        #     size:52,52
+                        BImage:
+                            id: sustain_img
+                            source: "images/sustainoff.png"
+                            size_hint: None, None
+                            size:48,48
+                            on_release: root.sustain_sound()
+                        
+                        
+                        Label:
+                            size_hint_x:None
+                            width:80
+                        
+                        MDIconButton:
+                            icon: "format-color-fill"
+                            theme_icon_color:"Custom"
+                            pos_hint: {"center_x": .5, "center_y": .4}
+                            
+                            icon_color: "#6851a5"
+                            on_release:Factory.ColorPopup().open()
+                        
+                        Label:
+                            size_hint_x:None
+                            width:20
+                        BImage:
+                            source: "images/layout.png"
+                            size_hint: None, None
+                            on_release: Factory.MyPopup().open()
+                            size:52,52
+                        Label:
+                            size_hint_x:None
+                            width:35
+                        BImage:
+                            source: "images/equalizer.png"
+                            size_hint: None, None
+                            on_release: Factory.EqualizerPopup().open()
+                            size:52,52
+                        Label:
+                            size_hint_x:None
+                            width:35
+                        
+                        BImage:
+                            id: instrument_id
+                            source: app.instrument_img
+                            size_hint: None, None
+                            on_release: Factory.InstrumentPopup().open()
+                            size:52,52
+                        Label:
+                            size_hint_x:None
+                            width:35
+                        MDIconButton:
+                            icon: "menu"
+                            pos_hint: {"center_x": .5, "center_y": .5}
+                            on_release: nav_drawer.set_state("open")
+                            size_hint: None, None
+                            size:52,52
+                            
+                    MDBoxLayout:
+                        orientation: "vertical"
+                        on_touch_down: app.touch_down(args[1],"down")  
+                        on_touch_move: app.touch_down(args[1],"move")  
+                        
+                        id: keys_container
+                        on_touch_up: app.touch_up(args[1])
+                        
+    
+        MDNavigationDrawer:
+            anchor: "right"
+            id: nav_drawer
+            md_bg_color: "#212121"
+            ScrollView:
+                effect_cls: ScrollEffect
+        
+                BoxLayout:
+                    orientation: "vertical"
+                    size_hint_y:None
+                    height:900
+                    Label:
+                        size_hint_y:None
+                        height:10
+                    BoxLayout:
+                        orientation:"horizontal"
+                        size_hint_y:None
+                        height:30
+                        MDIconButton:
+                            icon: "close"
+                            pos_hint: {"center_x": .5, "center_y": .5}
+                            theme_icon_color:"Custom"
+                            on_release: nav_drawer.set_state("close")
+                            icon_color: "#ffffff"
+                        Label:
+                        MDLabel:
+                            text: "Rainbow Piano"
+                            color: [1,1,1,1]
+                            size_hint_x:None
+                            width:240
+                        Label:
+                            size_hint_x:None
+                            width:36
+                        Label:
+                    Label:
+                        size_hint_y:None
+                        height: 60
+                    MDFlatButton:
+                        text: "Show Label On Keys"
+                        theme_text_color: "Custom"
+                        text_color: "orange"
+                        on_release: Factory.LabelPopup().open()
+                    
+                    MDFlatButton:
+                        text: "Import Setting"
+                        theme_text_color: "Custom"
+                        text_color: "orange"
+                        on_release: app.show_file_chooser(self)
+                    MDFlatButton:
+                        text: "Export Setting"
+                        theme_text_color: "Custom"
+                        text_color: "orange"
+                        on_release: app.export_jsonstore()
+
+                    Label:
+                        size_hint_y:None
+                        height:60
+                    MDLabel:
+                        text:"Credit" 
+                        halign: "center"
+                        font_style:"H6"
+                        theme_text_color: "Custom"
+                        text_color: "white"
+                        size_hint_y:None
+                        height:30
+                    Label:
+                        size_hint_y:None
+                        height:20
+                    MDLabel:
+                        text:"This App developed by [b]Yang C. and Muchhar Bharat[/b] Application is Open Source to use for everyone."
+                        halign: "center"
+                        font_style:"Caption"
+                        theme_text_color: "Custom"
+                        text_color: "white"
+                        markup:True
+                        size_hint_y:None
+                        height:150
+                    BoxLayout:
+                        orientation:"horizontal"
+                        size_hint_y:None
+                        height:40
+                        Label:
+                        MDLabel:
+                            text: "Visit GitHub Profile: "
+                            halign: "center"
+                            font_style:"Body2"
+                            theme_text_color: "Custom"
+                            text_color: "white"
+                            bold:True
+                            size_hint_x:None
+                            width:250
+                        MDIconButton:
+                            icon: "github"
+                            pos_hint: {"center_x": .5, "center_y": .5}
+                            theme_text_color: "Custom"
+                            text_color: "white"
+                            on_release: app.open_link("https://github.com/YangPiCui/")
+                        Label:
+                    Label:
+                        size_hint_y:None
+                        height:150
+                    BoxLayout:
+                        orientation:"horizontal"
+                        size_hint_y:None
+                        height:40
+                        Label:
+                        MDRectangleFlatIconButton:
+                            icon: "coffee"
+                            text: "Buy Me a Coffee"
+                            theme_text_color: "Custom"
+                            text_color: "white"
+                            line_color: "red"
+                            theme_icon_color: "Custom"
+                            icon_color: "orange"
+                            on_release: app.open_link("https://www.google.com/") # Replace your donation payment link 
+                        Label:
+                            
+                    Label:
+
+            
+
+            
+      
+<FileChooserIns>:
+    name: "FileChooserIns"
+    BoxLayout:
+        orientation: 'vertical'
+        spacing: 10
+        padding: 10
+        canvas.before:
+            Color:
+                rgb: 0, 0, 0
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        FileChooserListView:
+            id: filechooser
+            multiselect: True
+            on_selection: root.select_files(*args)
+            
+        ScrollView:
+            id: scroll_view
+            size_hint_y:None
+            height:0
+            do_scroll_y:True
+            BoxLayout:
+                orientation:"vertical"
+                size_hint_y:None
+                height: self.minimum_height  # Adjust height dynamically based on children
+                id: main_box
+                spacing:10
+            
+        Label:
+            id: ins_data
+            text: root.selected_files
+            size_hint_y: None
+            height: 60
+            multiline:True
+            font_size:18
+        BoxLayout:
+            size_hint_y:None
+            height:50
+            orientation:"horizontal"
+            Label:
+                id: error_msg
+                size_hint_y: None
+                font_size:18
+            
+                height: 50
+                halign: 'left'  # Align text to the left
+                valign: 'middle'  # Center text vertically
+                text_size: self.size  # Set the text area to match the label's size
+                color:1,0,0,1
+                
+            # Label:
+            Button:
+                text: "Cancel"
+                
+                size_hint_x:None
+                width:120
+                on_release:root.back_to_main()
+            Label:
+                size_hint_x:None
+                width:10
+        
+            Button:
+                text: "Add"
+                
+                size_hint_x:None
+                width:100
+                on_release:root.add_ins()
+            Label:
+                size_hint_x:None
+                width:10
+        
+        
+
+      
+
+
+        
