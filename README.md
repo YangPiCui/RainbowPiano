@@ -8,10 +8,13 @@ It would be nice if someone could turn this into a digital piano, such as the Ya
 And, maybe we should also rainbow-color the music scores.  
 ![](Rainbow6Notation_2.jpg)  
 
-## Credits
-Check out Bharat's Github and Upwork page: https://github.com/muchhar  
-For ideas and feedback: https://www.reddit.com/r/RainbowPiano/  
-
+## External Links
+Reddit:  
+https://www.reddit.com/r/RainbowPiano/  
+  
+Bharat's Github and Upwork pages:  
+https://github.com/muchhar  
+  
 ## Donations
 Option 1:  
 Repent​, be baptize​d in Jesus Christ's name, and become as a little child. [3 Nephi 11:38 | Mosiah 3:19]  
