@@ -380,6 +380,14 @@ ScreenManager:
             #     height:40
             #     width:150
             Label:
+            Button:
+                id: reset
+                text:'Reset'
+                size_hint_x:None
+                width: 150
+                
+                on_release: root.reset_color("pattern")
+            
         Label:
             size_hint_y:None
             height:10
@@ -432,6 +440,14 @@ ScreenManager:
             #     height:40
             #     width:150
             Label:
+            Button:
+                id: reset2
+                text:'Reset'
+                size_hint_x:None
+                width: 150
+                
+                on_release: root.reset_color("custom")
+            
             
         Widget:
             id: separator
