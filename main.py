@@ -726,7 +726,7 @@ class PianoApp(MDApp):
         self.screen= Screen()
         
         self.sm= ScreenManager()
-        self.visible_keys = self.retrieve_data("visible_keys") if self.retrieve_data("visible_keys") is not None else "20"
+        self.visible_keys = self.retrieve_data("visible_keys") if self.retrieve_data("visible_keys") is not None else "25"
         self.window_width, self.window_height = Window.size
         self.wid = self.window_width / int(self.visible_keys) - 0.05
             
@@ -739,7 +739,7 @@ class PianoApp(MDApp):
         self.selected_instrument=self.retrieve_data("selected_instrument") if self.retrieve_data("selected_instrument") is not None else "1"
         self.equalizer = self.retrieve_data("equalizer") if self.retrieve_data("equalizer") is not None else False
         
-        self.save_scroll= self.retrieve_data("save_scroll") if self.retrieve_data("save_scroll") is not None else  {}
+        self.save_scroll= self.retrieve_data("save_scroll") if self.retrieve_data("save_scroll") is not None else  {"0":27/(88-int(self.visible_keys)),"1":27/(88-int(self.visible_keys))}
         self.main_gain = np.array(self.retrieve_data("main_gain")) if self.retrieve_data("main_gain") is not None else np.ones(10)
         select_files = [f for f in os.listdir('instruments/1') if f.endswith(('.png', '.jpg')) ]
         self.instrument_img = "instruments/1/"+select_files[0]
@@ -808,8 +808,9 @@ class PianoApp(MDApp):
 
         self.white_key=self.retrieve_data("white_key") if self.retrieve_data("white_key") is not None else False
         
-        self.black_key=self.retrieve_data("black_key") if self.retrieve_data("black_key") is not None else False
-        
+        self.black_key=self.retrieve_data("black_key") if self.retrieve_data("black_key") is not None else True
+        if self.white_key:
+            self.black_key=False
         self.a=Builder.load_file("main.kv")
         self.update_piano(int(self.numberof_row),'b')
         
@@ -1852,13 +1853,13 @@ class PianoApp(MDApp):
             
             ######################white keyboard
             scroll_v = ScrollView(do_scroll_x=False,do_scroll_y=False,scroll_x=scr)
-            bx2 = BoxLayout(orientation="horizontal",size_hint_x=None,width= self.wid*88)
+            bx2 = BoxLayout(orientation="horizontal",size_hint_x=None,width= self.wid*88+self.wid/2)
             bx.ids['hori_con']=bx2
             an =0
             exnel_label=0
-            for p in range(1,90):
+            for p in range(0,89):
                 note = self.piano_notes[an]
-                if(p%2==0 and p!=88):
+                if(p!=0 and p%2==0 and p!=88):
                     #black key
                     bx3 =ColoredBoxLayout(orientation="vertical",size_hint_x=None,width= self.wid,background_color=(0, 0, 0, 1))
                     bx2.ids[note+"_half_container"]=bx3
@@ -1875,7 +1876,7 @@ class PianoApp(MDApp):
                     
                     bx6 = ColoredBoxLayout(background_color=(1, 1, 1, 1),bk='h1')
                     if self.keys_label!=None:
-                        if p==2 or p==89:
+                        if p==2 :
                             n_lbl=''
                             if self.keys_label=="Notes":
                                 n_lbl=self.piano_notes[an-1]
@@ -1885,7 +1886,7 @@ class PianoApp(MDApp):
                             if exnel_label==7:
                                 exnel_label=0
 
-                            ft_main = FloatLayout(size_hint= (None, None),size=(self.wid, self.wid),pos= (self.wid*(an)-(self.wid*1.5/2),self.wid*1.5/6))
+                            ft_main = FloatLayout(size_hint= (None, None),size=(self.wid, self.wid),pos= (self.wid*(an)+self.wid/2-(self.wid*1.5/2),self.wid*1.5/6))
                             
                             with ft_main.canvas:
                                 Color(0, 1, 0, 1)  # green; colors range from 0-1 not 0-255
@@ -1893,7 +1894,7 @@ class PianoApp(MDApp):
                             #     self.draw_text(ft_main, note+"X", (50,50), font_size=20)
 
                             #ft_main.bind(size=self.update_rect, pos=self.update_rect)
-                            ft = MDLabel(text=n_lbl,pos=ft_main.pos,halign='center')
+                            ft = MDLabel(text=n_lbl,pos=ft_main.pos,halign='center',font_style="Caption")
                             ft_main.add_widget(ft)
                             
                             #ft_main.add_widget(ft)
@@ -1934,10 +1935,16 @@ class PianoApp(MDApp):
             
                 else:
                     #white key
-                    bx3 =ColoredBoxLayout(orientation="vertical",size_hint_x=None,width= self.wid,background_color=(1, 1, 1, 1),tone=note,bk='full')
+                    print(note)
+                    w=self.wid
+                    pading= w/2
+                    if p==0:
+                        w=w+w/2
+                        pading=self.wid/4
+                    bx3 =ColoredBoxLayout(orientation="vertical",size_hint_x=None,width= w,background_color=(1, 1, 1, 1),tone=note,bk='full')
                     if self.keys_label!=None:
-                        if p!=1 and p!=87 and p!=88:
-                            ft_main = FloatLayout(size_hint= (None, None),size=(self.wid, self.wid),pos= (self.wid*(an),self.wid*1.5/6))
+                        if p!=1:
+                            ft_main = FloatLayout(size_hint= (None, None),size=(self.wid, self.wid),pos= (self.wid*(an)+pading,self.wid*1.5/6))
                             with ft_main.canvas:
                                 Color(0, 1, 0, 1)  # green; colors range from 0-1 not 0-255
                                 self.rect = Rectangle(size=ft_main.size, pos=ft_main.pos)
@@ -1953,55 +1960,55 @@ class PianoApp(MDApp):
                             if exnel_label==7:
                                 exnel_label=0
 
-                            ft = MDLabel(text=n_lbl,pos=ft_main.pos,halign='center')
+                            ft = MDLabel(text=n_lbl,pos=ft_main.pos,halign='center',font_style="Caption")
                             ft_main.add_widget(ft)
                             
                             #ft_main.add_widget(ft)
                             bx3.add_widget(ft_main)
-                        if p==87:
-                            ft_main = FloatLayout(size_hint= (None, None),size=(self.wid, self.wid),pos= (self.wid*(an)-self.wid*1.5/6,self.wid*1.5/6))
-                            with ft_main.canvas:
-                                Color(0, 1, 0, 1)  # green; colors range from 0-1 not 0-255
-                                self.rect = Rectangle(size=ft_main.size, pos=ft_main.pos)
-                            #     self.draw_text(ft_main, note+"X", (50,50), font_size=20)
+                        # if p==87:
+                        #     ft_main = FloatLayout(size_hint= (None, None),size=(self.wid, self.wid),pos= (self.wid*(an)-self.wid*1.5/6,self.wid*1.5/6))
+                        #     with ft_main.canvas:
+                        #         Color(0, 1, 0, 1)  # green; colors range from 0-1 not 0-255
+                        #         self.rect = Rectangle(size=ft_main.size, pos=ft_main.pos)
+                        #     #     self.draw_text(ft_main, note+"X", (50,50), font_size=20)
 
-                            #ft_main.bind(size=self.update_rect, pos=self.update_rect)
-                            n_lbl=''
-                            if self.keys_label=="Notes":
-                                n_lbl=note
-                            else:
-                                n_lbl=self.keys_label[exnel_label]
-                            exnel_label+=1
-                            if exnel_label==7:
-                                exnel_label=0
+                        #     #ft_main.bind(size=self.update_rect, pos=self.update_rect)
+                        #     n_lbl=''
+                        #     if self.keys_label=="Notes":
+                        #         n_lbl=note
+                        #     else:
+                        #         n_lbl=self.keys_label[exnel_label]
+                        #     exnel_label+=1
+                        #     if exnel_label==7:
+                        #         exnel_label=0
 
-                            ft = MDLabel(text=n_lbl,pos=ft_main.pos,halign='center')
-                            ft_main.add_widget(ft)
+                        #     ft = MDLabel(text=n_lbl,pos=ft_main.pos,halign='center',font_style="Caption")
+                        #     ft_main.add_widget(ft)
                             
-                            #ft_main.add_widget(ft)
-                            bx3.add_widget(ft_main)
-                        if p==88:
-                            ft_main = FloatLayout(size_hint= (None, None),size=(self.wid, self.wid),pos= (self.wid*(an)+self.wid*1.5/6,self.wid*1.5/6))
-                            with ft_main.canvas:
-                                Color(0, 1, 0, 1)  # green; colors range from 0-1 not 0-255
-                                self.rect = Rectangle(size=ft_main.size, pos=ft_main.pos)
-                            #     self.draw_text(ft_main, note+"X", (50,50), font_size=20)
+                        #     #ft_main.add_widget(ft)
+                        #     bx3.add_widget(ft_main)
+                        # if p==88:
+                        #     ft_main = FloatLayout(size_hint= (None, None),size=(self.wid, self.wid),pos= (self.wid*(an)+self.wid*1.5/6,self.wid*1.5/6))
+                        #     with ft_main.canvas:
+                        #         Color(0, 1, 0, 1)  # green; colors range from 0-1 not 0-255
+                        #         self.rect = Rectangle(size=ft_main.size, pos=ft_main.pos)
+                        #     #     self.draw_text(ft_main, note+"X", (50,50), font_size=20)
 
-                            #ft_main.bind(size=self.update_rect, pos=self.update_rect)
-                            n_lbl=''
-                            if self.keys_label=="Notes":
-                                n_lbl=note
-                            else:
-                                n_lbl=self.keys_label[exnel_label]
-                            exnel_label+=1
-                            if exnel_label==7:
-                                exnel_label=0
+                        #     #ft_main.bind(size=self.update_rect, pos=self.update_rect)
+                        #     n_lbl=''
+                        #     if self.keys_label=="Notes":
+                        #         n_lbl=note
+                        #     else:
+                        #         n_lbl=self.keys_label[exnel_label]
+                        #     exnel_label+=1
+                        #     if exnel_label==7:
+                        #         exnel_label=0
 
-                            ft = MDLabel(text=n_lbl,pos=ft_main.pos,halign='center')
-                            ft_main.add_widget(ft)
+                        #     ft = MDLabel(text=n_lbl,pos=ft_main.pos,halign='center',font_style="Caption")
+                        #     ft_main.add_widget(ft)
                             
-                            #ft_main.add_widget(ft)
-                            bx3.add_widget(ft_main)
+                        #     #ft_main.add_widget(ft)
+                        #     bx3.add_widget(ft_main)
                         
 
                     bx2.ids[note]=bx3
