@@ -167,22 +167,10 @@ class MainScreen(Screen):
             app.sustain_tune = False
        
     pass
-class SinglePianoButton(BoxLayout):
-    def bpress(self):
-        pass
-    pass
-class DoublePianoButton(BoxLayout):
-    def bpress(self):
-        pass
-    pass
-class TripalPianoButton(BoxLayout):
-    def bpress(self):
-        pass
-    pass
+
 class MySlider(Slider):
     pass
-class MyScrollView(ScrollView):
-    pass
+
 class Equalizer:
     def __init__(self):
         self.bands = 10
@@ -717,8 +705,6 @@ class MyPopup(Popup):
     pass
 class PaddingLabel(Label):
     pass
-class WhitePianoButon(BoxLayout):
-    pass
 
 class PianoApp(MDApp):
     def __init__(self):
@@ -1041,9 +1027,7 @@ class PianoApp(MDApp):
     def on_window_resize(self, window, width, height):
         try:
             self.window_width=width
-            #self.visible_keys = str(round(self.window_width//self.wid))
             self.wid = self.window_width / int(self.visible_keys) - 0.05
-            #self.update_piano(int(self.numberof_row),'c')
             self.update_visiblekeys()
         except:
             pass
@@ -1069,47 +1053,7 @@ class PianoApp(MDApp):
                         
         self.update_storage()
        
-        return
-        for i in self.a.ids.main_screen.ids.keys_container.children:
-                
-                x = 0
         
-                for v in i.children[1].children[0].children:
-                    next_cls = None
-                    pre_cls =   None
-
-                    
-                    if x==88 and self.custom_color_active:
-                        x=0
-
-                    curr_cls = color_code[x]
-                    if x==0:
-                        next_cls = color_code[x+1]
-                        pre_cls = color_code[len(color_code)-1]
-                    
-                    elif x==87 and self.custom_color_active:
-                        next_cls = color_code[0]
-                        pre_cls = color_code[x-1]
-                    
-                    else:
-                        next_cls = color_code[x+1]
-                        pre_cls = color_code[x-1]
-                    
-                        
-                    
-                    if isinstance(v, BoxLayout):
-                        v.set_background_color(curr_cls)
-                        if len(v.children)>=2:
-                            if isinstance(v.children[-1],BoxLayout):
-                                v.children[-1].set_background_color(curr_cls)
-                            if isinstance(v.children[0],BoxLayout):
-                                
-                                v.children[0].children[0].set_background_color(pre_cls)
-                                v.children[0].children[-1].set_background_color(next_cls)
-                    x+=1
-                                
-                            
-        pass
     def update_color(self):
         if self.custom_color_active:
             self.custom_update_color()
@@ -1142,92 +1086,14 @@ class PianoApp(MDApp):
         
         self.update_storage()
        
-        return
-
-        for i in self.notes_color.keys():
-            pass
-        color_code=[]
-        
-        for i in self.notes_color.keys():
-            color_code.append(self.notes_color[i])
-            
-
-        for i in self.a.ids.main_screen.ids.keys_container.children:
-                
-                x = 0
-        
-                for v in i.children[1].children[0].children:
-                    next_cls = None
-                    pre_cls =   None
-
-                    if x==12 and self.color_pattern_active:
-                        x=0
-                    
-                    curr_cls = color_code[x]
-                    if x==0:
-                        next_cls = color_code[x+1]
-                        pre_cls = color_code[len(color_code)-1]
-                    elif x==11 and self.color_pattern_active:
-                        next_cls = color_code[0]
-                        pre_cls = color_code[x-1]
-                    
-                    else:
-                        next_cls = color_code[x+1]
-                        pre_cls = color_code[x-1]
-                    
-                        
-                    
-                    if isinstance(v, BoxLayout):
-                        v.set_background_color(curr_cls)
-                        if len(v.children)>=2:
-                            if isinstance(v.children[-1],BoxLayout):
-                                v.children[-1].set_background_color(curr_cls)
-                            if isinstance(v.children[0],BoxLayout):
-                                
-                                v.children[0].children[0].set_background_color(pre_cls)
-                                v.children[0].children[-1].set_background_color(next_cls)
-                    x+=1
-                                
-                            
-
-
-            
-
-        pass  
+          
     def update_visiblekeys(self):
         x=len(self.a.ids.main_screen.ids.keys_container.children)-1
         for i in self.a.ids.main_screen.ids.keys_container.children:
             self.save_scroll[str(x)]=i.children[-1].value
             x-=1
         self.update_piano(int(self.numberof_row),'b')
-        return
-        if self.black_key:
-            for i in self.a.ids.main_screen.ids.keys_container.children:
-                i.children[1].children[0].width = self.wid*88.5
-                for v in i.children[1].children[0].children:
-                    if isinstance(v, BoxLayout):
-                    
-                        v.width= self.wid
-                
-            pass
-        elif self.white_key:
-            for i in self.a.ids.main_screen.ids.keys_container.children:
-                
-                i.children[1].children[0].width = (self.wid)*90.8
-                for v in i.children[1].children[0].children:
-                    if isinstance(v, BoxLayout):
-                    
-                        v.width= self.wid
             
-            pass
-        else:
-            for i in self.a.ids.main_screen.ids.keys_container.children:
-                i.children[1].children[0].width = self.wid*88.5
-                for v in i.children[1].children[0].children:
-                    if isinstance(v, BoxLayout):
-                        v.width= self.wid
-                
-            pass    
     def lock_mode(self):
         for child in self.a.ids.main_screen.ids.keys_container.children:
             for vchild in child.children:
