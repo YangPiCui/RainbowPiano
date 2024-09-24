@@ -263,26 +263,34 @@ class EqualizerSlider(BoxLayout):
 class LabelPopup(Popup):
     #keys_label
     def write_custom(self):
+
         self.app=MDApp.get_running_app()
-        if len(self.app.custom_label)==7:
-            self.ids.lbl_1.text=self.app.custom_label[0]
-            self.ids.lbl_2.text=self.app.custom_label[1]
-            self.ids.lbl_3.text=self.app.custom_label[2]
-            self.ids.lbl_4.text=self.app.custom_label[3]
-            self.ids.lbl_5.text=self.app.custom_label[4]
-            self.ids.lbl_6.text=self.app.custom_label[5]
-            self.ids.lbl_7.text=self.app.custom_label[6]
+        if len(self.app.custom_label.keys())==12:
+            self.ids.lbl_1.text=self.app.custom_label["C"]
+            self.ids.lbl_2.text=self.app.custom_label["C#"]
+            self.ids.lbl_3.text=self.app.custom_label["D"]
+            self.ids.lbl_4.text=self.app.custom_label["D#"]
+            self.ids.lbl_5.text=self.app.custom_label["E"]
+            self.ids.lbl_6.text=self.app.custom_label["F"]
+            self.ids.lbl_7.text=self.app.custom_label["F#"]
+            self.ids.lbl_8.text=self.app.custom_label["G"]
+            self.ids.lbl_9.text=self.app.custom_label["G#"]
+            self.ids.lbl_10.text=self.app.custom_label["A"]
+            self.ids.lbl_11.text=self.app.custom_label["A#"]
+            self.ids.lbl_12.text=self.app.custom_label["B"]
         if self.app.keys_label!=None:
+
             if self.app.keys_label=="Notes":
                 self.ids.f_4.active=True
+            elif isinstance( self.app.keys_label,dict): #==self.app.custom_label:
+                self.ids.f_6.active=True
             elif self.app.keys_label[0]=="1":
                 self.ids.f_1.active=True
             elif self.app.keys_label[0]=="A":
                 self.ids.f_2.active=True
             elif self.app.keys_label[0]=="a":
                 self.ids.f_3.active=True
-            elif self.ids.keys_label==self.app.custom_label:
-                self.ids.f_6.active=True
+            
         else:
             self.ids.f_5.active=True
     def apply_changes(self):
@@ -312,13 +320,27 @@ class LabelPopup(Popup):
             self.dismiss()
             
         elif self.ids.f_6.active:
-            if len(self.ids.lbl_1.text)>3 or len(self.ids.lbl_2.text)>3 or len(self.ids.lbl_3.text)>3 or len(self.ids.lbl_4.text)>3 or len(self.ids.lbl_5.text)>3 or len(self.ids.lbl_6.text)>3 or len(self.ids.lbl_7.text)>3:
-                self.ids.error_msg.text="In custom label you can add 3 latter maximum."
-            else:
-                self.app.custom_label=[self.ids.lbl_1.text,self.ids.lbl_2.text,self.ids.lbl_3.text,self.ids.lbl_4.text,self.ids.lbl_5.text,self.ids.lbl_6.text,self.ids.lbl_7.text]
-                self.app.keys_label=self.app.custom_label
-                self.app.update_visiblekeys()
-                self.dismiss()
+            # if len(self.ids.lbl_1.text)>3 or len(self.ids.lbl_2.text)>3 or len(self.ids.lbl_3.text)>3 or len(self.ids.lbl_4.text)>3 or len(self.ids.lbl_5.text)>3 or len(self.ids.lbl_6.text)>3 or len(self.ids.lbl_7.text)>3:
+            #     self.ids.error_msg.text="In custom label you can add 3 latter maximum."
+            #else:
+            self.app.custom_label={
+                "C":self.ids.lbl_1.text,
+                "C#":self.ids.lbl_2.text,
+                "D":self.ids.lbl_3.text,
+                "D#":self.ids.lbl_4.text,
+                "E":self.ids.lbl_5.text,
+                "F":self.ids.lbl_6.text,
+                "F#":self.ids.lbl_7.text,
+                "G":self.ids.lbl_8.text,
+                "G#":self.ids.lbl_9.text,
+                "A":self.ids.lbl_10.text,
+                "A#":self.ids.lbl_11.text,
+                "B":self.ids.lbl_12.text,
+                
+                }
+            self.app.keys_label=self.app.custom_label
+            self.app.update_visiblekeys()
+            self.dismiss()
     def dismiss_dialog(self):
         self.dismiss()
     pass
@@ -732,7 +754,7 @@ class PianoApp(MDApp):
         self.pre_music=0
         self.keys_label=self.retrieve_data("keys_label")
         
-        self.custom_label=self.retrieve_data("custom_label") if self.retrieve_data("custom_label") is not None else ["Sa","Re","Ga","Ma","Pa","Dha","Ni"]
+        self.custom_label=self.retrieve_data("custom_label") if self.retrieve_data("custom_label") is not None else {"C":"C","C#":"C#","D":"D","D#":"D#","E":"E","F":"F","F#":"F#","G":"G","G#":"G#","A":"A","A#":"A#","B":"B"}
         self.first_note = ['x','y','x','s']
         self.f_label = [0,1,1]
         self.m_label = [ 0,0,0,
@@ -943,8 +965,7 @@ class PianoApp(MDApp):
         self.save_scroll= self.retrieve_data("save_scroll") if self.retrieve_data("save_scroll") is not None else  {}
         self.main_gain = np.array(self.retrieve_data("main_gain")) if self.retrieve_data("main_gain") is not None else np.ones(10)
         self.keys_label=self.retrieve_data("keys_label")
-        
-        self.custom_label=self.retrieve_data("custom_label") if self.retrieve_data("custom_label") is not None else ["Sa","Re","Ga","Ma","Pa","Dha","Ni"]
+        self.custom_label=self.retrieve_data("custom_label") if self.retrieve_data("custom_label") is not None else {"C":"C","C#":"C#","D":"D","D#":"D#","E":"E","F":"F","F#":"F#","G":"G","G#":"G#","A":"A","A#":"A#","B":"B"}
         self.notes_color =self.retrieve_data("notes_color") if self.retrieve_data("notes_color") is not None else {
             "0A":(98/255.0,0,0,1),
             "0A#":(139/255.0,0,0,1),
@@ -1338,13 +1359,20 @@ class PianoApp(MDApp):
                             n_lbl=''
                             if self.keys_label=="Notes":
                                 n_lbl=note
+                            elif isinstance(self.keys_label, dict):
+                                n_lbl = self.keys_label[note[1:]]
                             else:
                                 n_lbl=self.keys_label[exnel_label]
                             exnel_label+=1
                             if exnel_label==7:
                                 exnel_label=0
 
-                            ft = MDLabel(text=n_lbl,pos=ft_main.pos,halign='center')
+                            ft = Label(text=n_lbl,pos=ft_main.pos,halign='center',color=[0,0,0,1])
+                            ft.text_size = (ft.width, None)
+                            ft.font_size = ft.height / (len(n_lbl)+2) # Start with an arbitrary value
+                            while ft.texture_size[1] > ft.height or ft.texture_size[0] > ft.width:
+                                ft.font_size -= 1
+                            
                             ft_main.add_widget(ft)
                             
                             #ft_main.add_widget(ft)
@@ -1380,13 +1408,20 @@ class PianoApp(MDApp):
                             n_lbl=''
                             if self.keys_label=="Notes":
                                 n_lbl=self.piano_notes[an-1]
+                            elif isinstance(self.keys_label, dict):
+                                n_lbl = self.keys_label[self.piano_notes[an-1][1:]]
                             else:
                                 n_lbl=self.keys_label[exnel_label]
                             exnel_label+=1
                             if exnel_label==7:
                                 exnel_label=0
 
-                            ft = MDLabel(text=n_lbl,pos=ft_main.pos,halign='center')
+                            ft = Label(text=n_lbl,pos=ft_main.pos,halign='center',color=[0,0,0,1])
+                            ft.text_size = (ft.width, None)
+                            ft.font_size = ft.height / (len(n_lbl)+2) # Start with an arbitrary value
+                            while ft.texture_size[1] > ft.height or ft.texture_size[0] > ft.width:
+                                ft.font_size -= 1
+                            
                             ft_main.add_widget(ft)
                             
                             #ft_main.add_widget(ft)
@@ -1451,13 +1486,21 @@ class PianoApp(MDApp):
                                 n_lbl=''
                                 if self.keys_label=="Notes":
                                     n_lbl=note
+                                elif isinstance(self.keys_label, dict):
+                                    n_lbl = self.keys_label[note[1:]]
+                            
                                 else:
                                     n_lbl=self.keys_label[exnel_label]
                                 exnel_label+=1
                                 if exnel_label==7:
                                     exnel_label=0
 
-                                ft = MDLabel(text=n_lbl,pos=ft_main.pos,halign='center')
+                                ft = Label(text=n_lbl,pos=ft_main.pos,halign='center',color=[0,0,0,1])
+                                ft.text_size = (ft.width, None)
+                                ft.font_size = ft.height / (len(n_lbl)+2) # Start with an arbitrary value
+                                while ft.texture_size[1] > ft.height or ft.texture_size[0] > ft.width:
+                                    ft.font_size -= 1
+                                
                                 ft_main.add_widget(ft)
                                 
                                 #ft_main.add_widget(ft)
@@ -1474,6 +1517,9 @@ class PianoApp(MDApp):
                                 n_lbl=''
                                 if self.keys_label=="Notes":
                                     n_lbl=note
+                                elif isinstance(self.keys_label, dict):
+                                    n_lbl = self.keys_label[note[1:]]
+                            
                                 else:
                                     n_lbl=self.keys_label[exnel_label]
                                 exnel_label+=1
@@ -1481,7 +1527,12 @@ class PianoApp(MDApp):
                                     exnel_label=0
 
                                 #ft_main.bind(size=self.update_rect, pos=self.update_rect)
-                                ft = MDLabel(text=n_lbl,pos=ft_main.pos,halign='center')
+                                ft = Label(text=n_lbl,pos=ft_main.pos,halign='center',color=[0,0,0,1])
+                                ft.text_size = (ft.width, None)
+                                ft.font_size = ft.height / (len(n_lbl)+2) # Start with an arbitrary value
+                                while ft.texture_size[1] > ft.height or ft.texture_size[0] > ft.width:
+                                    ft.font_size -= 1
+                            
                                 ft_main.add_widget(ft)
                                 
                                 #ft_main.add_widget(ft)
@@ -1524,13 +1575,21 @@ class PianoApp(MDApp):
                                 n_lbl=''
                                 if self.keys_label=="Notes":
                                     n_lbl=self.piano_notes[an-1]
+                                elif isinstance(self.keys_label, dict):
+                                    n_lbl = self.keys_label[self.piano_notes[an-1][1:]]
+                            
                                 else:
                                     n_lbl=self.keys_label[exnel_label]
                                 exnel_label+=1
                                 if exnel_label==7:
                                     exnel_label=0
 
-                                ft = MDLabel(text=n_lbl,pos=ft_main.pos,halign='center')
+                                ft = Label(text=n_lbl,pos=ft_main.pos,halign='center',color=[0,0,0,1])
+                                ft.text_size = (ft.width, None)
+                                ft.font_size = ft.height / (len(n_lbl)+2) # Start with an arbitrary value
+                                while ft.texture_size[1] > ft.height or ft.texture_size[0] > ft.width:
+                                    ft.font_size -= 1
+                                
                                 ft_main.add_widget(ft)
                                 
                                 #ft_main.add_widget(ft)
@@ -1583,13 +1642,21 @@ class PianoApp(MDApp):
                 n_lbl=''
                 if self.keys_label=="Notes":
                     n_lbl=self.piano_notes[-1]
+                elif isinstance(self.keys_label, dict):
+                    n_lbl = self.keys_label[self.piano_notes[-1][1:]]
+                            
                 else:
                     n_lbl=self.keys_label[exnel_label]
                 exnel_label+=1
                 if exnel_label==7:
                     exnel_label=0
 
-                ft = MDLabel(text=n_lbl,pos=ft_main.pos,halign='center')
+                ft = Label(text=n_lbl,pos=ft_main.pos,halign='center',color=[0,0,0,1])
+                ft.text_size = (ft.width, None)
+                ft.font_size = ft.height / (len(n_lbl)+2) # Start with an arbitrary value
+                while ft.texture_size[1] > ft.height or ft.texture_size[0] > ft.width:
+                    ft.font_size -= 1
+                            
                 ft_main.add_widget(ft)
                 
                 #ft_main.add_widget(ft)
@@ -1654,16 +1721,26 @@ class PianoApp(MDApp):
                     n_lbl=''
                     if self.keys_label=="Notes":
                         n_lbl=r
+                    elif isinstance(self.keys_label, dict):
+                        n_lbl = self.keys_label[r[1:]]
+                            
                     else:
                         n_lbl=self.keys_label[exnel_label]
                     exnel_label+=1
                     if exnel_label==7:
                         exnel_label=0
-
-                    nt2 = Label(text=n_lbl,size_hint_y=None,height=20,color=(0,0,0,1),font_size=self.wid/3)
+                    nt2 = Label(text=n_lbl,size_hint_y=None,height=30,halign='center',valign="middle",color=(0,0,0,1))
+                    nt2.text_size = (nt2.width, None)
+                    if len(n_lbl)==1:
+                        nt2.font_size = bx3.width / (len(n_lbl)+1) # Start with an arbitrary value
+                    else:
+                        nt2.font_size = bx3.width / (len(n_lbl))
+                    while nt2.texture_size[1] > nt2.height or nt2.texture_size[0] > nt2.width:
+                        nt2.font_size -= 1
+                    
                     with nt2.canvas.before:
                         Color(0, 1, 0, 1)  # green; colors range from 0-1 not 0-255
-                        self.rect = Rectangle(size=(self.wid-self.wid*1.5/5,self.wid-self.wid*1.5/5), pos=(self.wid*x_cont+x_cont*2+self.wid*1.5/10,self.wid*1.5/10))
+                        self.rect = Rectangle(size=(self.wid-self.wid*1.5/5,self.wid-self.wid*1.5/5), pos=(self.wid*x_cont+x_cont*2+self.wid*1.5/10,self.wid*1.5/10+10))
                     #     self.draw_text(ft_main, note+"X", (50,50), font_size=20)
                     bx3.add_widget(nt2)
                 else:
@@ -1746,7 +1823,11 @@ class PianoApp(MDApp):
                             n_lbl=''
                             if self.keys_label=="Notes":
                                 n_lbl=self.piano_notes[an-1]
+                            elif isinstance(self.keys_label, dict):
+                                n_lbl = self.keys_label[self.piano_notes[an-1][1:]]
+                            
                             else:
+
                                 n_lbl=self.keys_label[exnel_label]
                             exnel_label+=1
                             if exnel_label==7:
@@ -1760,11 +1841,17 @@ class PianoApp(MDApp):
                             #     self.draw_text(ft_main, note+"X", (50,50), font_size=20)
 
                             #ft_main.bind(size=self.update_rect, pos=self.update_rect)
-                            ft = MDLabel(text=n_lbl,pos=ft_main.pos,halign='center',font_style="Caption")
+                            ft = Label(text=n_lbl,pos=ft_main.pos,halign='center',color=[0,0,0,1])
+                            ft.text_size = (ft.width, None)
+                            ft.font_size = ft.height / (len(n_lbl)+2) # Start with an arbitrary value
+                            while ft.texture_size[1] > ft.height or ft.texture_size[0] > ft.width:
+                                ft.font_size -= 1
+                            
                             ft_main.add_widget(ft)
                             
                             #ft_main.add_widget(ft)
-                            bx6.add_widget(ft_main)
+                            if n_lbl!='':
+                                bx6.add_widget(ft_main)
                         
 
                     
@@ -1820,17 +1907,28 @@ class PianoApp(MDApp):
                             n_lbl=''
                             if self.keys_label=="Notes":
                                 n_lbl=note
+                            elif isinstance(self.keys_label, dict):
+                                n_lbl = self.keys_label[note[1:]]
+                    
                             else:
                                 n_lbl=self.keys_label[exnel_label]
                             exnel_label+=1
                             if exnel_label==7:
                                 exnel_label=0
 
-                            ft = MDLabel(text=n_lbl,pos=ft_main.pos,halign='center',font_style="Caption")
+                            ft = Label(text=n_lbl,pos=ft_main.pos,halign='center',color=[0,0,0,1])
+                            ft.text_size = (ft.width, None)
+                            ft.font_size = ft.height / (len(n_lbl)+2) # Start with an arbitrary value
+                            while ft.texture_size[1] > ft.height or ft.texture_size[0] > ft.width:
+                                ft.font_size -= 1
+                            
                             ft_main.add_widget(ft)
                             
                             #ft_main.add_widget(ft)
-                            bx3.add_widget(ft_main)
+                            if n_lbl!='':
+                                bx3.add_widget(ft_main)
+                        
+                           # bx3.add_widget(ft_main)
                         # if p==87:
                         #     ft_main = FloatLayout(size_hint= (None, None),size=(self.wid, self.wid),pos= (self.wid*(an)-self.wid*1.5/6,self.wid*1.5/6))
                         #     with ft_main.canvas:
