@@ -870,28 +870,45 @@ ScreenManager:
                         size_hint_y:None
                         height:20
                     MDLabel:
-                        text:"This App developed by [b]Yang C. and Muchhar Bharat[/b] Application is Open Source to use for everyone."
+                        text:"Developer: Muchhar Bharat\n Idea & Funding: Yang Cui  "
                         halign: "center"
-                        font_style:"Caption"
+                        font_style:"Body1"
                         theme_text_color: "Custom"
                         text_color: "white"
                         markup:True
                         size_hint_y:None
                         height:150
+                    Label:
+                        size_hint_y:None
+                        height:40
+                    
+                    MDLabel:
+                        text:"Application is Open Source \n\n Feedback and Donation welcome"
+                        halign: "center"
+                        font_style:"Body1"
+                        theme_text_color: "Custom"
+                        text_color: "white"
+                        markup:True
+                        size_hint_y:None
+                        height:150
+                    Label:
+                        size_hint_y:None
+                        height:80
+                    
                     BoxLayout:
                         orientation:"horizontal"
                         size_hint_y:None
                         height:40
                         Label:
                         MDLabel:
-                            text: "Visit GitHub Profile: "
+                            text: "GitHub Page: "
                             halign: "center"
-                            font_style:"Body2"
+                            font_style:"Body1"
                             theme_text_color: "Custom"
                             text_color: "white"
-                            bold:True
+                            bold:False
                             size_hint_x:None
-                            width:250
+                            width:220
                         MDIconButton:
                             icon: "github"
                             pos_hint: {"center_x": .5, "center_y": .5}
@@ -899,24 +916,21 @@ ScreenManager:
                             text_color: "white"
                             on_release: app.open_link("https://github.com/YangPiCui/")
                         Label:
-                    Label:
-                        size_hint_y:None
-                        height:150
-                    BoxLayout:
-                        orientation:"horizontal"
-                        size_hint_y:None
-                        height:40
-                        Label:
-                        MDRectangleFlatIconButton:
-                            icon: "coffee"
-                            text: "Buy Me a Coffee"
-                            theme_text_color: "Custom"
-                            text_color: "white"
-                            line_color: "red"
-                            theme_icon_color: "Custom"
-                            icon_color: "orange"
-                            on_release: app.open_link("https://www.google.com/") # Replace your donation payment link 
-                        Label:
+                    # BoxLayout:
+                    #     orientation:"horizontal"
+                    #     size_hint_y:None
+                    #     height:40
+                    #     Label:
+                    #     MDRectangleFlatIconButton:
+                    #         icon: "coffee"
+                    #         text: "Buy Me a Coffee"
+                    #         theme_text_color: "Custom"
+                    #         text_color: "white"
+                    #         line_color: "red"
+                    #         theme_icon_color: "Custom"
+                    #         icon_color: "orange"
+                    #         on_release: app.open_link("https://www.google.com/") # Replace your donation payment link 
+                    #     Label:
                             
                     Label:
 

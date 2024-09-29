@@ -84,7 +84,7 @@ class ColoredBoxLayout(ButtonBehavior,MDBoxLayout):
         self.elevation= 10
         self.layout=layout
         self.md_bg_color= self._background_color
-        print(self.tune)
+       # print(self.tune)
         global pera_keys
         self.app=MDApp.get_running_app()
         if self.app.white_key:
@@ -493,7 +493,7 @@ class FileChooserIns(Screen):
         self.app=MDApp.get_running_app()
         self.app.screen_switch_mainscreen()
     def add_ins(self):
-        a=os.listdir('instruments/')
+        a=os.listdir('sounds/')
         max_num=0
         for i in a:
             try:
@@ -529,7 +529,7 @@ class FileChooserIns(Screen):
             elif  c<88:
                 self.ids.error_msg.text="Please select all notes(.wav)"
             else:
-                destination_directory="instruments/"+str(max_num+1)
+                destination_directory="sounds/"+str(max_num+1)
                 os.makedirs(destination_directory, exist_ok=True)
                 for i in self.file_list:
                     destination_file = os.path.join(destination_directory, os.path.basename(i))
@@ -598,32 +598,51 @@ class InstrumentPopup(Popup):
         list_ins={}
         self.ins_id=[]
         self.selected_ins={}
-        for f in os.listdir('instruments'):
+        for f in os.listdir('sounds'):
             try:
-                l = os.listdir('instruments/'+f)
+                l = os.listdir('sounds/'+f)
                 if len(l)>88:
                     list_ins[f]=l      
             except:
                 pass
         
         for i in list_ins.keys():
+            i_add=True
             for v in list_ins[i]:
                 if v.endswith(('.png', '.jpg')):
-                    name = v.split('.')
-                    
+                    name = i #v.split('.')
+                    self.image_name="sounds/"+i+"/"+v
                     back_cls = (40/255,40/255,40/255,1)
                     if self.app.selected_instrument==i:
                         back_cls = (150/255,150/255,150/255,1)
                         self.selected_ins={}
                         self.selected_ins[i]=v
                     ab = ColoredBoxLayout(orientation='vertical',size_hint= (None,None),width=200,height=300,background_color=back_cls,padding=10,on_press = lambda ins, vid=i,ns=v: self.change_ins(vid,ns))
-                    img = Image(source="instruments/"+i+"/"+v)
-                    lbl = Label(text=name[0],size_hint_y= None,height=30)
+                    img = Image(source="sounds/"+i+"/"+v)
+                    lbl = Label(text=name,size_hint_y= None,height=30)
                     ab.add_widget(img)
                     ab.add_widget(lbl)
                     self.ids.ins_container.ids[i]=ab
                     self.ids.ins_container.add_widget(ab)
                     self.ins_id.append(i)
+                    i_add=False
+            if i_add:
+                self.image_name="images/defaut.png"
+                back_cls = (40/255,40/255,40/255,1)
+                if self.app.selected_instrument==i:
+                    back_cls = (150/255,150/255,150/255,1)
+                    self.selected_ins={}
+                    self.selected_ins[i]=v
+                ab = ColoredBoxLayout(orientation='vertical',size_hint= (None,None),width=200,height=300,background_color=back_cls,padding=10,on_press = lambda ins, vid=i,ns=v: self.change_ins(vid,ns))
+                img = Image(source="images/defaut.png")
+                lbl = Label(text=i,size_hint_y= None,height=30)
+                ab.add_widget(img)
+                ab.add_widget(lbl)
+                self.ids.ins_container.ids[i]=ab
+                self.ids.ins_container.add_widget(ab)
+                self.ins_id.append(i)
+                
+
         ab = ColoredBoxLayout(orientation='vertical',size_hint= (None,None),width=200,height=300,background_color=(40/255,40/255,40/255,1),padding=10,on_release = lambda ins: self.add_custom())
         img = Label(text="+",bold=True,font_size=64)
         lbl = Label(text="Add Custom \nInstruments",font_size=22,size_hint_y= None,height=30)
@@ -632,8 +651,42 @@ class InstrumentPopup(Popup):
         self.ids.ins_container.add_widget(ab)
                     
     def add_custom(self):
-        self.dismiss()
-        self.app.screen_switch_chosefile()
+        #self.dismiss()
+        bx = BoxLayout(orientation='vertical',padding=20)
+        bx3 = BoxLayout(orientation= 'horizontal',size_hint_y= None,height=50)
+        btn2 = Button(size_hint= (None,None),text="OK",height=50,width=120)
+        btn2.bind(on_release= lambda instance: self.dismiss_instruction())
+        lbl = Label(size_hint_y=None,height=10)
+        llb=MDLabel(text="1. Create new folder inside App 'sounds' folder. Use the folder name as the instrument name.",theme_text_color="Custom",text_color=[1,1,1,1])
+        llb2=MDLabel(text="2. Copy and paste your custom sound in instrument folder you created.",theme_text_color="Custom",text_color=[1,1,1,1])
+        llb3=MDLabel(text="3. Make sure sound file in .wav or .mp3 formate. Also each note name should be as note like 0A.wav,0A#.wav,0B.wav... .",theme_text_color="Custom",text_color=[1,1,1,1])
+        llb4=MDLabel(text="4(Optional). Copy and paste Instrument Icon/Image along with note in same folder you created. Icon/Image formate should be icon.png or icon.jpg",theme_text_color="Custom",text_color=[1,1,1,1])
+        
+        lbl2= Label()
+        lbl3= Label()
+        lbl4 = Label(size_hint_y=None,height=20)
+        bx.add_widget(lbl4)
+
+        bx.add_widget(llb)
+        bx.add_widget(llb2)
+        bx.add_widget(llb3)
+        bx.add_widget(llb4)
+
+        bx.add_widget(lbl3)
+        
+        bx3.add_widget(lbl2)
+        bx3.add_widget(btn2)
+        bx.add_widget(lbl)
+        bx.add_widget(bx3)
+        
+        self.popup = Popup(title="Instructions:", content=bx, size_hint=(0.8, 0.8))
+
+        self.popup.open()
+
+        
+        #self.app.screen_switch_chosefile()
+    def dismiss_instruction(self):
+        self.popup.dismiss()
     def change_ins(self,vid,name):
         self.selected_ins={}
         self.selected_ins[vid]=name
@@ -648,9 +701,20 @@ class InstrumentPopup(Popup):
         ins_id = list(self.selected_ins.keys())[0]
         name = self.selected_ins[ins_id]
         self.app.selected_instrument=ins_id
-        self.app.instrument_img= "instruments/"+ins_id+"/"+name
+        print(self.image_name)
+        select_files = [f for f in os.listdir('sounds/'+self.app.selected_instrument) if f.endswith(('.png', '.jpg')) ]
+        if len(select_files)>0:
+
+            self.app.instrument_img = "sounds/"+self.app.selected_instrument+"/"+select_files[0]
+        else:
+            self.app.instrument_img = "images/defaut.png"
+        
+
+
+        #self.app.instrument_img= self.image_name
         self.app.instrument_icon()
         self.app.load_sample()
+        self.app.update_storage()
         self.dismiss()
         
     pass    
@@ -744,13 +808,20 @@ class PianoApp(MDApp):
         self.custom_color_active=self.retrieve_data("custom_color_active") if self.retrieve_data("custom_color_active") is not None else False
         self.color_pattern_active=self.retrieve_data("color_pattern_active") if self.retrieve_data("color_pattern_active") is not None else True
         self.sustain_tune = self.retrieve_data("sustain_tune") if self.retrieve_data("sustain_tune") is not None else False
-        self.selected_instrument=self.retrieve_data("selected_instrument") if self.retrieve_data("selected_instrument") is not None else "1"
+        sel_in = os.listdir('sounds')[0]
+        
+        self.selected_instrument=self.retrieve_data("selected_instrument") if self.retrieve_data("selected_instrument") is not None else sel_in
         self.equalizer = self.retrieve_data("equalizer") if self.retrieve_data("equalizer") is not None else False
         
         self.save_scroll= self.retrieve_data("save_scroll") if self.retrieve_data("save_scroll") is not None else  {"0":27/(88-int(self.visible_keys)),"1":27/(88-int(self.visible_keys))}
         self.main_gain = np.array(self.retrieve_data("main_gain")) if self.retrieve_data("main_gain") is not None else np.ones(10)
-        select_files = [f for f in os.listdir('instruments/1') if f.endswith(('.png', '.jpg')) ]
-        self.instrument_img = "instruments/1/"+select_files[0]
+        select_files = [f for f in os.listdir('sounds/'+self.selected_instrument) if f.endswith(('.png', '.jpg')) ]
+        if len(select_files)>0:
+
+            self.instrument_img = "sounds/"+self.selected_instrument+"/"+select_files[0]
+        else:
+            self.instrument_img = "images/defaut.png"
+        
         self.pre_music=0
         self.keys_label=self.retrieve_data("keys_label")
         
@@ -1028,7 +1099,7 @@ class PianoApp(MDApp):
         pygame.mixer.set_num_channels(1)
         
         for note in self.piano_notes:
-            filename = "instruments/"+self.selected_instrument+"/"+f"{note}.wav"
+            filename = "sounds/"+self.selected_instrument+"/"+f"{note}.wav"
             try:
                 wave_obj = pygame.mixer.Sound(filename)
                 audio_data = pygame.sndarray.array(wave_obj)
@@ -1175,11 +1246,11 @@ class PianoApp(MDApp):
     def play_sound(self,file_nm):
         # Get the list of all .wav and .mp3 files in the 'instrument' folder
         file_name = ""
-        if self.piano_notes[file_nm-1]+".wav" in os.listdir('instruments/'+self.selected_instrument):
+        if self.piano_notes[file_nm-1]+".wav" in os.listdir('sounds/'+self.selected_instrument):
             file_name=f"{self.piano_notes[file_nm-1]}.wav"
         else:
             file_name=f"{self.piano_notes[file_nm-1]}.mp3"
-        path = "instruments/"+self.selected_instrument+"/"+file_name
+        path = "sounds/"+self.selected_instrument+"/"+file_name
         
         file_path = f"{path}"
 
@@ -1888,7 +1959,7 @@ class PianoApp(MDApp):
             
                 else:
                     #white key
-                    print(note)
+                   # print(note)
                     w=self.wid
                     pading= w/2
                     if p==0:
