@@ -41,7 +41,15 @@ from kivy.clock import Clock
 
 from kivy.metrics import dp
 from kivy.uix.colorpicker import ColorPicker
+base_height = 600  # Set your base height (or width)
+        
+# Calculate the width using the golden ratio
+phi = 1.618
+base_width = int(base_height * phi)
+
 Config.set('graphics', 'fullscreen', '0')
+Config.set('graphics', 'width', str(base_width)) #set app width
+Config.set('graphics', 'height', str(base_height)) #set app height
 Config.write()
 from kivy.core.window import Window
 pera_keys=1
