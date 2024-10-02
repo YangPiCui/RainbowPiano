@@ -63,7 +63,8 @@ class BorderedBoxLayout(BoxLayout):
         super().__init__(**kwargs)
         self.border_color = border_color
         self.border_width = border_width
-        
+        self.radius=[0,0,16,16]
+            
         with self.canvas.after:  # Draw the border after other widgets are drawn
             Color(*self.border_color)
             self.border = Line(width=self.border_width)
@@ -1506,7 +1507,7 @@ class PianoApp(MDApp):
                     #key full
                     bx4 = ColoredBoxLayout(background_color=(0, 0, 0, 1),tone=note,layout=t)
                     bx3.ids[note]=bx4
-                    bx4_1 = BorderedBoxLayout(border_color=(0,0,0,1),border_width=1)
+                    bx4_1 = BorderedBoxLayout(border_color=(0,0,0,1),border_width=2)
                     bx4.add_widget(bx4_1)
                     #half key
                     bx5 = ColoredBoxLayout(orientation="horizontal",size_hint_y=0.382)
@@ -1671,7 +1672,7 @@ class PianoApp(MDApp):
                                                )
                         bx3.ids[note]=bx4
                     
-                        bx4_1 = BorderedBoxLayout(border_color=(0,0,0,1),border_width=1)
+                        bx4_1 = BorderedBoxLayout(border_color=(0,0,0,1),border_width=2)
                         bx4.add_widget(bx4_1)
                     
                         #half key
@@ -1846,6 +1847,7 @@ class PianoApp(MDApp):
                     else:
                         n_lbl=self.keys_label[exnel_label]
                     exnel_label+=1
+                    
                     if exnel_label==7:
                         exnel_label=0
                     nt2 = Label(text=n_lbl,size_hint_y=None,height=30,halign='center',valign="middle",color=(0,0,0,1))
@@ -1859,8 +1861,7 @@ class PianoApp(MDApp):
                     
                     with nt2.canvas.before:
                         Color(0, 1, 0, 1)  # green; colors range from 0-1 not 0-255
-                        self.rect = Rectangle(size=(self.wid-self.wid*1.5/5,self.wid-self.wid*1.5/5), pos=(self.wid*x_cont+x_cont*2+self.wid*1.5/10,self.wid*1.5/10+10))
-                    #     self.draw_text(ft_main, note+"X", (50,50), font_size=20)
+                        self.rect = Rectangle(size=(self.wid-self.wid*1.5/5,self.wid-self.wid*1.5/5), pos=(self.wid*x_cont+x_cont*2+self.wid*1.5/10,self.wid*1.5/10))
                     bx3.add_widget(nt2)
                 else:
                     nt2 = Label(text='',size_hint_y=None,height=20,color=(0,0,0,1),font_size=self.wid/3)
@@ -1929,7 +1930,7 @@ class PianoApp(MDApp):
                     #key full
                     bx4 = ColoredBoxLayout(background_color=(0, 0, 0, 1),bk='black')
                     bx3.ids[note]=bx4
-                    bx4_1 = BorderedBoxLayout(border_color=(0,0,0,1),border_width=1)
+                    bx4_1 = BorderedBoxLayout(border_color=(0,0,0,1),border_width=2)
                     bx4.add_widget(bx4_1)
                     
                     #half key
