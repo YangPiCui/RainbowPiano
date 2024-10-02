@@ -99,7 +99,7 @@ class ColoredBoxLayout(ButtonBehavior,MDBoxLayout):
             elif bk=="full":
                 self.radius==[0,0,0,0]
             elif bk=="black":
-                self.radius=[0,0,8,8]
+                self.radius=[0,0,16,16]
             elif bk=="h1":
                 self.radius=[0,0,8,0]
             elif bk=="h2":
@@ -135,7 +135,7 @@ class ColoredBoxLayout(ButtonBehavior,MDBoxLayout):
                     self.radius=[0,0,0,8]
                     pera_keys=1
             if self.tune and self.tune[-1]=='#':
-                self.radius=[0,0,8,8]
+                self.radius=[0,0,16,16]
             
             
 
@@ -601,8 +601,8 @@ class InstrumentPopup(Popup):
         for f in os.listdir('sounds'):
             try:
                 l = os.listdir('sounds/'+f)
-                if len(l)>88:
-                    list_ins[f]=l      
+                #if len(l)>88:
+                list_ins[f]=l      
             except:
                 pass
         
@@ -1396,7 +1396,51 @@ class PianoApp(MDApp):
             for _ in range(total_ele-num):
                 if self.a.ids.main_screen.ids.keys_container.children:
                     self.a.ids.main_screen.ids.keys_container.remove_widget(self.a.ids.main_screen.ids.keys_container.children[0])
-        
+        piano_notes =[]
+        for notes in self.piano_notes:
+            for key in os.listdir('sounds/'+self.selected_instrument):
+                a = key.split('.')[0]
+                if a == notes:
+                    piano_notes.append(a)
+            
+        first_note =[]
+        mid_note=[]
+        f_label=[]
+        m_label=[]
+        if '0A' in piano_notes and '0A#' in piano_notes and '0B' in piano_notes:
+            first_note=['x','y','x','s']
+            f_label=[0,1,1]
+        elif '0A' in piano_notes and '0A#' in piano_notes:
+            first_note=['x','y','s']
+            f_label=[0,1]
+        elif '0A' in piano_notes and '0B' in piano_notes:
+            first_note=['x','x','s']
+            f_label=[1,1]
+        elif '0B' in piano_notes and '0A#' in piano_notes:
+            first_note=['y','x','s']
+            f_label=[0,1]
+
+
+        note_counter=0
+        for ik in piano_notes:
+            if '0' in ik:
+                m_label.append(0)
+            elif '8' in ik:
+                continue
+            else:
+                pre_i = None
+                try:
+                    pre_i=piano_notes[note_counter-1]
+                except:
+                    pre_i=None
+                next_i=None
+                try:
+                    next_i=piano_notes[note_counter+1]
+                except:
+                    next_i=None
+                #if '#' in 
+
+        print(piano_notes)
         for t in range(total_ele,num):
             bx = BoxLayout(orientation='vertical')
             scr = 0.0
@@ -1408,12 +1452,14 @@ class PianoApp(MDApp):
             slider.bind(value=lambda instance, value, lbu=scroll_v: self.scroll_piano(instance,lbu, float(value)))
             bx2 = BoxLayout(orientation="horizontal",size_hint_x=None,width= self.wid*88.5) #88.5
             bx.ids['hori_con']=bx2
-            
+           
             an =0
             exnel_label=0
             for i in self.first_note:
                 note = self.piano_notes[an]
+                
                 if i=='x':
+                #if '#' not in note:
                     bx3 =ColoredBoxLayout(orientation="vertical",size_hint_x=None,always_release=True,width= self.wid,background_color=(1, 1, 1, 1),tone=note,layout=t,padding=[0,0,0,15]
                                           )
                     
@@ -1452,6 +1498,7 @@ class PianoApp(MDApp):
                     bx2.add_widget(bx3)
                     an+=1
                 elif i=='y':
+                #elif '#' in note:
                     #black key
                     bx3 =ColoredBoxLayout(orientation="vertical",size_hint_x=None,width= self.wid,background_color=(0, 0, 0, 1))
                     bx2.ids[note+"_half_container"]=bx3
@@ -1462,7 +1509,7 @@ class PianoApp(MDApp):
                     bx4_1 = BorderedBoxLayout(border_color=(0,0,0,1),border_width=1)
                     bx4.add_widget(bx4_1)
                     #half key
-                    bx5 = ColoredBoxLayout(orientation="horizontal",size_hint_y=0.4)
+                    bx5 = ColoredBoxLayout(orientation="horizontal",size_hint_y=0.382)
                     bx3.ids["double_container"]=bx5
                     bx6 = ColoredBoxLayout(background_color=(1, 1, 1, 1),tone=self.piano_notes[an-1]+'a',layout=t,
                                            )
@@ -1510,9 +1557,10 @@ class PianoApp(MDApp):
                     bx5.ids[self.piano_notes[an+1]+'a']=bx7
                     
                     bx3.add_widget(bx4)
-
+                    #if pre_key:
                     bx5.add_widget(bx6)
                     bx5.add_widget(plbl)
+                    #if next_key:
                     bx5.add_widget(bx7)
                     
                         
@@ -1627,7 +1675,7 @@ class PianoApp(MDApp):
                         bx4.add_widget(bx4_1)
                     
                         #half key
-                        bx5 = ColoredBoxLayout(orientation="horizontal",size_hint_y=0.4)
+                        bx5 = ColoredBoxLayout(orientation="horizontal",size_hint_y=0.382)
                         bx3.ids["double_container"]=bx5
                     
                         bx6 = ColoredBoxLayout(background_color=(1, 1, 1, 1),tone=self.piano_notes[an-1]+'a',layout=t,
@@ -1885,7 +1933,7 @@ class PianoApp(MDApp):
                     bx4.add_widget(bx4_1)
                     
                     #half key
-                    bx5 = ColoredBoxLayout(orientation="horizontal",size_hint_y=0.4)
+                    bx5 = ColoredBoxLayout(orientation="horizontal",size_hint_y=0.382)
                     bx3.ids["double_container"]=bx5
                     
                     bx6 = ColoredBoxLayout(background_color=(1, 1, 1, 1),bk='h1')
