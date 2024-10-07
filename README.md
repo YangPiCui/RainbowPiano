@@ -11,11 +11,12 @@ And, maybe we should also rainbow-color the music scores.
 ![](Rainbow6Notation_2.jpg)  
 
 ## External Links
-Reddit:  
+Project Reddit:  
 https://www.reddit.com/r/RainbowPiano/  
   
-Bharat's Github:  
+Bharat's Github and Upwork Profiles:  
 https://github.com/muchhar  
+https://upwork.com/freelancers/bharatm2  
   
 ## Donations (In Descending Preference)
 Karma:  
