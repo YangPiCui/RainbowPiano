@@ -26,4 +26,4 @@ The Only Real True Restored Bitcoin:
 Bitcoin Satoshi Vision (BSV) Address: 1QCedBfwVH12BTPrCqE8yB3mq3Jt55iJXH  
   
 Paypal (please note "RainbowPiano" in your donation):  
-https://paypal.me/PrivateCommisioner?country.x=US&locale.x=en_US  
+https://paypal.me/PrivateCommisioner
