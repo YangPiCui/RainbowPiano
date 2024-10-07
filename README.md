@@ -9,8 +9,9 @@ And we can now afford to rainbow-color the keys!
 ## Instruction
 
 ## Further Work
-It would be nice if someone could turn this into a digital piano, such as the Yamaha Reface CP, with fully weighted keys. Or even a physical piano.  
-And, maybe we should also rainbow-color the music scores.  
+I'd like a physical RainbowPiano such as a Steinway or the Yamaha Reface CP with fully weighted keys.  
+Contact me on Reddit if you know someone who can make it.  
+And, maybe we should also rainbow-color the music scores for clarity!  
 ![](Rainbow6Notation_2.jpg)  
 
 ## External Links
@@ -24,7 +25,8 @@ https://upwork.com/freelancers/bharatm2
 ## Donations (In Descending Preference)
 Karma:  
 Repent​, be baptize​d in Jesus Christ's name, and become as a little child. [3 Nephi 11:38 | Mosiah 3:19]  
-  
+Donate to a Charity  
+
 The Only Real True Restored Bitcoin:  
 Bitcoin Satoshi Vision (BSV) Address: 1QCedBfwVH12BTPrCqE8yB3mq3Jt55iJXH  
   
