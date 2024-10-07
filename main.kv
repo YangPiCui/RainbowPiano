@@ -6,7 +6,7 @@
 ScreenManager:
     MainScreen:
         id: main_screen
-    FileChooserIns:
+    
 <Check@MDCheckbox>:
     group: 'group'
     size_hint: None, None
@@ -737,10 +737,6 @@ ScreenManager:
                             width:200
                             bold:True
                         Label:
-                        # BImage:
-                        #     source: "images/color.png"
-                        #     size_hint: None, None
-                        #     size:52,52
                         BImage:
                             id: sustain_img
                             source: "images/sustainoff.png"
@@ -916,21 +912,7 @@ ScreenManager:
                             text_color: "white"
                             on_release: app.open_link("https://github.com/YangPiCui/")
                         Label:
-                    # BoxLayout:
-                    #     orientation:"horizontal"
-                    #     size_hint_y:None
-                    #     height:40
-                    #     Label:
-                    #     MDRectangleFlatIconButton:
-                    #         icon: "coffee"
-                    #         text: "Buy Me a Coffee"
-                    #         theme_text_color: "Custom"
-                    #         text_color: "white"
-                    #         line_color: "red"
-                    #         theme_icon_color: "Custom"
-                    #         icon_color: "orange"
-                    #         on_release: app.open_link("https://www.google.com/") # Replace your donation payment link 
-                    #     Label:
+                    
                             
                     Label:
 
@@ -938,80 +920,6 @@ ScreenManager:
 
             
       
-<FileChooserIns>:
-    name: "FileChooserIns"
-    BoxLayout:
-        orientation: 'vertical'
-        spacing: 10
-        padding: 10
-        canvas.before:
-            Color:
-                rgb: 0, 0, 0
-            Rectangle:
-                pos: self.pos
-                size: self.size
-        FileChooserListView:
-            id: filechooser
-            multiselect: True
-            on_selection: root.select_files(*args)
-            
-        ScrollView:
-            id: scroll_view
-            size_hint_y:None
-            height:0
-            do_scroll_y:True
-            BoxLayout:
-                orientation:"vertical"
-                size_hint_y:None
-                height: self.minimum_height  # Adjust height dynamically based on children
-                id: main_box
-                spacing:10
-            
-        Label:
-            id: ins_data
-            text: root.selected_files
-            size_hint_y: None
-            height: 60
-            multiline:True
-            font_size:18
-        BoxLayout:
-            size_hint_y:None
-            height:50
-            orientation:"horizontal"
-            Label:
-                id: error_msg
-                size_hint_y: None
-                font_size:18
-            
-                height: 50
-                halign: 'left'  # Align text to the left
-                valign: 'middle'  # Center text vertically
-                text_size: self.size  # Set the text area to match the label's size
-                color:1,0,0,1
-                
-            # Label:
-            Button:
-                text: "Cancel"
-                
-                size_hint_x:None
-                width:120
-                on_release:root.back_to_main()
-            Label:
-                size_hint_x:None
-                width:10
-        
-            Button:
-                text: "Add"
-                
-                size_hint_x:None
-                width:100
-                on_release:root.add_ins()
-            Label:
-                size_hint_x:None
-                width:10
-        
-        
-
       
 
 

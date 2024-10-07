@@ -1,5 +1,4 @@
 from kivymd.app import MDApp
-from kivy.uix.gridlayout import GridLayout
 from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.uix.image import Image
@@ -7,50 +6,36 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
 from kivy.lang import Builder
 from kivy.uix.screenmanager import Screen,SwapTransition,ScreenManager
-from kivy.config import Config
 from kivy.uix.popup import Popup
 from kivy.uix.slider import Slider
 from kivy.uix.scrollview import ScrollView
-from kivy.uix.widget import Widget
 from kivy.graphics import Color, Rectangle, Line
 from kivy.uix.behaviors import ButtonBehavior
 from kivy.properties import StringProperty
 from kivy.uix.screenmanager import SwapTransition
 import shutil
 from kivy.storage.jsonstore import JsonStore
-from kivy.core.text import Label as CoreLabel
 import os
-import math
 from kivy.utils import platform
 from kivymd.uix.snackbar import Snackbar
 from kivy.uix.filechooser import FileChooserListView
 import json
-
 import webbrowser 
-from kivy.graphics import PushMatrix, PopMatrix, Translate
-
-from kivymd.uix.filemanager import MDFileManager
 from kivymd.uix.label import MDLabel
-from kivymd.uix.button import MDFlatButton
-from kivymd.uix.card import MDCard
 from kivymd.uix.boxlayout import MDBoxLayout
 from functools import partial
 import numpy as np
 import pygame   #for play sound only 
 from kivy.clock import Clock
-
 from kivy.metrics import dp
 from kivy.uix.colorpicker import ColorPicker
-base_height = 500  # Set your base height (or width)
+
+base_height = 500  # Set your base height
         
 # Calculate the width using the golden ratio
 phi = 1.618
 base_width = int(base_height * phi)
 
-# Config.set('graphics', 'fullscreen', '0')
-# Config.set('graphics', 'width', str(base_width)) #set app width
-# Config.set('graphics', 'height', str(base_height)) #set app height
-#Config.write()
 from kivy.core.window import Window
 Window.size = (base_width, base_height)
 
@@ -75,14 +60,13 @@ class BorderedBoxLayout(BoxLayout):
         self.border_width = border_width
         self.radius=[0,0,16,16]
             
-        with self.canvas.after:  # Draw the border after other widgets are drawn
+        with self.canvas.after:  
             Color(*self.border_color)
             self.border = Line(width=self.border_width)
         
         self.bind(pos=self._update_border, size=self._update_border)
 
     def _update_border(self, *args):
-        # Update the border's position and size
         self.border.rectangle = (*self.pos, *self.size)
 
 class ColoredBoxLayout(ButtonBehavior,MDBoxLayout):
@@ -95,7 +79,6 @@ class ColoredBoxLayout(ButtonBehavior,MDBoxLayout):
         self.elevation= 10
         self.layout=layout
         self.md_bg_color= self._background_color
-       # print(self.tune)
         global pera_keys
         self.app=MDApp.get_running_app()
         if self.app.white_key:
@@ -151,21 +134,16 @@ class ColoredBoxLayout(ButtonBehavior,MDBoxLayout):
             
 
 
-        # with self.canvas.before:
-        #     self.color = Color(*self._background_color)
-        #     self.rect = Rectangle(size=self.size, pos=self.pos)
-        # self.bind(size=self._update_rect, pos=self._update_rect)
        
     def _update_rect(self, *args):
         self.rect.size = self.size
         self.rect.pos = self.pos
 
     def set_background_color(self, color):
-        # Update the color in the canvas
         self._background_color = color
         self.md_bg_color= self._background_color
         
-        #self.color.rgba = color
+        
 class MainScreen(Screen):
     def sustain_sound(self):
         app=MDApp.get_running_app()
@@ -272,7 +250,6 @@ class EqualizerSlider(BoxLayout):
         freq = self.low_freq * (self.high_freq / self.low_freq) ** (value / 2)
         self.label.text = f'{self.format_freq(freq)}'
 class LabelPopup(Popup):
-    #keys_label
     def write_custom(self):
 
         self.app=MDApp.get_running_app()
@@ -293,7 +270,7 @@ class LabelPopup(Popup):
 
             if self.app.keys_label=="Notes":
                 self.ids.f_4.active=True
-            elif isinstance( self.app.keys_label,dict): #==self.app.custom_label:
+            elif isinstance( self.app.keys_label,dict): 
                 self.ids.f_6.active=True
             elif self.app.keys_label[0]=="1":
                 self.ids.f_1.active=True
@@ -331,9 +308,6 @@ class LabelPopup(Popup):
             self.dismiss()
             
         elif self.ids.f_6.active:
-            # if len(self.ids.lbl_1.text)>3 or len(self.ids.lbl_2.text)>3 or len(self.ids.lbl_3.text)>3 or len(self.ids.lbl_4.text)>3 or len(self.ids.lbl_5.text)>3 or len(self.ids.lbl_6.text)>3 or len(self.ids.lbl_7.text)>3:
-            #     self.ids.error_msg.text="In custom label you can add 3 latter maximum."
-            #else:
             self.app.custom_label={
                 "C":self.ids.lbl_1.text,
                 "C#":self.ids.lbl_2.text,
@@ -418,9 +392,7 @@ class ColorPopup(Popup):
             v+=1
         self.ids.custom_cls.add_widget(self.custom_bx)
     def open_color_picker(self, instance, btn,frm):
-        # Create a ColorPicker widget
         color_picker = ColorPicker()
-        #color_picker.bind(color=self.on_color)
         if frm:
             color_picker.color = list(self.app.notes_color[btn])
         else:
@@ -437,16 +409,11 @@ class ColorPopup(Popup):
         bx3.add_widget(btn2)
         bx.add_widget(lbl)
         bx.add_widget(bx3)
-        # Create a Popup to hold the ColorPicker
         self.popup = Popup(title="Pick a Color", content=bx, size_hint=(0.8, 0.8))
 
-        # Bind the color picker to update the label text with the selected color
-        
-        # Open the Popup
         self.popup.open()
 
     def on_color(self, instance, value,dic_id,frm):
-        # Update the label text with the selected color (value is a list of RGBA)
         if(frm):
             self.app.notes_color[dic_id]=value
         else:
@@ -494,112 +461,6 @@ class ColorPopup(Popup):
             self.app.notes_color= self.app.defualt_pat
         self.app.update_color()    
         self.create_popup(True)
-           
-class ButtonImg(ButtonBehavior,Image):
-    pass
-class FileChooserIns(Screen):
-    selected_files = StringProperty("Add 88 Notes with note name like 0A.wav add icon image(instrument_name.png or instrument_name.jpg)")
-    file_list=[]
-    def back_to_main(self):
-        self.app=MDApp.get_running_app()
-        self.app.screen_switch_mainscreen()
-    def add_ins(self):
-        a=os.listdir('sounds/')
-        max_num=0
-        for i in a:
-            try:
-                b=int(i)
-                if b>max_num:
-                    max_num=b
-            except ValueError:
-                pass
-        
-        self.app=MDApp.get_running_app()
-        
-        icon_added=False
-        note_leave=""
-        c=0
-        if len(self.file_list)>88:
-            for i in self.file_list:
-                if ".png" in i or ".jpg" in i:
-                    icon_added=True
-                if ".wav" in i:
-                    c+=1
-                
-                    note_find=False
-                        
-                    for j in self.app.piano_notes:
-                        if j in i:
-                            note_find=True
-                    if note_find==False:
-                        note_leave="miss"
-            if icon_added==False:
-                self.ids.error_msg.text="Please add icon file with instrument name(name.png or name.jpg)"
-            elif note_leave!="":
-                self.ids.error_msg.text="you "+note_leave+ " notes. please add like name A0.wav"
-            elif  c<88:
-                self.ids.error_msg.text="Please select all notes(.wav)"
-            else:
-                destination_directory="sounds/"+str(max_num+1)
-                os.makedirs(destination_directory, exist_ok=True)
-                for i in self.file_list:
-                    destination_file = os.path.join(destination_directory, os.path.basename(i))
-                    try:
-                        shutil.copy(i, destination_file)
-                        Snackbar(
-                            text=f"Instrument added successfully",
-                            snackbar_x="10dp",
-                            snackbar_y="10dp",
-                            size_hint_x=(
-                                Window.width - (dp(10) * 2)
-                            ) / Window.width
-                        ).open()
-                    except FileNotFoundError:
-                        pass
-                    except PermissionError:
-                        pass
-                    except Exception as e:
-                        Snackbar(
-                            text=f"An error occurred: {e}",
-                            snackbar_x="10dp",
-                            snackbar_y="10dp",
-                            size_hint_x=(
-                                Window.width - (dp(10) * 2)
-                            ) / Window.width
-                        ).open()
-                self.app.screen_switch_mainscreen()
-
-
-                pass
-
-            
-        
-
-        else:
-            self.ids.error_msg.text="Please select all notes with icon"
-    def select_files(self, *args):
-        selected = args[1]  # The second argument of on_selection contains the list of selected files
-        if selected:
-            self.file_list=list(selected)
-            if len(list(selected))!=0:
-                self.ids.ins_data.height=0
-                self.ids.ins_data.text=''
-                self.ids.scroll_view.height=60
-                self.ids.main_box.clear_widgets()
-                for i in list(selected):
-                    self.ids.main_box.add_widget(Label(text="  "+str(selected.index(i)+1)+".    "+str(i),size_hint_y=None,height=24,text_size= (self.width, None),halign= 'left'))
-            else:
-                self.ids.ins_data.height=60
-                self.ids.ins_data.text=self.selected_files
-                self.ids.scroll_view.height=0
-                self.file_list=[]
-                
-        else:
-            self.selected_files = "Add 88 Notes with note name like 0A.wav add icon image(instrument_name.png or instrument_name.jpg)"
-            self.file_list=[]
-            self.ids.ins_data.height=0
-            self.ids.ins_data.text=self.selected_files
-            self.ids.scroll_view.height=60
             
             
 class InstrumentPopup(Popup):
@@ -612,7 +473,6 @@ class InstrumentPopup(Popup):
         for f in os.listdir('sounds'):
             try:
                 l = os.listdir('sounds/'+f)
-                #if len(l)>88:
                 list_ins[f]=l      
             except:
                 pass
@@ -621,7 +481,7 @@ class InstrumentPopup(Popup):
             i_add=True
             for v in list_ins[i]:
                 if v.endswith(('.png', '.jpg')):
-                    name = i #v.split('.')
+                    name = i 
                     self.image_name="sounds/"+i+"/"+v
                     back_cls = (40/255,40/255,40/255,1)
                     if self.app.selected_instrument==i:
@@ -662,7 +522,7 @@ class InstrumentPopup(Popup):
         self.ids.ins_container.add_widget(ab)
                     
     def add_custom(self):
-        #self.dismiss()
+        
         bx = BoxLayout(orientation='vertical',padding=20)
         bx3 = BoxLayout(orientation= 'horizontal',size_hint_y= None,height=50)
         btn2 = Button(size_hint= (None,None),text="OK",height=50,width=120)
@@ -672,6 +532,7 @@ class InstrumentPopup(Popup):
         llb2=MDLabel(text="2. Copy and paste your custom sound in instrument folder you created.",theme_text_color="Custom",text_color=[1,1,1,1])
         llb3=MDLabel(text="3. Make sure sound file in .wav or .mp3 formate. Also each note name should be as note like 0A.wav,0A#.wav,0B.wav... .",theme_text_color="Custom",text_color=[1,1,1,1])
         llb4=MDLabel(text="4(Optional). Copy and paste Instrument Icon/Image along with note in same folder you created. Icon/Image formate should be icon.png or icon.jpg",theme_text_color="Custom",text_color=[1,1,1,1])
+        llb5=MDLabel(text="5. Don't miss any key in pair of 12 notes(1C,1C# ... 1B)",theme_text_color="Error",)
         
         lbl2= Label()
         lbl3= Label()
@@ -682,6 +543,7 @@ class InstrumentPopup(Popup):
         bx.add_widget(llb2)
         bx.add_widget(llb3)
         bx.add_widget(llb4)
+        bx.add_widget(llb5)
 
         bx.add_widget(lbl3)
         
@@ -695,7 +557,7 @@ class InstrumentPopup(Popup):
         self.popup.open()
 
         
-        #self.app.screen_switch_chosefile()
+        
     def dismiss_instruction(self):
         self.popup.dismiss()
     def change_ins(self,vid,name):
@@ -722,10 +584,11 @@ class InstrumentPopup(Popup):
         
 
 
-        #self.app.instrument_img= self.image_name
+        
         self.app.instrument_icon()
         self.app.load_sample()
         self.app.update_storage()
+        self.app.update_piano(int(self.app.numberof_row),'w')
         self.dismiss()
         
     pass    
@@ -789,7 +652,6 @@ class MyPopup(Popup):
         app.wid = app.window_width/keys -0.05
         self.ids.visible_key.text=str(keys)
         app.update_visiblekeys()
-       # app.update_piano(int(self.ids.number_row.text),'k')
         
         pass
     def keyboard_lock(self):
@@ -797,7 +659,6 @@ class MyPopup(Popup):
         app=MDApp.get_running_app()
         app.keyboard_lock= lock
         app.lock_mode()
-        #app.update_piano(int(self.ids.number_row.text))
         
     pass
 class PaddingLabel(Label):
@@ -1121,12 +982,8 @@ class PianoApp(MDApp):
     def open_link(self,link):
         webbrowser.open(link) 
  
-    def screen_switch_chosefile(self):
-        self.a.transition=SwapTransition()
-        self.a.current = 'FileChooserIns'
-    def screen_switch_mainscreen(self):
-        self.a.transition=SwapTransition()
-        self.a.current = 'MainScreen'
+    
+    
     def on_window_resize(self, window, width, height):
         try:
             self.window_width=width
@@ -1251,7 +1108,6 @@ class PianoApp(MDApp):
                     self.intervals[num].cancel()
                     self.intervals[num]=None
                 
-                #self.release_event = None
                 
                 
     def play_sound(self,file_nm):
@@ -1264,7 +1120,6 @@ class PianoApp(MDApp):
         path = "sounds/"+self.selected_instrument+"/"+file_name
         
         file_path = f"{path}"
-
         channel = pygame.mixer.Channel(file_nm)  
         if channel:
             if self.equalizer:
@@ -1289,9 +1144,6 @@ class PianoApp(MDApp):
         
 
 
-    def link_layouts(self,layout1, layout2):
-        layout1.partner = layout2
-        layout2.partner = layout1
     def touch_down(self,touch,action):
         for i in self.a.ids.main_screen.ids.keys_container.children:
             # Checking which key's row is clicked
@@ -1389,6 +1241,36 @@ class PianoApp(MDApp):
         else:
             pass
         pass
+    def warning_popup(self,keys_pair):
+        bx = BoxLayout(orientation='vertical',padding=20)
+        bx3 = BoxLayout(orientation= 'horizontal',size_hint_y= None,height=50)
+        btn2 = Button(size_hint= (None,None),text="OK",height=50,width=120)
+        btn2.bind(on_release= lambda instance: self.dismiss_instruction())
+        lbl = Label(size_hint_y=None,height=10)
+        llb=MDLabel(text="You missed keys in pair of "+keys_pair+"A "+keys_pair+"A# "+keys_pair+"B "+keys_pair+"C "+keys_pair+"C# "+keys_pair+"D "+keys_pair+"D# "+keys_pair+"E "+keys_pair+"F "+keys_pair+"F# "+keys_pair+"G "+keys_pair+"G#.\nFix it to use your custom instrument.",theme_text_color="Custom",text_color=[1,1,1,1])
+        
+        lbl2= Label()
+        lbl3= Label()
+        lbl4 = Label(size_hint_y=None,height=20)
+        bx.add_widget(lbl4)
+
+        bx.add_widget(llb)
+        
+        bx.add_widget(lbl3)
+        
+        bx3.add_widget(lbl2)
+        bx3.add_widget(btn2)
+        bx.add_widget(lbl)
+        bx.add_widget(bx3)
+        
+        self.popup_war = Popup(title="Error:",title_color=[1,0,0,1],title_size='32', content=bx, size_hint=(0.6, 0.6))
+
+        self.popup_war.open()
+
+        pass
+    def dismiss_instruction(self):
+        self.popup_war.dismiss()
+    
     def update_piano(self,num,outcome):
         if outcome=='w' or outcome=='b':
             self.a.ids.main_screen.ids.keys_container.clear_widgets()
@@ -1401,7 +1283,6 @@ class PianoApp(MDApp):
             return
         
         
-        #self.a.ids.main_screen.ids.keys_container.clear_widgets()
         total_ele =len(self.a.ids.main_screen.ids.keys_container.children)
         if total_ele>num:
             for _ in range(total_ele-num):
@@ -1413,45 +1294,44 @@ class PianoApp(MDApp):
                 a = key.split('.')[0]
                 if a == notes:
                     piano_notes.append(a)
-            
-        first_note =[]
-        mid_note=[]
-        f_label=[]
-        m_label=[]
+        add_first_layer=False    
         if '0A' in piano_notes and '0A#' in piano_notes and '0B' in piano_notes:
-            first_note=['x','y','x','s']
-            f_label=[0,1,1]
-        elif '0A' in piano_notes and '0A#' in piano_notes:
-            first_note=['x','y','s']
-            f_label=[0,1]
-        elif '0A' in piano_notes and '0B' in piano_notes:
-            first_note=['x','x','s']
-            f_label=[1,1]
-        elif '0B' in piano_notes and '0A#' in piano_notes:
-            first_note=['y','x','s']
-            f_label=[0,1]
+            add_first_layer=True
+        
 
+        is_valid_ins=True
+        miss_keys=""
+        list_pair=[]
+        all_keys=[]
 
-        note_counter=0
-        for ik in piano_notes:
-            if '0' in ik:
-                m_label.append(0)
-            elif '8' in ik:
-                continue
-            else:
-                pre_i = None
-                try:
-                    pre_i=piano_notes[note_counter-1]
-                except:
-                    pre_i=None
-                next_i=None
-                try:
-                    next_i=piano_notes[note_counter+1]
-                except:
-                    next_i=None
-                #if '#' in 
-
-        print(piano_notes)
+        main_key=[]
+        last_key=False
+        if '8C' in piano_notes:
+            last_key=True
+        for i in range(1,8):
+            cnt=0
+            hold_list=[]
+            for veg in piano_notes:
+                if str(i) in veg:
+                    cnt+=1
+                    all_keys.append(veg)
+                    hold_list.append(veg)
+            if len(hold_list)!=0:
+                main_key.append(hold_list)
+            print(i,cnt)
+            if cnt!=0 and cnt!=12:
+                is_valid_ins=False
+                miss_keys=str(i)
+            elif cnt==12:
+                list_pair.append(i)
+        minus_wid = 7 - len(list_pair)
+        
+        print("Validation = ",minus_wid)
+        if is_valid_ins==False:
+            self.warning_popup(miss_keys)
+            return
+        
+        print(list_pair)
         for t in range(total_ele,num):
             bx = BoxLayout(orientation='vertical')
             scr = 0.0
@@ -1461,16 +1341,28 @@ class PianoApp(MDApp):
             self.a.ids.main_screen.ids.keys_container.ids["peta_container_"+str(t)]=bx
             scroll_v = ScrollView(do_scroll_x=False,do_scroll_y=False,scroll_x=scr)
             slider.bind(value=lambda instance, value, lbu=scroll_v: self.scroll_piano(instance,lbu, float(value)))
-            bx2 = BoxLayout(orientation="horizontal",size_hint_x=None,width= self.wid*88.5) #88.5
+            layout_wid = self.wid*(88.2-12*minus_wid)
+            if last_key:
+                pass
+            else:
+                layout_wid-=self.wid
+            if add_first_layer:
+                pass
+            else:
+                layout_wid-=self.wid*3
+            bx2 = BoxLayout(orientation="horizontal",size_hint_x=None,width= layout_wid) #88.5
             bx.ids['hori_con']=bx2
-           
+            minus_an=0
+            if add_first_layer:
+                minus_an=0
+            else:
+                minus_an=3
             an =0
             exnel_label=0
             for i in self.first_note:
                 note = self.piano_notes[an]
                 
                 if i=='x':
-                #if '#' not in note:
                     bx3 =ColoredBoxLayout(orientation="vertical",size_hint_x=None,always_release=True,width= self.wid,background_color=(1, 1, 1, 1),tone=note,layout=t,padding=[0,0,0,15]
                                           )
                     
@@ -1479,11 +1371,8 @@ class PianoApp(MDApp):
                             ft_main = FloatLayout(size_hint= (None, None),size=(self.wid, self.wid),pos= (self.wid*(an)-(self.wid*1.5/6),self.wid*1.5/6))
                             
                             with ft_main.canvas:
-                                Color(0, 1, 0, 1)  # green; colors range from 0-1 not 0-255
+                                Color(0, 1, 0, 1)  
                                 self.rect = Rectangle(size=ft_main.size, pos=ft_main.pos)
-                            #     self.draw_text(ft_main, note+"X", (50,50), font_size=20)
-
-                            #ft_main.bind(size=self.update_rect, pos=self.update_rect)
                             n_lbl=''
                             if self.keys_label=="Notes":
                                 n_lbl=note
@@ -1497,19 +1386,20 @@ class PianoApp(MDApp):
 
                             ft = Label(text=n_lbl,pos=ft_main.pos,halign='center',color=[0,0,0,1])
                             ft.text_size = (ft.width, None)
-                            ft.font_size = ft.height / (len(n_lbl)+2) # Start with an arbitrary value
+                            ft.font_size = ft.height / (len(n_lbl)+2) 
                             while ft.texture_size[1] > ft.height or ft.texture_size[0] > ft.width:
                                 ft.font_size -= 1
                             
                             ft_main.add_widget(ft)
                             
-                            #ft_main.add_widget(ft)
+                            
                             bx3.add_widget(ft_main)
+                    if  add_first_layer==False:
+                        bx3.width=0
                     bx2.ids[note]=bx3
                     bx2.add_widget(bx3)
                     an+=1
                 elif i=='y':
-                #elif '#' in note:
                     #black key
                     bx3 =ColoredBoxLayout(orientation="vertical",size_hint_x=None,width= self.wid,background_color=(0, 0, 0, 1))
                     bx2.ids[note+"_half_container"]=bx3
@@ -1529,11 +1419,8 @@ class PianoApp(MDApp):
                             ft_main = FloatLayout(size_hint= (None, None),size=(self.wid, self.wid),pos= (self.wid*(an)-(self.wid*1.5/2),self.wid*1.5/6))
                             
                             with ft_main.canvas:
-                                Color(0, 1, 0, 1)  # green; colors range from 0-1 not 0-255
+                                Color(0, 1, 0, 1)  
                                 self.rect = Rectangle(size=ft_main.size, pos=ft_main.pos)
-                            #     self.draw_text(ft_main, note+"X", (50,50), font_size=20)
-
-                          #  ft_main.bind(size=self.update_rect, pos=self.update_rect)
                             n_lbl=''
                             if self.keys_label=="Notes":
                                 n_lbl=self.piano_notes[an-1]
@@ -1553,7 +1440,6 @@ class PianoApp(MDApp):
                             
                             ft_main.add_widget(ft)
                             
-                            #ft_main.add_widget(ft)
                             bx6.add_widget(ft_main)
                     
                     bx5.ids[self.piano_notes[an-1]+'a']=bx6
@@ -1568,51 +1454,54 @@ class PianoApp(MDApp):
                     bx5.ids[self.piano_notes[an+1]+'a']=bx7
                     
                     bx3.add_widget(bx4)
-                    #if pre_key:
+                    
                     bx5.add_widget(bx6)
                     bx5.add_widget(plbl)
-                    #if next_key:
+                    
                     bx5.add_widget(bx7)
                     
                         
 
                     bx3.add_widget(bx5)
                     
-
+                    if  add_first_layer==False:
+                        bx3.width=0
+                    
 
                     bx2.add_widget(bx3)
                     an+=1
                 else:
                     p_lb =ColoredLabel(size_hint_x= None,width=2,background_color=(0,0,0,1))
 
+                    if  add_first_layer==False:
+                        p_lb.width=0
+                    
+                    
                     bx2.add_widget(p_lb)
-                        
+                    
                     pass
                 
-            #an=3
+            
             for j in range(0,7):
                 asd_space =1+j*2
                 sec_space = 1+j*2
                 sec_add=True
+                
                 for i in self.mid_note:
                     note = self.piano_notes[an]
-                
                     if i=='x':
                         bx3 =ColoredBoxLayout(orientation="vertical",size_hint_x=None,width= self.wid,background_color=(1, 1, 1, 1),tone=note,layout=t
                                           
                                               )
                         if self.keys_label!=None:
                             if self.m_label[an]==1:
-                                ft_main = FloatLayout(size_hint= (None, None),size=(self.wid, self.wid),pos= (self.wid*(an)-(self.wid*1.5/6)+sec_space*2,self.wid*1.5/6))
+                                ft_main = FloatLayout(size_hint= (None, None),size=(self.wid, self.wid),pos= (self.wid*(an-minus_an)-(self.wid*1.5/6)+sec_space*2,self.wid*1.5/6))
                                 if sec_add:
                                     sec_space+=1
                                     sec_add=False
                                 with ft_main.canvas:
-                                    Color(0, 1, 0, 1)  # green; colors range from 0-1 not 0-255
+                                    Color(0, 1, 0, 1) 
                                     self.rect = Rectangle(size=ft_main.size, pos=ft_main.pos)
-                                #     self.draw_text(ft_main, note+"X", (50,50), font_size=20)
-
-                                #ft_main.bind(size=self.update_rect, pos=self.update_rect)
                                 n_lbl=''
                                 if self.keys_label=="Notes":
                                     n_lbl=note
@@ -1627,23 +1516,25 @@ class PianoApp(MDApp):
 
                                 ft = Label(text=n_lbl,pos=ft_main.pos,halign='center',color=[0,0,0,1])
                                 ft.text_size = (ft.width, None)
-                                ft.font_size = ft.height / (len(n_lbl)+2) # Start with an arbitrary value
+                                ft.font_size = ft.height / (len(n_lbl)+2) 
                                 while ft.texture_size[1] > ft.height or ft.texture_size[0] > ft.width:
                                     ft.font_size -= 1
                                 
                                 ft_main.add_widget(ft)
                                 
-                                #ft_main.add_widget(ft)
+                                if int(note[0]) not in list_pair:
+                                    ft_main.opacity= 0
+                                    ft_main.width=0
+                                
                                 bx3.add_widget(ft_main)
                             if self.m_label[an]==2:
-                                ft_main = FloatLayout(size_hint= (None, None),size=(self.wid, self.wid),pos= (self.wid*(an)+sec_space*2,self.wid*1.5/6))
+                                ft_main = FloatLayout(size_hint= (None, None),size=(self.wid, self.wid),pos= (self.wid*(an-minus_an)+sec_space*2,self.wid*1.5/6))
                                 if sec_add:
                                     sec_space+=1
                                     sec_add=False
                                 with ft_main.canvas:
-                                    Color(0, 1, 0, 1)  # green; colors range from 0-1 not 0-255
+                                    Color(0, 1, 0, 1) 
                                     self.rect = Rectangle(size=ft_main.size, pos=ft_main.pos)
-                                #     self.draw_text(ft_main, note+"X", (50,50), font_size=20)
                                 n_lbl=''
                                 if self.keys_label=="Notes":
                                     n_lbl=note
@@ -1656,19 +1547,25 @@ class PianoApp(MDApp):
                                 if exnel_label==7:
                                     exnel_label=0
 
-                                #ft_main.bind(size=self.update_rect, pos=self.update_rect)
                                 ft = Label(text=n_lbl,pos=ft_main.pos,halign='center',color=[0,0,0,1])
                                 ft.text_size = (ft.width, None)
-                                ft.font_size = ft.height / (len(n_lbl)+2) # Start with an arbitrary value
+                                ft.font_size = ft.height / (len(n_lbl)+2) 
                                 while ft.texture_size[1] > ft.height or ft.texture_size[0] > ft.width:
                                     ft.font_size -= 1
                             
                                 ft_main.add_widget(ft)
-                                
-                                #ft_main.add_widget(ft)
+                                if int(note[0]) not in list_pair:
+                                    ft_main.opacity= 0
+                                    ft_main.width=0
+                                    
                                 bx3.add_widget(ft_main)
                         bx2.ids[note]=bx3
-                    
+                        if int(note[0]) not in list_pair:
+                            bx3.opacity= 0
+                            bx3.width=0
+                            minus_an+=1
+                                
+                        
                         bx2.add_widget(bx3)
                         an+=1
                     elif i=='y':
@@ -1694,14 +1591,11 @@ class PianoApp(MDApp):
                         
                         if self.keys_label!=None:
                             if self.m_label[an]==1:
-                                ft_main = FloatLayout(size_hint= (None, None),size=(self.wid, self.wid),pos= (self.wid*(an)-(self.wid*1.5/2)+asd_space*2,self.wid*1.5/6))
+                                ft_main = FloatLayout(size_hint= (None, None),size=(self.wid, self.wid),pos= (self.wid*(an-minus_an)-(self.wid*1.5/2)+asd_space*2,self.wid*1.5/6))
                                 asd_space+=1
                                 with ft_main.canvas:
-                                    Color(0, 1, 0, 1)  # green; colors range from 0-1 not 0-255
+                                    Color(0, 1, 0, 1)  
                                     self.rect = Rectangle(size=ft_main.size, pos=ft_main.pos)
-                                #     self.draw_text(ft_main, note+"X", (50,50), font_size=20)
-
-                                #ft_main.bind(size=self.update_rect, pos=self.update_rect)
                                 n_lbl=''
                                 if self.keys_label=="Notes":
                                     n_lbl=self.piano_notes[an-1]
@@ -1716,13 +1610,15 @@ class PianoApp(MDApp):
 
                                 ft = Label(text=n_lbl,pos=ft_main.pos,halign='center',color=[0,0,0,1])
                                 ft.text_size = (ft.width, None)
-                                ft.font_size = ft.height / (len(n_lbl)+2) # Start with an arbitrary value
+                                ft.font_size = ft.height / (len(n_lbl)+2) 
                                 while ft.texture_size[1] > ft.height or ft.texture_size[0] > ft.width:
                                     ft.font_size -= 1
                                 
                                 ft_main.add_widget(ft)
+                                if int(note[0]) not in list_pair:
+                                    ft_main.opacity= 0
+                                    ft_main.width=0
                                 
-                                #ft_main.add_widget(ft)
                                 bx6.add_widget(ft_main)
                         
                         bx5.ids[self.piano_notes[an-1]+'a']=bx6
@@ -1745,6 +1641,10 @@ class PianoApp(MDApp):
                             
 
                         bx3.add_widget(bx5)
+                        if int(note[0]) not in list_pair:
+                            bx3.opacity= 0
+                            bx3.width=0
+                            minus_an+=1
                         
 
 
@@ -1761,14 +1661,11 @@ class PianoApp(MDApp):
                                           
                                   )
             if self.keys_label!=None:
-                ft_main = FloatLayout(size_hint= (None, None),size=(self.wid, self.wid),pos= (self.wid*(an)+7*4+2+self.wid*1.5/6,self.wid*1.5/6))
+                ft_main = FloatLayout(size_hint= (None, None),size=(self.wid, self.wid),pos= (self.wid*(an-minus_an)+7*4+2+self.wid*1.5/6,self.wid*1.5/6))
                 
                 with ft_main.canvas:
-                    Color(0, 1, 0, 1)  # green; colors range from 0-1 not 0-255
+                    Color(0, 1, 0, 1)  
                     self.rect = Rectangle(size=ft_main.size, pos=ft_main.pos)
-                #     self.draw_text(ft_main, note+"X", (50,50), font_size=20)
-
-                #ft_main.bind(size=self.update_rect, pos=self.update_rect)
                 n_lbl=''
                 if self.keys_label=="Notes":
                     n_lbl=self.piano_notes[-1]
@@ -1783,13 +1680,12 @@ class PianoApp(MDApp):
 
                 ft = Label(text=n_lbl,pos=ft_main.pos,halign='center',color=[0,0,0,1])
                 ft.text_size = (ft.width, None)
-                ft.font_size = ft.height / (len(n_lbl)+2) # Start with an arbitrary value
+                ft.font_size = ft.height / (len(n_lbl)+2) 
                 while ft.texture_size[1] > ft.height or ft.texture_size[0] > ft.width:
                     ft.font_size -= 1
                             
                 ft_main.add_widget(ft)
                 
-                #ft_main.add_widget(ft)
                 bx3.add_widget(ft_main)
         
             bx2.ids[self.piano_notes[-1]]=bx3
@@ -1813,7 +1709,6 @@ class PianoApp(MDApp):
             plbl2 = ColoredLabel(size_hint_y= None,height=4, background_color=(0, 0, 0, 1))
             bx.add_widget(plbl2)       
             self.a.ids.main_screen.ids.keys_container.add_widget(bx)
-       # self.save_scroll={}
         self.update_color()
         self.update_storage()
        
@@ -1828,6 +1723,31 @@ class PianoApp(MDApp):
                 if self.a.ids.main_screen.ids.keys_container.children:
                     self.a.ids.main_screen.ids.keys_container.remove_widget(self.a.ids.main_screen.ids.keys_container.children[0])
 
+        piano_notes =[]
+        for notes in self.piano_notes:
+            for key in os.listdir('sounds/'+self.selected_instrument):
+                a = key.split('.')[0]
+                if a == notes:
+                    piano_notes.append(a)
+        is_valid_ins=True
+        miss_keys=""
+        for i in range(1,8):
+            cnt=0
+            
+            for veg in piano_notes:
+                if str(i) in veg:
+                    cnt+=1
+                    
+            if cnt!=0 and cnt!=12:
+                is_valid_ins=False
+                miss_keys=str(i)
+           
+        if is_valid_ins==False:
+            self.warning_popup(miss_keys)
+            return
+        
+        
+        
         for i in range(total_ele,int(self.numberof_row)):
             bx = BoxLayout(orientation='vertical')
             scr = 0.0
@@ -1838,7 +1758,7 @@ class PianoApp(MDApp):
 
             ######################white keyboard
             scroll_v = ScrollView(do_scroll_x=False,do_scroll_y=False,scroll_x=scr)
-            bx2 = BoxLayout(orientation="horizontal",size_hint_x=None,width= (self.wid)*90.8)
+            bx2 = BoxLayout(orientation="horizontal",size_hint_x=None,width= (self.wid)*(89.5-(88-len(piano_notes))))
             x_cont=0
             exnel_label=0
             for r in self.piano_notes:
@@ -1860,18 +1780,19 @@ class PianoApp(MDApp):
                     
                     if exnel_label==7:
                         exnel_label=0
-                    nt2 = Label(text=n_lbl,size_hint_y=None,height=30,halign='center',valign="middle",color=(0,0,0,1))
+                    nt2 = Label(text=n_lbl,size_hint_y=None,height=self.wid-self.wid*1.5/5,halign='center',valign="middle",color=(0,0,0,1))
                     nt2.text_size = (nt2.width, None)
                     if len(n_lbl)==1:
-                        nt2.font_size = bx3.width / (len(n_lbl)+1) # Start with an arbitrary value
+                        nt2.font_size = bx3.width / (len(n_lbl)+1) 
                     else:
-                        nt2.font_size = bx3.width / (len(n_lbl))
+                        nt2.font_size = bx3.width / (len(n_lbl)+1)
                     while nt2.texture_size[1] > nt2.height or nt2.texture_size[0] > nt2.width:
                         nt2.font_size -= 1
                     
                     with nt2.canvas.before:
-                        Color(0, 1, 0, 1)  # green; colors range from 0-1 not 0-255
-                        self.rect = Rectangle(size=(self.wid-self.wid*1.5/5,self.wid-self.wid*1.5/5), pos=(self.wid*x_cont+x_cont*2+self.wid*1.5/10,self.wid*1.5/10))
+                        Color(0, 1, 0, 1)  
+                        self.rect = Rectangle(size=(self.wid-self.wid*1.5/5,self.wid-self.wid*1.5/5), pos=(self.wid*x_cont+x_cont*2+self.wid*1.5/10,self.wid*1.5/10+5))
+                       
                     bx3.add_widget(nt2)
                 else:
                     nt2 = Label(text='',size_hint_y=None,height=20,color=(0,0,0,1),font_size=self.wid/3)
@@ -1880,10 +1801,13 @@ class PianoApp(MDApp):
                 
                 nt3 = Label(size_hint_y=None,height=15)
                 bx3.add_widget(nt3)
-
+                if r not in piano_notes:
+                    bx3.width=0
+                    bx3.opacity=0.0
                 bx2.add_widget(bx3)
-                bx2.add_widget(PaddingLabel())
-                x_cont+=1
+                if r in piano_notes:
+                    bx2.add_widget(PaddingLabel())
+                    x_cont+=1
             scroll_v.add_widget(bx2)
             #####################################################
             
@@ -1900,8 +1824,6 @@ class PianoApp(MDApp):
             bx.add_widget(plbl2)       
             
             self.a.ids.main_screen.ids.keys_container.add_widget(bx)
-        #self.update_visiblekeys()
-       # self.save_scroll={}
         self.update_color()
         self.update_storage()
        
@@ -1915,6 +1837,33 @@ class PianoApp(MDApp):
             for _ in range(total_ele-num):
                 if self.a.ids.main_screen.ids.keys_container.children:
                     self.a.ids.main_screen.ids.keys_container.remove_widget(self.a.ids.main_screen.ids.keys_container.children[0])
+        
+        piano_notes =[]
+        for notes in self.piano_notes:
+            for key in os.listdir('sounds/'+self.selected_instrument):
+                a = key.split('.')[0]
+                if a == notes:
+                    piano_notes.append(a)
+        is_valid_ins=True
+        miss_keys=""
+        for i in range(1,8):
+            cnt=0
+            
+            for veg in piano_notes:
+                if str(i) in veg:
+                    cnt+=1
+                    
+            if cnt!=0 and cnt!=12:
+                is_valid_ins=False
+                miss_keys=str(i)
+           
+        if is_valid_ins==False:
+            self.warning_popup(miss_keys)
+            return
+        
+        
+        
+        
         for i in range(total_ele,num):
             bx = BoxLayout(orientation='vertical')
             scr = 0.0
@@ -1926,17 +1875,25 @@ class PianoApp(MDApp):
             
             ######################white keyboard
             scroll_v = ScrollView(do_scroll_x=False,do_scroll_y=False,scroll_x=scr)
-            bx2 = BoxLayout(orientation="horizontal",size_hint_x=None,width= self.wid*88+self.wid/2)
+            bx2 = BoxLayout(orientation="horizontal",size_hint_x=None,width= self.wid*(len(piano_notes)))
             bx.ids['hori_con']=bx2
             an =0
+            minus_an=0
             exnel_label=0
             for p in range(0,89):
+                add_key=False
+                if self.piano_notes[an] in piano_notes: 
+                    add_key=True 
+                else:
+                    minus_an+=self.wid
+
                 note = self.piano_notes[an]
                 if(p!=0 and p%2==0 and p!=88):
                     #black key
                     bx3 =ColoredBoxLayout(orientation="vertical",size_hint_x=None,width= self.wid,background_color=(0, 0, 0, 1))
                     bx2.ids[note+"_half_container"]=bx3
-                    
+                    if add_key==False:
+                        bx3.width=0
                     #key full
                     bx4 = ColoredBoxLayout(background_color=(0, 0, 0, 1),bk='black')
                     bx3.ids[note]=bx4
@@ -1963,31 +1920,31 @@ class PianoApp(MDApp):
                             if exnel_label==7:
                                 exnel_label=0
 
-                            ft_main = FloatLayout(size_hint= (None, None),size=(self.wid, self.wid),pos= (self.wid*(an)+self.wid/2-(self.wid*1.5/2),self.wid*1.5/6))
+                            ft_main = FloatLayout(size_hint= (None, None),size=(self.wid, self.wid),pos= (self.wid*(an)+self.wid/2-(self.wid*1.5/2)-minus_an,self.wid*1.5/6))
                             
                             with ft_main.canvas:
-                                Color(0, 1, 0, 1)  # green; colors range from 0-1 not 0-255
+                                Color(0, 1, 0, 1) 
                                 self.rect = Rectangle(size=ft_main.size, pos=ft_main.pos)
-                            #     self.draw_text(ft_main, note+"X", (50,50), font_size=20)
-
-                            #ft_main.bind(size=self.update_rect, pos=self.update_rect)
                             ft = Label(text=n_lbl,pos=ft_main.pos,halign='center',color=[0,0,0,1])
                             ft.text_size = (ft.width, None)
-                            ft.font_size = ft.height / (len(n_lbl)+2) # Start with an arbitrary value
+                            ft.font_size = ft.height / (len(n_lbl)+2) 
                             while ft.texture_size[1] > ft.height or ft.texture_size[0] > ft.width:
                                 ft.font_size -= 1
                             
                             ft_main.add_widget(ft)
-                            
-                            #ft_main.add_widget(ft)
+                                
                             if n_lbl!='':
                                 bx6.add_widget(ft_main)
                         
 
                     
-                    
-                    
-                    bx5.ids[self.piano_notes[an-1]+'a']=bx6
+                    kes_note= None
+                    x_cnt=0
+                    while kes_note==None:
+                        if self.piano_notes[an-1-x_cnt] in piano_notes:
+                            kes_note=self.piano_notes[an-1-x_cnt]+'a'
+                        x_cnt+=1
+                    bx5.ids[kes_note]=bx6
                     
                     plbl = ColoredLabel(size_hint_x= None,width=2, background_color=(0, 0, 0, 1))
                     with plbl.canvas:
@@ -1996,9 +1953,25 @@ class PianoApp(MDApp):
 
                     bx7 = ColoredBoxLayout(background_color=(1, 1, 1, 1),bk="h2")
                     if an+1 < len(self.piano_notes):
-                        bx5.ids[self.piano_notes[an+1]+'a']=bx7
+                        kes_note= None
+                        x_cnt=0
+                        while kes_note==None:
+                            if self.piano_notes[an+1+x_cnt] in piano_notes:
+                                kes_note=self.piano_notes[an+1+x_cnt]+'a'
+                            x_cnt+=1
+
+                        bx5.ids[kes_note]=bx7
                     else:
-                        bx5.ids[self.piano_notes[an]+'a']=bx7
+                        kes_note= None
+                        x_cnt=0
+                        while kes_note==None:
+                            if self.piano_notes[an+x_cnt] in piano_notes:
+                                kes_note=self.piano_notes[an+x_cnt]+'a'
+                            x_cnt+=1
+
+
+
+                        bx5.ids[kes_note]=bx7
                         
                     
                     bx3.add_widget(bx4)
@@ -2014,26 +1987,29 @@ class PianoApp(MDApp):
 
 
                     bx2.add_widget(bx3)
-                   # bx2.add_widget(PaddingLabel())
-            
+                   
                 else:
                     #white key
-                   # print(note)
                     w=self.wid
                     pading= w/2
                     if p==0:
                         w=w+w/2
                         pading=self.wid/4
                     bx3 =ColoredBoxLayout(orientation="vertical",size_hint_x=None,width= w,background_color=(1, 1, 1, 1),tone=note,bk='full')
+                    bx3.radius=[0,0,0,0]
+                    if note in ["0A","0A#","0B"]:
+                        bx3.radius=[0,0,0,8]
+                    if add_key==False:
+                        bx3.width=0
+                    add_v=0
+                    if "0A" not in piano_notes or "0B" not in piano_notes or "0A#" not in piano_notes:
+                        add_v=self.wid/2
                     if self.keys_label!=None:
                         if p!=1:
-                            ft_main = FloatLayout(size_hint= (None, None),size=(self.wid, self.wid),pos= (self.wid*(an)+pading,self.wid*1.5/6))
+                            ft_main = FloatLayout(size_hint= (None, None),size=(self.wid, self.wid),pos= (self.wid*(an)+pading-minus_an-add_v,self.wid*1.5/6))
                             with ft_main.canvas:
-                                Color(0, 1, 0, 1)  # green; colors range from 0-1 not 0-255
+                                Color(0, 1, 0, 1)  
                                 self.rect = Rectangle(size=ft_main.size, pos=ft_main.pos)
-                            #     self.draw_text(ft_main, note+"X", (50,50), font_size=20)
-
-                            #ft_main.bind(size=self.update_rect, pos=self.update_rect)
                             n_lbl=''
                             if self.keys_label=="Notes":
                                 n_lbl=note
@@ -2051,59 +2027,17 @@ class PianoApp(MDApp):
                             ft.font_size = ft.height / (len(n_lbl)+2) # Start with an arbitrary value
                             while ft.texture_size[1] > ft.height or ft.texture_size[0] > ft.width:
                                 ft.font_size -= 1
+                            if self.piano_notes[an] not in piano_notes:
+                                ft_main.width=0
+                                ft_main.opacity= 0.0
+                                pass
+                            else:
+                                ft_main.add_widget(ft)
                             
-                            ft_main.add_widget(ft)
-                            
-                            #ft_main.add_widget(ft)
                             if n_lbl!='':
                                 bx3.add_widget(ft_main)
                         
-                           # bx3.add_widget(ft_main)
-                        # if p==87:
-                        #     ft_main = FloatLayout(size_hint= (None, None),size=(self.wid, self.wid),pos= (self.wid*(an)-self.wid*1.5/6,self.wid*1.5/6))
-                        #     with ft_main.canvas:
-                        #         Color(0, 1, 0, 1)  # green; colors range from 0-1 not 0-255
-                        #         self.rect = Rectangle(size=ft_main.size, pos=ft_main.pos)
-                        #     #     self.draw_text(ft_main, note+"X", (50,50), font_size=20)
-
-                        #     #ft_main.bind(size=self.update_rect, pos=self.update_rect)
-                        #     n_lbl=''
-                        #     if self.keys_label=="Notes":
-                        #         n_lbl=note
-                        #     else:
-                        #         n_lbl=self.keys_label[exnel_label]
-                        #     exnel_label+=1
-                        #     if exnel_label==7:
-                        #         exnel_label=0
-
-                        #     ft = MDLabel(text=n_lbl,pos=ft_main.pos,halign='center',font_style="Caption")
-                        #     ft_main.add_widget(ft)
-                            
-                        #     #ft_main.add_widget(ft)
-                        #     bx3.add_widget(ft_main)
-                        # if p==88:
-                        #     ft_main = FloatLayout(size_hint= (None, None),size=(self.wid, self.wid),pos= (self.wid*(an)+self.wid*1.5/6,self.wid*1.5/6))
-                        #     with ft_main.canvas:
-                        #         Color(0, 1, 0, 1)  # green; colors range from 0-1 not 0-255
-                        #         self.rect = Rectangle(size=ft_main.size, pos=ft_main.pos)
-                        #     #     self.draw_text(ft_main, note+"X", (50,50), font_size=20)
-
-                        #     #ft_main.bind(size=self.update_rect, pos=self.update_rect)
-                        #     n_lbl=''
-                        #     if self.keys_label=="Notes":
-                        #         n_lbl=note
-                        #     else:
-                        #         n_lbl=self.keys_label[exnel_label]
-                        #     exnel_label+=1
-                        #     if exnel_label==7:
-                        #         exnel_label=0
-
-                        #     ft = MDLabel(text=n_lbl,pos=ft_main.pos,halign='center',font_style="Caption")
-                        #     ft_main.add_widget(ft)
-                            
-                        #     #ft_main.add_widget(ft)
-                        #     bx3.add_widget(ft_main)
-                        
+                         
 
                     bx2.ids[note]=bx3
                     bx2.add_widget(bx3)
@@ -2129,7 +2063,6 @@ class PianoApp(MDApp):
             bx.add_widget(plbl2)       
             
             self.a.ids.main_screen.ids.keys_container.add_widget(bx)
-        #self.save_scroll={}
         self.update_color()
         self.update_storage()
        
