@@ -1,6 +1,8 @@
 # RainbowPiano 
 
 ## Description
+Evenly spaced keys makes more sense for my brain.  
+And we can now afford to rainbow-color the keys.
 ![](EvenlySpacedKeys_AllColored.jpg)  
 
 ## Instruction
