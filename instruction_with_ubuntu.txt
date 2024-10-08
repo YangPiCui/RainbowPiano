@@ -1,0 +1,38 @@
+compile a Kivy app for Android using Buildozer on Ubuntu:
+
+### Prerequisites
+1. Install Python: Make sure you have Python 3 installed.
+2. Install Buildozer**: Use pip to install Buildozer:
+   pip install buildozer
+   
+3. Install Dependencies: Ensure you have required dependencies:
+   sudo apt-get install -y python3-pip python3-setuptools python3-dev git zip unzip
+   
+4. Install Cython pakage:
+    pip install Cython==0.29.33
+### Steps to Compile Your Kivy App
+
+1. Create Your App Directory**:
+   cd RainbowPiano
+
+
+3. Initialize Buildozer**:
+   buildozer init
+
+4. Edit `buildozer.spec` File:
+   Open the generated `buildozer.spec` file and update the following lines:
+   requirements = kivy==2.1.0,pillow,kivymd==1.1.1,pygame==2.6.0,numpy==2.1.2
+   
+5. Build the APK:
+   Run the following command to compile your app:
+   buildozer -v android debug
+   
+6. Deploy the APK**:
+   Once the build is complete, you can find the APK in the `bin` directory. Use the following command to deploy it to a connected Android device:
+   buildozer android deploy run
+   
+### Additional Tips
+- Make sure you have Java and Android SDK installed.
+- If you encounter any issues, check the Buildozer documentation for troubleshooting tips.
+
+That’s it! Your Kivy app should now be compiled and ready to run on Android.
