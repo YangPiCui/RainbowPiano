@@ -3,6 +3,7 @@
 
 <ButtonMain@ButtonBehavior+BoxLayout>:
 <BImage@ButtonBehavior+Image>:
+<IButton@ButtonBehavior+MDLabel>:
 ScreenManager:
     MainScreen:
         id: main_screen
@@ -307,72 +308,6 @@ ScreenManager:
                 size_hint_x:None
                 width:120 
                 on_release:root.apply_changes()      
-<EqualizerPopup>:
-    id: cls_popup
-    auto_dismiss: True
-    size_hint_x: 0.8
-    size_hint_y:0.9
-    title:"Equalizer"
-    title_color: 1,1,1,1
-    on_open: root.create_popup()
-    BoxLayout:
-        orientation:"vertical"
-        size_hint_y:1
-        Label:
-            size_hint_y:None
-            height:20
-        BoxLayout:
-            orientation:"horizontal"
-            size_hint_y:None
-            height:40
-            Label:
-                text:"Equalizer"
-                size_hint_x:None
-                width:220
-                halign: 'left'  # Align text to the left
-                valign: 'middle'  # Center text vertically
-                text_size: self.size  # Set the text area to match the label's size
-                
-            Switch:
-                id: eq_switch
-                size_hint_x:None
-                width:60
-                active: app.equalizer
-                on_active:root.change_eqstate()
-                
-            Label:
-            
-        BoxLayout:
-            orientation:"vertical"
-        
-            size_hint_y:0.5
-            size_hint_x:1
-            id: slide_hold
-        
-        Label:
-            size_hint_y:0.3
-        BoxLayout:
-            orientation:"horizontal"
-            size_hint_y:None
-            height:60
-            
-            Label:
-            Button:
-                text:"Reset"
-                size_hint_x:None
-                width:120
-                on_release:root.reset()
-                
-            Label:
-                size_hint_x:None
-                width:10
-            Button:
-                text:"OK" 
-                size_hint_x:None
-                width:100 
-                on_release:root.dismiss_dia()      
-
-                
             
 
 
@@ -692,7 +627,7 @@ ScreenManager:
     cursor_width:30
 <PaddingLabel>:
     size_hint_x:None
-    width: dp(1)
+    width: dp(2)
     canvas:
         Color: 
             rgba:0 , 0, 0, 1
@@ -764,14 +699,6 @@ ScreenManager:
                             source: "images/layout.png"
                             size_hint: None, None
                             on_release: Factory.MyPopup().open()
-                            size:52,52
-                        Label:
-                            size_hint_x:None
-                            width:35
-                        BImage:
-                            source: "images/equalizer.png"
-                            size_hint: None, None
-                            on_release: Factory.EqualizerPopup().open()
                             size:52,52
                         Label:
                             size_hint_x:None
@@ -912,7 +839,15 @@ ScreenManager:
                             text_color: "white"
                             on_release: app.open_link("https://github.com/YangPiCui/")
                         Label:
-                    
+                    Label:
+                        size_hint_y:None
+                        height:15
+                    IButton:
+                        text: "https://github.com/YangPiCui/"
+                        halign: "center"
+                        theme_text_color: "Custom"
+                        text_color: 1, 1, 1, 1    
+                        on_release: app.open_link("https://github.com/YangPiCui/")                
                             
                     Label:
 
