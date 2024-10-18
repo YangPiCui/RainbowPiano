@@ -24,12 +24,12 @@ https://github.com/muchhar
 https://upwork.com/freelancers/bharatm2  
   
 ## Donations (In Descending Preference)
-1. Karma:  
-Repent​, be baptize​d in Jesus Christ's name, and become as a little child. [3 Nephi 11:38 | Mosiah 3:19]  
-Donate to a Charity  
+1. Repent​, be baptize​d in Jesus Christ's name, and become as a little child. [Matthew 18:2-5 | 3 Nephi 11:38 | Mosiah 3:19]  
 
-2. The Only Real True Restored Bitcoin:  
+2. Donate to a charity you like  
+
+3. Donate with the only real true restored Bitcoin  
 Bitcoin Satoshi Vision (BSV) Address: 1QCedBfwVH12BTPrCqE8yB3mq3Jt55iJXH  
   
-3. Paypal (please note "RainbowPiano" in your donation):  
+4. Paypal (please note "RainbowPiano" in your donation):  
 https://paypal.me/PrivateCommisioner
