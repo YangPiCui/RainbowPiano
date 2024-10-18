@@ -24,9 +24,9 @@ https://github.com/muchhar
 https://upwork.com/freelancers/bharatm2  
   
 ## Donations (In Descending Preference)
-1. Repent​, be baptize​d in Jesus Christ's name, and become as a little child. [Matthew 18:2-5 | 3 Nephi 11:38 | Mosiah 3:19]  
-
-2. Donate to a charity you like  
+1. Donate with karma  
+Repent​, be baptize​d in Jesus Christ's name, and become as a little child. [Matthew 18:2-5 | 3 Nephi 11:38 | Mosiah 3:19]  
+Donate to a charity you like  
 
 3. Donate with the only real true restored Bitcoin  
 Bitcoin Satoshi Vision (BSV) Address: 1QCedBfwVH12BTPrCqE8yB3mq3Jt55iJXH  
