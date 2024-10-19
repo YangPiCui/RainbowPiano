@@ -62,8 +62,8 @@ class BorderedBoxLayout(BoxLayout):
         super().__init__(**kwargs)
         self.border_color = border_color
         self.left_width = left_width
-        self.other_width = other_width
-        self.btm=3
+        self.other_width = left_width*2
+        self.btm=left_width
         self.radius = [20, 20] 
         self.padding=[2,5,2,20]
         with self.canvas.after:
@@ -109,7 +109,7 @@ class DownBordered(BoxLayout):
         self.border_color = border_color
         self.left_width = left_width
         self.other_width = other_width
-        self.btm=3
+        self.btm=left_width
         self.radius = [20, 20]  
         self.padding=[2,5,2,20]
         self.direct=direction
@@ -165,7 +165,7 @@ class DownBordered(BoxLayout):
         return points
 
 class ColoredBoxLayout(ButtonBehavior,MDBoxLayout):
-    def __init__(self, background_color=(1, 1, 1, 1),tone=None,layout=None,bk=None,which_border=None, **kwargs):
+    def __init__(self, background_color=(1, 1, 1, 1),tone=None,layout=None,bk=None,which_border=None,b_width=2, **kwargs):
         super().__init__(**kwargs)
         self._background_color = background_color
         self.active_color = (0, 1, 0, 1)  # Green
@@ -173,6 +173,7 @@ class ColoredBoxLayout(ButtonBehavior,MDBoxLayout):
         self.tune = tone
         self.which_border=which_border
         #self.elevation= 10
+        self.border_with=b_width
         self.layout=layout
         self.md_bg_color= self._background_color
 
@@ -182,8 +183,8 @@ class ColoredBoxLayout(ButtonBehavior,MDBoxLayout):
             self.radius=[0,0,16,16]
             with self.canvas.after:
                 Color(0,0,0,1)
-                self.left_line = Line(width=2)
-                self.bottom_line = Line(width=2)
+                self.left_line = Line(width=self.border_with)
+                self.bottom_line = Line(width=self.border_with)
 
             self.bind(pos=self._update_border, size=self._update_border)
         
@@ -209,8 +210,8 @@ class ColoredBoxLayout(ButtonBehavior,MDBoxLayout):
                     self.radius=[0,0,0,16] 
                     with self.canvas.after:
                             Color(0,0,0,1)
-                            self.left_line = Line(width=2.5)
-                            self.bottom_line = Line(width=2.5)
+                            self.left_line = Line(width=self.border_with)
+                            self.bottom_line = Line(width=self.border_with)
 
                     self.bind(pos=self._update_border_left, size=self._update_border_left)
                      
@@ -218,9 +219,9 @@ class ColoredBoxLayout(ButtonBehavior,MDBoxLayout):
                     self.radius=[0,0,16,16]
                     with self.canvas.after:
                             Color(0,0,0,1)
-                            self.left_line = Line(width=2.5)
-                            self.bottom_line = Line(width=2.5)
-                            self.right_line=Line(width=2.5)
+                            self.left_line = Line(width=self.border_with)
+                            self.bottom_line = Line(width=self.border_with)
+                            self.right_line=Line(width=self.border_with)
                     self.bind(pos=self._update_border_both, size=self._update_border_both)
                     
                 else:
@@ -246,7 +247,7 @@ class ColoredBoxLayout(ButtonBehavior,MDBoxLayout):
                         #only bottom line
                         with self.canvas.after:
                             Color(0,0,0,1)
-                            self.bottom_line = Line(width=2.5)
+                            self.bottom_line = Line(width=self.border_with)
 
                         self.bind(pos=self.bottom_update, size=self.bottom_update)
                     
@@ -255,8 +256,8 @@ class ColoredBoxLayout(ButtonBehavior,MDBoxLayout):
                         #left side curve
                         with self.canvas.after:
                             Color(0,0,0,1)
-                            self.left_line = Line(width=2.5)
-                            self.bottom_line = Line(width=2.5)
+                            self.left_line = Line(width=self.border_with)
+                            self.bottom_line = Line(width=self.border_with)
 
                         self.bind(pos=self._update_border_left, size=self._update_border_left)
                     
@@ -265,8 +266,8 @@ class ColoredBoxLayout(ButtonBehavior,MDBoxLayout):
                         #right curve
                         with self.canvas.after:
                             Color(0,0,0,1)
-                            self.left_line = Line(width=2.5)
-                            self.bottom_line = Line(width=2.5)
+                            self.left_line = Line(width=self.border_with)
+                            self.bottom_line = Line(width=self.border_with)
 
                         self.bind(pos=self._update_border_right, size=self._update_border_right)
                     
@@ -277,8 +278,8 @@ class ColoredBoxLayout(ButtonBehavior,MDBoxLayout):
                     pera_keys=2
                     with self.canvas.after:
                             Color(0,0,0,1)
-                            self.left_line = Line(width=2.5)
-                            self.bottom_line = Line(width=2.5)
+                            self.left_line = Line(width=self.border_with)
+                            self.bottom_line = Line(width=self.border_with)
 
                     self.bind(pos=self._update_border_right, size=self._update_border_right)
                     
@@ -287,8 +288,8 @@ class ColoredBoxLayout(ButtonBehavior,MDBoxLayout):
                     pera_keys=1
                     with self.canvas.after:
                             Color(0,0,0,1)
-                            self.left_line = Line(width=2.5)
-                            self.bottom_line = Line(width=2.5)
+                            self.left_line = Line(width=self.border_with)
+                            self.bottom_line = Line(width=self.border_with)
 
                     self.bind(pos=self._update_border_left, size=self._update_border_left)
                     
@@ -456,32 +457,13 @@ class LabelPopup(Popup):
                 self.ids.f_4.active=True
             elif isinstance( self.app.keys_label,dict): 
                 self.ids.f_6.active=True
-            elif self.app.keys_label[0]=="1":
-                self.ids.f_1.active=True
-            elif self.app.keys_label[0]=="A":
-                self.ids.f_2.active=True
-            elif self.app.keys_label[0]=="a":
-                self.ids.f_3.active=True
             
         else:
             self.ids.f_5.active=True
     def apply_changes(self):
         
-        if self.ids.f_1.active:
-            self.dismiss()
-            self.app.keys_label=["1","2","3","4","5","6","7"]
-            self.app.update_visiblekeys()
-        elif self.ids.f_2.active:
             
-            self.app.keys_label=["A","B","C","D","E","F","G"]
-            self.app.update_visiblekeys()
-            self.dismiss()
-        elif self.ids.f_3.active:
-            self.app.keys_label=["a","b","c","d","e","f","g"]
-            self.app.update_visiblekeys()
-            self.dismiss()
-            
-        elif self.ids.f_4.active:
+        if self.ids.f_4.active:
             self.app.keys_label="Notes"
             self.app.update_visiblekeys()
             self.dismiss()
@@ -518,24 +500,26 @@ class ColorPopup(Popup):
         self.app=MDApp.get_running_app()
         if(action!=None):
             self.ids.pattern_cls.clear_widgets()
-            self.ids.custom_cls.clear_widgets()
         self.main_bx = BoxLayout(orientation="vertical",size_hint_y= None,height=45*12)
-        self.custom_bx = BoxLayout(orientation="vertical",size_hint_y= None,height=45*88)
-        if(self.app.custom_color_active):
-            self.ids.switchy.text = "Deactive"
-            self.ids.switchx.text = "Active"
-        else:
-            self.ids.switchx.text= "Deactive"
-            self.ids.switchy.text = "Active"
+        # if(self.app.custom_color_active):
+        #     self.ids.switchx.text = "Active"
+        # else:
+        #     self.ids.switchx.text= "Deactive"
+            
         v=1
-        for i in ["1C","1C#","1D","1D#","1E","1F","1F#","1G","1G#","0A","0A#","0B"]:
+        print(self.app.keys_label)
+        x_list=["1C","1C#","1D","1D#","1E","1F","1F#","1G","1G#","0A","0A#","0B"]
+        for i in x_list:
             bx2 = BoxLayout(orientation="horizontal",size_hint_y= None,height=40)
             
             lblnum = Label(text=str(v)+'.',size_hint_x= None,width=dp(30))
             vst = i[1:]
             if len(vst)!=2:
                 vst=vst+" "
-
+            print(vst)
+            
+            if self.app.keys_label!=None and self.app.keys_label!="Notes":
+                vst = self.app.keys_label[vst.strip()]
             lbl = Label(text=vst,size_hint_x=None,width=dp(30),)
             lblfree = Label()
             btn = Button(size_hint_x=None,width=dp(30),    background_normal= '',background_color= self.app.notes_color[i],on_release= lambda instance, lbtn=i : self.open_color_picker(instance,lbtn,True))
@@ -551,30 +535,7 @@ class ColorPopup(Popup):
             
             v+=1
         self.ids.pattern_cls.add_widget(self.main_bx)
-        v=1
-        for i in list(self.app.custom_color.keys()):
-            bx2 = BoxLayout(orientation="horizontal",size_hint_y= None,height=40)
-            
-            lblnum = Label(text=str(v)+'.',size_hint_x= None,width=dp(30))
-            vst = i
-            if len(vst)!=2:
-                vst=vst+" "
-
-            lbl = Label(text=vst,size_hint_x=None,width=dp(50))
-            lblfree = Label()
-            btn = Button(size_hint_x=None,width=dp(30),    background_normal= '',background_color= self.app.custom_color[i],on_release= lambda instance, lbtn=i : self.open_color_picker(instance,lbtn,False))
-            
-            bx2.add_widget(lblnum)
-            bx2.add_widget(lbl)
-            bx2.add_widget(lblfree)
-            bx2.add_widget(btn)
-            
-            self.custom_bx.add_widget(bx2)
-            paddinglbl = Label(size_hint_y=None,height=5)
-            self.custom_bx.add_widget(paddinglbl)
-            
-            v+=1
-        self.ids.custom_cls.add_widget(self.custom_bx)
+        
     def open_color_picker(self, instance, btn,frm):
         color_picker = ColorPicker()
         if frm:
@@ -638,11 +599,12 @@ class ColorPopup(Popup):
         
         self.create_popup(True)
     def reset_color(self,action):
-        if action=="custom":
+        # if action=="custom":
             
-            self.app.custom_color = self.app.defualt_cus
-        else:
-            self.app.notes_color= self.app.defualt_pat
+        #     self.app.custom_color = self.app.defualt_cus
+        # else:
+        for i in self.app.defualt_pat.keys():
+            self.app.notes_color[i]= self.app.defualt_pat[i]
         self.app.update_color()    
         self.create_popup(True)
             
@@ -909,33 +871,34 @@ class PianoApp(MDApp):
         
             ]
         self.notes_color =self.retrieve_data("notes_color") if self.retrieve_data("notes_color") is not None else {
-            "0A":(98/255.0,0,0,1),
-            "0A#":(139/255.0,0,0,1),
-            "0B":(177/255,0,0,1),
-            "1C":(213/255.0,0,0,1),
-            "1C#":(248/255.0,0,0,1),
-            "1D":(255/255.0,145/255.0,0,1),
-            "1D#":(240/255.0,255.0/255.0,0,1),
-            "1E":(115/255,255/255,0,1),
-            "1F":(0,255/255,181/255,1),
-            "1F#":(0,113/255,255/255,1),
-            "1G":(109/255,0,251/255,1),
-            "1G#":(97/255,0,97/255,1)
+            "0A":(0,113/255,255/255,1),
+            "0A#":(109/255.0,0,251/255,1),
+            "0B":(97/255,0,97/255,1),
+            "1C":(98/255.0,0,0,1),
+            "1C#":(139/255.0,0,0,1),
+            "1D":(177/255.0,0,0,1),
+            "1D#":(213/255.0,0,0,1),
+            "1E":(248/255,0,0,1),
+            "1F":(255/255,145/255,0,1),
+            "1F#":(240/255,255/255,0,1),
+            "1G":(115/255,255/255,0,1),
+            "1G#":(0,255/255,181/255,1)
         }
 
 
-        self.defualt_pat={  "0A":(98/255.0,0,0,1),
-            "0A#":(139/255.0,0,0,1),
-            "0B":(177/255,0,0,1),
-            "1C":(213/255.0,0,0,1),
-            "1C#":(248/255.0,0,0,1),
-            "1D":(255/255.0,145/255.0,0,1),
-            "1D#":(240/255.0,255.0/255.0,0,1),
-            "1E":(115/255,255/255,0,1),
-            "1F":(0,255/255,181/255,1),
-            "1F#":(0,113/255,255/255,1),
-            "1G":(109/255,0,251/255,1),
-            "1G#":(97/255,0,97/255,1)
+        self.defualt_pat={  "0A":(0,113/255,255/255,1),
+            "0A#":(109/255.0,0,251/255,1),
+            "0B":(97/255,0,97/255,1),
+            "1C":(98/255.0,0,0,1),
+            "1C#":(139/255.0,0,0,1),
+            "1D":(177/255.0,0,0,1),
+            "1D#":(213/255.0,0,0,1),
+            "1E":(248/255,0,0,1),
+            "1F":(255/255,145/255,0,1),
+            "1F#":(240/255,255/255,0,1),
+            "1G":(115/255,255/255,0,1),
+            "1G#":(0,255/255,181/255,1)
+       
         }
         self.defualt_cus={'0A': [0.5137254901960784, 0, 0.7098039215686275, 1], '0A#': [0, 0.27450980392156865, 1.0, 1], '0B': [0, 1.0, 0.5725490196078431, 1], '1C': [0.6392156862745098, 1.0, 0, 1], '1C#': [1.0, 0.7450980392156863, 0, 1], '1D': [0.9803921568627451, 0, 0, 1], '1D#': [0.5137254901960784, 0, 0.7098039215686275, 1], '1E': [0, 0.27450980392156865, 1.0, 1], '1F': [0, 1.0, 0.5725490196078431, 1], '1F#': [0.6392156862745098, 1.0, 0, 1], '1G': [1.0, 0.7450980392156863, 0, 1], '1G#': [0.9803921568627451, 0, 0, 1], '1A': [0.5137254901960784, 0, 0.7098039215686275, 1], '1A#': [0, 0.27450980392156865, 1.0, 1], '1B': [0, 1.0, 0.5725490196078431, 1], '2C': [0.6392156862745098, 1.0, 0, 1], '2C#': [1.0, 0.7450980392156863, 0, 1], '2D': [0.9803921568627451, 0, 0, 1], '2D#': [0.5137254901960784, 0, 0.7098039215686275, 1], '2E': [0, 0.27450980392156865, 1.0, 1], '2F': [0, 1.0, 0.5725490196078431, 1], '2F#': [0.6392156862745098, 1.0, 0, 1], '2G': [1.0, 0.7450980392156863, 0, 1], '2G#': [0.9803921568627451, 0, 0, 1], '2A': [0.5137254901960784, 0, 0.7098039215686275, 1], '2A#': [0, 0.27450980392156865, 1.0, 1], '2B': [0, 1.0, 0.5725490196078431, 1], '3C': [0.6392156862745098, 1.0, 0, 1], '3C#': [1.0, 0.7450980392156863, 0, 1], '3D': [0.9803921568627451, 0, 0, 1], '3D#': [0.5137254901960784, 0, 0.7098039215686275, 1], '3E': [0, 0.27450980392156865, 1.0, 1], '3F': [0, 1.0, 0.5725490196078431, 1], '3F#': [0.6392156862745098, 1.0, 0, 1], '3G': [1.0, 0.7450980392156863, 0, 1], '3G#': [0.9803921568627451, 0, 0, 1], '3A': [0.5137254901960784, 0, 0.7098039215686275, 1], '3A#': [0, 0.27450980392156865, 1.0, 1], '3B': [0, 1.0, 0.5725490196078431, 1], '4C': [0.6392156862745098, 1.0, 0, 1], '4C#': [1.0, 0.7450980392156863, 0, 1], '4D': [0.9803921568627451, 0, 0, 1], '4D#': [0.5137254901960784, 0, 0.7098039215686275, 1], '4E': [0, 0.27450980392156865, 1.0, 1], '4F': [0, 1.0, 0.5725490196078431, 1], '4F#': [0.6392156862745098, 1.0, 0, 1], '4G': [1.0, 0.7450980392156863, 0, 1], '4G#': [0.9803921568627451, 0, 0, 1], '4A': [0.5137254901960784, 0, 0.7098039215686275, 1], '4A#': [0, 0.27450980392156865, 1.0, 1], '4B': [0, 1.0, 0.5725490196078431, 1], '5C': [0.6392156862745098, 1.0, 0, 1], '5C#': [1.0, 0.7450980392156863, 0, 1], '5D': [0.9803921568627451, 0, 0, 1], '5D#': [0.5137254901960784, 0, 0.7098039215686275, 1], '5E': [0, 0.27450980392156865, 1.0, 1], '5F': [0, 1.0, 0.5725490196078431, 1], '5F#': [0.6392156862745098, 1.0, 0, 1], '5G': [1.0, 0.7450980392156863, 0, 1], '5G#': [0.9803921568627451, 0, 0, 1], '5A': [0.5137254901960784, 0, 0.7098039215686275, 1], '5A#': [0, 0.27450980392156865, 1.0, 1], '5B': [0, 1.0, 0.5725490196078431, 1], '6C': [0.6392156862745098, 1.0, 0, 1], '6C#': [1.0, 0.7450980392156863, 0, 1], '6D': [0.9803921568627451, 0, 0, 1], '6D#': [0.5137254901960784, 0, 0.7098039215686275, 1], '6E': [0, 0.27450980392156865, 1.0, 1], '6F': [0, 1.0, 0.5725490196078431, 1], '6F#': [0.6392156862745098, 1.0, 0, 1], '6G': [1.0, 0.7450980392156863, 0, 1], '6G#': [0.9803921568627451, 0, 0, 1], '6A': [0.5137254901960784, 0, 0.7098039215686275, 1], '6A#': [0, 0.27450980392156865, 1.0, 1], '6B': [0, 1.0, 0.5725490196078431, 1], '7C': [0.6392156862745098, 1.0, 0, 1], '7C#': [1.0, 0.7450980392156863, 0, 1], '7D': [0.9803921568627451, 0, 0, 1], '7D#': [0.5137254901960784, 0, 0.7098039215686275, 1], '7E': [0, 0.27450980392156865, 1.0, 1], '7F': [0, 1.0, 0.5725490196078431, 1], '7F#': [0.6392156862745098, 1.0, 0, 1], '7G': [1.0, 0.7450980392156863, 0, 1], '7G#': [0.9803921568627451, 0, 0, 1], '7A': [0.5137254901960784, 0, 0.7098039215686275, 1], '7A#': [0, 0.27450980392156865, 1.0, 1], '7B': [0, 1.0, 0.5725490196078431, 1], '8C': [0.6392156862745098, 1.0, 0, 1]}
 
@@ -1206,13 +1169,13 @@ class PianoApp(MDApp):
         full_notes_color = {}
         color_keys = list(self.notes_color.keys())
         num_colors = len(color_keys)
-
+        
         for i, note in enumerate(self.piano_notes):
             color_index = i % num_colors  # Cycle through the colors
             color_key = color_keys[color_index]
             full_notes_color[note] = self.notes_color[color_key]
 
-        
+       
         for i in full_notes_color.keys():
             for j in self.a.ids.main_screen.ids.keys_container.children:
                 for v in j.children[1].children[0].ids:
@@ -1537,7 +1500,7 @@ class PianoApp(MDApp):
                 
                 if i=='x':
                     bx3 =ColoredBoxLayout(orientation="vertical",size_hint_x=None,always_release=True,width= self.wid,background_color=(1, 1, 1, 1),tone=note,layout=t,padding=[0,0,0,15]
-                                          )
+                                         ,b_width=self.wid/30 )
                     
                     if self.keys_label!=None:
                         if self.f_label[an]==1:
@@ -1547,7 +1510,7 @@ class PianoApp(MDApp):
                                 Color(0, 1, 0, 1)  
                                 self.rect = Rectangle(size=ft_main.size, pos=ft_main.pos)
                                 Color(0, 0, 0, 1)  
-                                self.rect = Rectangle(size=(self.wid,2), pos=(self.wid*(an)-(self.wid*1.5/6),0))
+                                self.rect = Rectangle(size=(self.wid,self.wid/30), pos=(self.wid*(an)-(self.wid*1.5/6),0))
                                 
                             n_lbl=''
                             if self.keys_label=="Notes":
@@ -1577,13 +1540,13 @@ class PianoApp(MDApp):
                     an+=1
                 elif i=='y':
                     #black key
-                    bx3 =ColoredBoxLayout(orientation="vertical",size_hint_x=None,spacing=2,width= self.wid,background_color=(1, 1, 1, 1))
+                    bx3 =ColoredBoxLayout(orientation="vertical",size_hint_x=None,spacing=2,width= self.wid,background_color=(1, 1, 1, 1),b_width=self.wid/30)
                     bx2.ids[note+"_half_container"]=bx3
                     
                     #key full
-                    bx4 = ColoredBoxLayout(background_color=(0, 0, 0, 1),tone=note,layout=t)
+                    bx4 = ColoredBoxLayout(background_color=(0, 0, 0, 1),tone=note,layout=t,b_width=self.wid/30)
                     bx3.ids[note]=bx4
-                    bx4_1 = BorderedBoxLayout(border_color=(0,0,0,1),border_width=2)
+                    bx4_1 = BorderedBoxLayout(border_color=(0,0,0,1),border_width=self.wid/30,left_width=self.wid/30,other_width=self.wid/30)
                     black_empty= MDLabel()
                     black_lbl= MDLabel(text=note,size_hint_y= None,height=18,size_hint_x= None,width=self.wid,halign='center',bold=True)
                     bx4_1.add_widget(black_empty)
@@ -1592,10 +1555,10 @@ class PianoApp(MDApp):
                     
                     bx4.add_widget(bx4_1)
                     #half key
-                    bx5 = ColoredBoxLayout(orientation="horizontal",size_hint_y=0.382)
+                    bx5 = ColoredBoxLayout(orientation="horizontal",size_hint_y=0.382,b_width=self.wid/30)
                     bx3.ids["double_container"]=bx5
                     bx6 = ColoredBoxLayout(background_color=(1, 1, 1, 1),tone=self.piano_notes[an-1]+'a',layout=t,
-                                           )
+                                           b_width=self.wid/30)
                     if self.keys_label!=None:
                         if self.f_label[an]==1:
                             ft_main = FloatLayout(size_hint= (None, None),size=(self.wid, self.wid),pos= (self.wid*(an)-(self.wid*1.5/2),self.wid*1.5/6))
@@ -1632,12 +1595,12 @@ class PianoApp(MDApp):
                         Rectangle(pos=plbl.pos, size=plbl.size)
 
                     bx7 = ColoredBoxLayout(background_color=(1, 1, 1, 1),tone=self.piano_notes[an+1]+'a',layout=t
-                                          )
+                                          ,b_width=self.wid/30)
                     bx5.ids[self.piano_notes[an+1]+'a']=bx7
                     
-                    bx6.add_widget(DownBordered(direction='right'))   
+                    bx6.add_widget(DownBordered(direction='right',left_width=self.wid/30,other_width=self.wid/30))   
                     
-                    bx7.add_widget(DownBordered(direction='left'))   
+                    bx7.add_widget(DownBordered(direction='left',left_width=self.wid/30,other_width=self.wid/30))   
                     bx3.add_widget(bx4)
                     
                     bx5.add_widget(bx6)
@@ -1675,7 +1638,7 @@ class PianoApp(MDApp):
                 for i in self.mid_note:
                     note = self.piano_notes[an]
                     if i=='x':
-                        bx3 =ColoredBoxLayout(orientation="vertical",size_hint_x=None,width= self.wid,background_color=(1, 1, 1, 1),tone=note,layout=t
+                        bx3 =ColoredBoxLayout(orientation="vertical",size_hint_x=None,width= self.wid,background_color=(1, 1, 1, 1),tone=note,layout=t,b_width=self.wid/30
                                           
                                               )
                         if self.keys_label!=None:
@@ -1755,16 +1718,16 @@ class PianoApp(MDApp):
                         an+=1
                     elif i=='y':
                         #black key
-                        bx3 =ColoredBoxLayout(orientation="vertical",size_hint_x=None,spacing=2,width= self.wid,background_color=(1, 1, 1, 1))
+                        bx3 =ColoredBoxLayout(orientation="vertical",size_hint_x=None,spacing=2,width= self.wid,background_color=(1, 1, 1, 1),b_width=self.wid/30)
                         bx2.ids[note+"_half_container"]=bx3
                     
                         #key full
                         bx4 = ColoredBoxLayout(background_color=(0, 0, 0, 1),tone=note,layout=t,
-                                          
+                                          b_width=self.wid/30
                                                )
                         bx3.ids[note]=bx4
                     
-                        bx4_1 = BorderedBoxLayout(border_color=(0,0,0,1),border_width=2)
+                        bx4_1 = BorderedBoxLayout(border_color=(0,0,0,1),border_width=self.wid/30,left_width=self.wid/30,other_width=self.wid/30)
                         black_empty= MDLabel()
                         black_lbl= MDLabel(text=note,size_hint_y= None,height=18,size_hint_x= None,width=self.wid,halign='center',bold=True)
                         bx4_1.add_widget(black_empty)
@@ -1774,11 +1737,11 @@ class PianoApp(MDApp):
                         bx4.add_widget(bx4_1)
                     
                         #half key
-                        bx5 = ColoredBoxLayout(orientation="horizontal",size_hint_y=0.382)
+                        bx5 = ColoredBoxLayout(orientation="horizontal",size_hint_y=0.382,b_width=self.wid/30)
                         bx3.ids["double_container"]=bx5
                     
                         bx6 = ColoredBoxLayout(background_color=(1, 1, 1, 1),tone=self.piano_notes[an-1]+'a',layout=t,
-                                           )
+                                           b_width=self.wid/30)
                         
                         if self.keys_label!=None:
                             if self.m_label[an]==1:
@@ -1820,7 +1783,7 @@ class PianoApp(MDApp):
                             Rectangle(pos=plbl.pos, size=plbl.size)
 
                         bx7 = ColoredBoxLayout(background_color=(1, 1, 1, 1),tone=self.piano_notes[an+1]+'a',layout=t,
-                                               )
+                                               b_width=self.wid/30)
                         bx5.ids[self.piano_notes[an+1]+'a']=bx7
                     
                         
@@ -1852,7 +1815,7 @@ class PianoApp(MDApp):
                     
                         
             bx3 =ColoredBoxLayout(orientation="vertical",size_hint_x=None,width= self.wid,background_color=(1, 1, 1, 1),tone=self.piano_notes[-1],layout=t,
-                                          
+                                   b_width=self.wid/30       
                                   )
             if self.keys_label!=None:
                 ft_main = FloatLayout(size_hint= (None, None),size=(self.wid, self.wid),pos= (self.wid*(an-minus_an)+self.wid*1.5/6,self.wid*1.5/6))
@@ -2091,9 +2054,10 @@ class PianoApp(MDApp):
                     #key full
                     bx4 = ColoredBoxLayout(background_color=(1, 1, 1, 1),bk='black')
                     bx3.ids[note]=bx4
-                    bx4_1 = BorderedBoxLayout(border_color=(0,0,0,1),border_width=2)
+                    bx4_1 = BorderedBoxLayout(border_color=(0,0,0,1),border_width=2,left_width=self.wid/30,other_width=self.wid/30)
                     black_empty= MDLabel()
                     black_lbl= MDLabel(text=note,size_hint_y= None,height=18,size_hint_x= None,width=self.wid,halign='center',bold=True)
+                    
                     bx4_1.add_widget(black_empty)
                     
                     bx4_1.add_widget(black_lbl)
@@ -2145,9 +2109,9 @@ class PianoApp(MDApp):
 
                         bx5.ids[kes_note]=bx7
                         
-                    bx6.add_widget(DownBordered(direction='right'))   
+                    bx6.add_widget(DownBordered(direction='right',left_width=self.wid/30,other_width=self.wid/30))   
                     
-                    bx7.add_widget(DownBordered(direction='left'))   
+                    bx7.add_widget(DownBordered(direction='left',left_width=self.wid/30,other_width=self.wid/30))   
                     
                     bx5.add_widget(bx6)
                     bx5.add_widget(plbl)
@@ -2185,7 +2149,7 @@ class PianoApp(MDApp):
                                 Color(0, 1, 0, 1)  
                                 self.rect = Rectangle(size=ft_main.size, pos=ft_main.pos)
                                 Color(0, 0, 0, 1)  
-                                self.rect = Rectangle(size=(self.wid,2), pos=(self.wid*(an)+pading-minus_an-add_v,0))
+                                self.rect = Rectangle(size=(self.wid,self.wid/30), pos=(self.wid*(an)+pading-minus_an-add_v,0))
                                 
                             n_lbl=''
                             if self.keys_label=="Notes":
