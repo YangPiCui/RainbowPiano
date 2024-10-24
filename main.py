@@ -30,6 +30,7 @@ from kivy.metrics import dp
 from kivy.uix.colorpicker import ColorPicker
 from kivy.graphics import  RoundedRectangle
 from math import pi, sin, cos
+from kivy.core.text import Label as CoreLabel
 
 base_height = 500  # Set your base height
         
@@ -55,8 +56,559 @@ class ColoredLabel(Label):
         self.rect.size = self.size
         self.rect.pos = self.pos
 
+class wb_box(MDBoxLayout):
+    def __init__(self,wid=0,background_color=(0,1,1,1),border_width=2,note='',lebel_text='', **kwargs):
+        super().__init__(**kwargs)  
+        self.width = wid
+        self.orientation= 'vertical'
+        self.md_bg_color= (0,0,0,0)
+        self.size_hint_x= None
+        self.border_width= border_width
+        self.border_color = (0,0,0,1)
+        self.radius = [0,0,20, 20]
+        self.tune= note
+        self.lebel_text=lebel_text
+        self.color= background_color
+        
+        
+       # self.ids=note
+        self.bg_color = (0, 1, 0, 1)  # Green background
+        
+        self.tpm=MDBoxLayout(md_bg_color= self.color,size_hint_y=0.718,size_hint_x= None,width=self.width)
+        with self.tpm.canvas:
+            Color(*self.border_color)
+            self.tpm.left_line = Line(width=self.border_width)
+            self.tpm.top_line = Line(width=self.border_width)
+            
+            self.tpm.right_line = Line(width=self.border_width)
+            
+        self.tpm.bind(pos=self._update_border2, size=self._update_border2)
+        self.ids[self.tune+'a'] = self.tpm
+        
+        
+        
+        self.add_widget(self.tpm) 
+        self.btm = MDBoxLayout(md_bg_color= self.color,size_hint_y=0.282,size_hint_x= None,width=wid*2,radius = [0,0,20, 20],pos_hint={'center_x': 0.5,'center_y': 0.5},padding=15)
+        with self.btm.canvas:
+            Color(*self.border_color)
+            self.btm.left_line = Line(width=self.border_width)
+            #self.btm.top_line1 = Line(width=self.border_width)
+            #self.btm.top_line2 = Line(width=self.border_width)
+            
+            self.btm.right_line = Line(width=self.border_width)
+            self.btm.bottom_line = Line(width=self.border_width)
+        self.btm.bind(pos=self._update_border, size=self._update_border)
+        if self.lebel_text!='':
+            self.lbl =Label(text=self.lebel_text,color=[0,0,0,1],size_hint_y= None,height=self.width,size_hint_x= None,width=self.width)
+            
+            with self.lbl.canvas.before:
+                Color(*self.bg_color)  # Set background color
+                self.lbl.rect = RoundedRectangle(pos=self.lbl.pos, size=self.lbl.size, radius=[10,10,10,10])
+            self.lbl.bind(pos=self.update_rect, size=self.update_rect)
+            widget_width = self.lbl.width
+            widget_height = self.lbl.height
+            
+            # Create a temporary label to calculate the size
+            label = CoreLabel(text=self.lebel_text, font_size=self.lbl.font_size)
+            label.refresh()  # Update the label to get the size
+            text_width, text_height = label.texture.size
 
+            # If the text width exceeds the widget width, reduce the font size
+            if text_width > widget_width:
+                self.lbl.font_size = self.lbl.font_size * widget_width / text_width
+            
+            # Adjust font size if text height also exceeds
+            if text_height > widget_height:
+                self.lbl.font_size = self.lbl.font_size * widget_height / text_height
 
+            self.btm.add_widget(Label())
+            self.btm.add_widget(self.lbl)
+            self.btm.add_widget(Label())
+        self.ids[self.tune+'b'] = self.btm
+        self.add_widget(self.btm) 
+    def update_rect(self, *args):
+        self.lbl.rect.pos = self.lbl.pos
+        self.lbl.rect.size = self.lbl.size
+        
+        
+    def _update_border2(self, *args):
+        x, y = self.tpm.pos
+        w, h = self.tpm.size
+        radius_x, radius_y = [20,20]
+        
+        self.tpm.left_line.points = [x, y+radius_y, x, y + h]
+        self.tpm.top_line.points = [x, y + h, x + w, y + h]
+        
+        self.tpm.right_line.points = [x + w, y + h, x + w, y+radius_y ]
+    
+    def _update_border(self, *args):
+        x, y = self.btm.pos
+        w, h = self.btm.size
+        radius_x, radius_y = [20,20]
+        
+        self.btm.left_line.points = [x, y + radius_y, x, y + h]
+       # self.btm.top_line1.points = [x, y + h, x + w/4+1, y + h]
+       # self.btm.top_line2.points = [x+w, y + h, x +w- w/4-1, y + h]
+        
+        self.btm.right_line.points = [x + w, y + h, x + w, y + radius_y]
+        self.btm.bottom_line.points = self._create_rounded_corners(x, y, w, radius_x, radius_y)
+
+    def _create_rounded_corners(self, x, y, w, radius_x, radius_y):
+        points = []
+        num_segments = 10  
+        for i in range(num_segments + 1):
+            angle = pi / 2 * (i / num_segments)
+            bx = x + radius_x - radius_x * cos(angle)
+            by = y + radius_y - radius_y * sin(angle)
+            points.extend([bx, by])
+
+        points.extend([x + radius_x, y, x + w - radius_x, y])
+
+        for i in range(num_segments + 1):
+            angle = pi / 2 * (i / num_segments)
+            bx = x + w - radius_x + radius_x * sin(angle)
+            by = y + radius_y - radius_y * cos(angle)
+            points.extend([bx, by])
+
+        return points
+    def set_background_color(self, color):
+        self.color = color
+        self.md_bg_color= self.color
+        self.tpm.md_bg_color=self.color
+        self.btm.md_bg_color=self.color
+      
+class wl_box(MDBoxLayout):
+    def __init__(self,wid=0,background_color=(0,1,1,1),border_width=2,note='',lebel_text='', **kwargs):
+        super().__init__(**kwargs)  
+        self.width = wid
+        self.orientation= 'vertical'
+        self.md_bg_color= (0,0,0,0)
+        self.size_hint_x= None
+        self.border_width= border_width
+        self.border_color = (0,0,0,1)
+        self.radius = [0,0,20, 20]
+        self.tune= note
+        self.lebel_text=lebel_text
+        
+        self.color= background_color
+        self.bg_color = (0, 1, 0, 1)  # Green background
+        
+        self.tpm=MDBoxLayout(md_bg_color= self.color,size_hint_y=0.718,size_hint_x= None,width=self.width)
+        with self.tpm.canvas:
+            Color(*self.border_color)
+            self.tpm.left_line = Line(width=self.border_width)
+            self.tpm.top_line = Line(width=self.border_width)
+            
+            self.tpm.right_line = Line(width=self.border_width)
+            
+        self.tpm.bind(pos=self._update_border2, size=self._update_border2)
+
+        
+        self.ids[self.tune+'a'] = self.tpm
+        
+        self.add_widget(self.tpm) 
+        self.btm = MDBoxLayout(md_bg_color= self.color,size_hint_y=0.282,size_hint_x= None,width=wid*1.5,radius = [0,0,20, 20],pos_hint={'center_x': 0.25,'center_y': 0.5},padding=15)
+        with self.btm.canvas:
+            Color(*self.border_color)
+            self.btm.left_line = Line(width=self.border_width)
+            
+            self.btm.right_line = Line(width=self.border_width)
+            self.btm.bottom_line = Line(width=self.border_width)
+        self.btm.bind(pos=self._update_border, size=self._update_border)
+        if self.lebel_text!='':
+        
+        
+            self.lbl =Label(text=self.lebel_text,color=[0,0,0,1],size_hint_y= None,height=self.width,size_hint_x= None,width=self.width)
+            
+            with self.lbl.canvas.before:
+                Color(*self.bg_color)  # Set background color
+                self.lbl.rect = RoundedRectangle(pos=self.lbl.pos, size=self.lbl.size, radius=[10,10,10,10])
+            self.lbl.bind(pos=self.update_rect, size=self.update_rect)
+            widget_width = self.lbl.width
+            widget_height = self.lbl.height
+            
+            # Create a temporary label to calculate the size
+            label = CoreLabel(text=self.lebel_text, font_size=self.lbl.font_size)
+            label.refresh()  # Update the label to get the size
+            text_width, text_height = label.texture.size
+
+            # If the text width exceeds the widget width, reduce the font size
+            if text_width > widget_width:
+                self.lbl.font_size = self.lbl.font_size * widget_width / text_width
+            
+            # Adjust font size if text height also exceeds
+            if text_height > widget_height:
+                self.lbl.font_size = self.lbl.font_size * widget_height / text_height
+
+            self.btm.add_widget(Label())
+            self.btm.add_widget(self.lbl)
+            self.btm.add_widget(Label())
+            
+        self.ids[self.tune+'b'] = self.btm
+        
+        self.add_widget(self.btm) 
+    def update_rect(self, *args):
+        self.lbl.rect.pos = self.lbl.pos
+        self.lbl.rect.size = self.lbl.size
+    
+    def _update_border2(self, *args):
+        x, y = self.tpm.pos
+        w, h = self.tpm.size
+        radius_x, radius_y = [20,20]
+
+        self.tpm.left_line.points = [x, y+radius_y, x, y + h]
+        self.tpm.top_line.points = [x, y + h, x + w, y + h]
+        
+        self.tpm.right_line.points = [x + w, y + h, x + w, y ]
+    
+    def _update_border(self, *args):
+        x, y = self.btm.pos
+        w, h = self.btm.size
+        radius_x, radius_y = [20,20]
+
+        self.btm.left_line.points = [x, y + radius_y, x, y + h]
+        
+        self.btm.right_line.points = [x + w, y + h, x + w, y + radius_y]
+        self.btm.bottom_line.points = self._create_rounded_corners(x, y, w, radius_x, radius_y)
+
+    def _create_rounded_corners(self, x, y, w, radius_x, radius_y):
+        points = []
+        num_segments = 10  
+        for i in range(num_segments + 1):
+            angle = pi / 2 * (i / num_segments)
+            bx = x + radius_x - radius_x * cos(angle)
+            by = y + radius_y - radius_y * sin(angle)
+            points.extend([bx, by])
+
+        points.extend([x + radius_x, y, x + w - radius_x, y])
+
+        for i in range(num_segments + 1):
+            angle = pi / 2 * (i / num_segments)
+            bx = x + w - radius_x + radius_x * sin(angle)
+            by = y + radius_y - radius_y * cos(angle)
+            points.extend([bx, by])
+
+        return points
+    def set_background_color(self, color):
+        self.color = color
+        self.md_bg_color= self.color
+        self.tpm.md_bg_color=self.color
+        self.btm.md_bg_color=self.color
+    
+class wr_box(MDBoxLayout):
+    def __init__(self,wid=0,background_color=(0,1,1,1),border_width=2,note='',lebel_text='', **kwargs):
+        super().__init__(**kwargs)  
+        self.width = wid
+        self.orientation= 'vertical'
+        self.md_bg_color= (0,0,0,0)
+        self.size_hint_x= None
+        self.border_width= border_width
+        self.border_color = (0,0,0,1)
+        self.radius = [0,0,20, 20]
+        self.tune= note
+        self.lebel_text=lebel_text
+        
+        #self.ids=note
+        self.bg_color = (0, 1, 0, 1)  # Green background
+        
+        self.color= background_color
+        
+        self.tpm=MDBoxLayout(md_bg_color= self.color,size_hint_y=0.718,size_hint_x= None,width=self.width)
+        with self.tpm.canvas:
+            Color(*self.border_color)
+            self.tpm.left_line = Line(width=self.border_width)
+            self.tpm.top_line = Line(width=self.border_width)
+            
+            self.tpm.right_line = Line(width=self.border_width)
+            
+        self.tpm.bind(pos=self._update_border2, size=self._update_border2)
+        self.ids[self.tune+'a'] = self.tpm
+        
+        
+        
+        self.add_widget(self.tpm) 
+        self.btm = MDBoxLayout(md_bg_color= self.color,size_hint_y=0.282,size_hint_x= None,width=wid*1.5,radius = [0,0,20, 20],pos_hint={'center_x': 0.75,'center_y': 0.5},padding=15)
+        with self.btm.canvas:
+            Color(*self.border_color)
+            self.btm.left_line = Line(width=self.border_width)
+            
+            self.btm.right_line = Line(width=self.border_width)
+            self.btm.bottom_line = Line(width=self.border_width)
+        self.btm.bind(pos=self._update_border, size=self._update_border)
+        if self.lebel_text!='':
+        
+        
+            self.lbl =Label(text=self.lebel_text,color=[0,0,0,1],size_hint_y= None,height=self.width,size_hint_x=None,width=self.width)
+            
+            with self.lbl.canvas.before:
+                Color(*self.bg_color)  # Set background color
+                self.lbl.rect = RoundedRectangle(pos=self.lbl.pos, size=self.lbl.size, radius=[10,10,10,10])
+            self.lbl.bind(pos=self.update_rect, size=self.update_rect)
+            widget_width = self.lbl.width
+            widget_height = self.lbl.height
+            
+            # Create a temporary label to calculate the size
+            label = CoreLabel(text=self.lebel_text, font_size=self.lbl.font_size)
+            label.refresh()  # Update the label to get the size
+            text_width, text_height = label.texture.size
+
+            # If the text width exceeds the widget width, reduce the font size
+            if text_width > widget_width:
+                self.lbl.font_size = self.lbl.font_size * widget_width / text_width
+            
+            # Adjust font size if text height also exceeds
+            if text_height > widget_height:
+                self.lbl.font_size = self.lbl.font_size * widget_height / text_height
+
+            self.btm.add_widget(Label())
+            self.btm.add_widget(self.lbl)
+            self.btm.add_widget(Label())
+
+            
+        self.ids[self.tune+'b'] = self.btm
+        
+        self.add_widget(self.btm) 
+    def _update_border2(self, *args):
+        x, y = self.tpm.pos
+        w, h = self.tpm.size
+        radius_x, radius_y = [20,20]
+
+        self.tpm.left_line.points = [x, y, x, y + h]
+        self.tpm.top_line.points = [x, y + h, x + w, y + h]
+        
+        self.tpm.right_line.points = [x + w, y + h, x + w, y+radius_y ]
+    
+    def _update_border(self, *args):
+        x, y = self.btm.pos
+        w, h = self.btm.size
+        radius_x, radius_y = [20,20]
+
+        self.btm.left_line.points = [x, y + radius_y, x, y + h]
+        
+        self.btm.right_line.points = [x + w, y + h, x + w, y + radius_y]
+        self.btm.bottom_line.points = self._create_rounded_corners(x, y, w, radius_x, radius_y)
+
+    def _create_rounded_corners(self, x, y, w, radius_x, radius_y):
+        points = []
+        num_segments = 10  
+        for i in range(num_segments + 1):
+            angle = pi / 2 * (i / num_segments)
+            bx = x + radius_x - radius_x * cos(angle)
+            by = y + radius_y - radius_y * sin(angle)
+            points.extend([bx, by])
+
+        points.extend([x + radius_x, y, x + w - radius_x, y])
+
+        for i in range(num_segments + 1):
+            angle = pi / 2 * (i / num_segments)
+            bx = x + w - radius_x + radius_x * sin(angle)
+            by = y + radius_y - radius_y * cos(angle)
+            points.extend([bx, by])
+
+        return points
+        
+    def update_rect(self, *args):
+        self.lbl.rect.pos = self.lbl.pos
+        self.lbl.rect.size = self.lbl.size
+    def set_background_color(self, color):
+        self.color = color
+        self.md_bg_color= self.color
+        self.tpm.md_bg_color=self.color
+        self.btm.md_bg_color=self.color
+     
+class y_box(MDBoxLayout):
+    def __init__(self,wid=0,background_color=(0,1,1,1),border_width=2,note='',lebel_text='', **kwargs):
+        super().__init__(**kwargs)  
+        self.width = wid
+        self.orientation= 'horizontal'
+        self.color= background_color
+        
+        self.md_bg_color= self.color
+        self.size_hint_x= None
+        self.border_width= border_width
+        self.border_color = (0,0,0,1)
+        self.radius = [0,0,20, 20]
+        self.tune= note
+        self.lebel_text=lebel_text
+        #self.ids=note
+        self.size_hint_y=0.716
+        self.pos_hint= {'top': 1}
+        
+        with self.canvas:
+            Color(*self.border_color)
+            self.left_line = Line(width=self.border_width)
+            self.top_line = Line(width=self.border_width)
+            
+            self.right_line = Line(width=self.border_width)
+            self.bottom_line = Line(width=self.border_width)
+        self.bind(pos=self._update_border, size=self._update_border)
+        if self.lebel_text!='':
+        
+            self.lbl =Label(text=self.lebel_text,color=[0,0,0,1],size_hint_y= None,height=self.width,padding=15,markup=True,bold=True,size_hint_x= None,width=self.width/1.5)
+            widget_width = self.lbl.width
+            widget_height = self.lbl.height
+            
+            # Create a temporary label to calculate the size
+            label = CoreLabel(text=self.lebel_text, font_size=self.lbl.font_size)
+            label.refresh()  # Update the label to get the size
+            text_width, text_height = label.texture.size
+
+            # If the text width exceeds the widget width, reduce the font size
+            if text_width > widget_width:
+                self.lbl.font_size = self.lbl.font_size * widget_width / text_width
+            
+            # Adjust font size if text height also exceeds
+            if text_height > widget_height:
+                self.lbl.font_size = self.lbl.font_size * widget_height / text_height
+            self.add_widget(Label())
+            self.add_widget(self.lbl)
+            self.add_widget(Label())
+            
+
+        
+    
+    def _update_border(self, *args):
+        x, y = self.pos
+        w, h = self.size
+
+        radius_x, radius_y = [20,20]
+
+        self.left_line.points = [x, y + radius_y, x, y + h]
+        self.top_line.points = [x, y + h, x + w, y + h]
+        
+        self.right_line.points = [x + w, y + h, x + w, y + radius_y]
+        self.bottom_line.points = self._create_rounded_corners(x, y, w, radius_x, radius_y)
+
+    def _create_rounded_corners(self, x, y, w, radius_x, radius_y):
+        points = []
+        num_segments = 10  
+        for i in range(num_segments + 1):
+            angle = pi / 2 * (i / num_segments)
+            bx = x + radius_x - radius_x * cos(angle)
+            by = y + radius_y - radius_y * sin(angle)
+            points.extend([bx, by])
+
+        points.extend([x + radius_x, y, x + w - radius_x, y])
+
+        for i in range(num_segments + 1):
+            angle = pi / 2 * (i / num_segments)
+            bx = x + w - radius_x + radius_x * sin(angle)
+            by = y + radius_y - radius_y * cos(angle)
+            points.extend([bx, by])
+
+        return points
+    def set_background_color(self, color):
+        self.color = color
+        self.md_bg_color= self.color
+        
+class w_box(MDBoxLayout):
+    def __init__(self,wid=0,background_color=(0,1,1,1),border_width=2,note='',lebel_text='',as_main=False, **kwargs):
+        super().__init__(**kwargs)  
+        self.width = wid
+        self.orientation= 'horizontal'
+        self.color= background_color
+        
+        self.md_bg_color= self.color
+        self.size_hint_x= None
+        self.border_width= border_width
+        self.border_color = (0,0,0,1)
+        self.radius = [0,0,20, 20]
+        self.tune= note
+        self.lebel_text=lebel_text
+        self.bg_color = (0, 1, 0, 1)  # Green background
+        
+        #self.ids=note
+        self.size_hint_y=1
+        if as_main:
+            self.padding=10
+        else:
+            self.padding=15
+        with self.canvas:
+            Color(*self.border_color)
+            self.left_line = Line(width=self.border_width)
+            self.top_line = Line(width=self.border_width)
+            
+            self.right_line = Line(width=self.border_width)
+            self.bottom_line = Line(width=self.border_width)
+        self.bind(pos=self._update_border, size=self._update_border)
+
+        if self.lebel_text!='':
+            x_wid=0
+            if as_main:
+                x_wid=self.width/1.5
+            else:
+                x_wid=self.width
+
+            self.lbl =Label(text=self.lebel_text,color=[0,0,0,1],size_hint_y= None,height=x_wid,size_hint_x=None,width=x_wid)
+            
+            with self.lbl.canvas.before:
+                Color(*self.bg_color)  # Set background color
+                self.lbl.rect = RoundedRectangle(pos=self.lbl.pos, size=self.lbl.size, radius=[10,10,10,10])
+            self.lbl.bind(pos=self.update_rect, size=self.update_rect)
+            widget_width = self.lbl.width
+            widget_height = self.lbl.height
+            
+            # Create a temporary label to calculate the size
+            label = CoreLabel(text=self.lebel_text, font_size=self.lbl.font_size)
+            label.refresh()  # Update the label to get the size
+            text_width, text_height = label.texture.size
+
+            # If the text width exceeds the widget width, reduce the font size
+            if text_width > widget_width:
+                self.lbl.font_size = self.lbl.font_size * widget_width / text_width
+            
+            # Adjust font size if text height also exceeds
+            if text_height > widget_height:
+                self.lbl.font_size = self.lbl.font_size * widget_height / text_height
+            if as_main:
+                self.add_widget(Label())
+                self.add_widget(self.lbl)
+                self.add_widget(Label())
+            else:
+                self.add_widget(self.lbl)
+            
+        
+    def update_rect(self, *args):
+        self.lbl.rect.pos = self.lbl.pos
+        self.lbl.rect.size = self.lbl.size
+    
+    def _update_border(self, *args):
+        x, y = self.pos
+        w, h = self.size
+
+        radius_x, radius_y = [20,20]
+
+        self.left_line.points = [x, y + radius_y, x, y + h]
+        self.top_line.points = [x, y + h, x + w, y + h]
+        
+        self.right_line.points = [x + w, y + h, x + w, y + radius_y]
+        self.bottom_line.points = self._create_rounded_corners(x, y, w, radius_x, radius_y)
+
+    def _create_rounded_corners(self, x, y, w, radius_x, radius_y):
+        points = []
+        num_segments = 10  
+        for i in range(num_segments + 1):
+            angle = pi / 2 * (i / num_segments)
+            bx = x + radius_x - radius_x * cos(angle)
+            by = y + radius_y - radius_y * sin(angle)
+            points.extend([bx, by])
+
+        points.extend([x + radius_x, y, x + w - radius_x, y])
+
+        for i in range(num_segments + 1):
+            angle = pi / 2 * (i / num_segments)
+            bx = x + w - radius_x + radius_x * sin(angle)
+            by = y + radius_y - radius_y * cos(angle)
+            points.extend([bx, by])
+
+        return points
+        
+    def set_background_color(self, color):
+        self.color = color
+        self.md_bg_color= self.color
+         
+            
+    
 class BorderedBoxLayout(BoxLayout):
     def __init__(self, border_color=(0, 0, 0, 1),border_width=2, left_width=2.5, other_width=5, **kwargs):
         super().__init__(**kwargs)
@@ -689,7 +1241,7 @@ class InstrumentPopup(Popup):
         bx.add_widget(llb2)
         bx.add_widget(llb3)
         bx.add_widget(llb4)
-        bx.add_widget(llb5)
+        #bx.add_widget(llb5)
 
         bx.add_widget(lbl3)
         
@@ -840,7 +1392,7 @@ class PianoApp(MDApp):
         else:
             self.instrument_img = "images/defaut.png"
         
-        self.pre_music=0
+        self.pre_music=''
         self.keys_label=self.retrieve_data("keys_label")
         
         self.custom_label=self.retrieve_data("custom_label") if self.retrieve_data("custom_label") is not None else {"C":"C","C#":"C#","D":"D","D#":"D#","E":"E","F":"F","F#":"F#","G":"G","G#":"G#","A":"A","A#":"A#","B":"B"}
@@ -1162,34 +1714,48 @@ class PianoApp(MDApp):
        
         
     def update_color(self):
-        if self.custom_color_active:
-            self.custom_update_color()
-            return
+        # if self.custom_color_active:
+        #     self.custom_update_color()
+        #     return
+        piano_notes =[]
+        for notes in self.piano_notes:
+            for key in os.listdir('sounds/'+self.selected_instrument):
+                a = key.split('.')[0]
+                if a == notes:
+                    piano_notes.append(a)
+        for i in piano_notes:
+            color_id = ''
+            if "A" in i or "B" in i:
+                color_id = "0"+i[1:]
+            else:
+                color_id= "1"+i[1:]
+            for j in self.a.ids.main_screen.ids.keys_container.children:
+
+                j.children[1].children[0].ids[i].set_background_color(self.notes_color[color_id])
+        # full_notes_color = {}
+        # color_keys = list(self.notes_color.keys())
+        # num_colors = len(color_keys)
         
-        full_notes_color = {}
-        color_keys = list(self.notes_color.keys())
-        num_colors = len(color_keys)
-        
-        for i, note in enumerate(self.piano_notes):
-            color_index = i % num_colors  # Cycle through the colors
-            color_key = color_keys[color_index]
-            full_notes_color[note] = self.notes_color[color_key]
+        # for i, note in enumerate(self.piano_notes):
+        #     color_index = i % num_colors  # Cycle through the colors
+        #     color_key = color_keys[color_index]
+        #     full_notes_color[note] = self.notes_color[color_key]
 
        
-        for i in full_notes_color.keys():
-            for j in self.a.ids.main_screen.ids.keys_container.children:
-                for v in j.children[1].children[0].ids:
-                    if v==i:
+        # for i in full_notes_color.keys():
+        #     for j in self.a.ids.main_screen.ids.keys_container.children:
+        #         for v in j.children[1].children[0].ids:
+        #             if v==i:
                         
-                        j.children[1].children[0].ids[i].set_background_color(full_notes_color[i])
-                    elif "half" in v and v[0:3]==i:
-                        j.children[1].children[0].ids[v].ids[i].set_background_color(full_notes_color[i])
-                        for p in j.children[1].children[0].ids[v].ids['double_container'].ids:
-                            j.children[1].children[0].ids[v].ids['double_container'].ids[p].set_background_color(full_notes_color[p[:-1]])
-                    elif "half" in v and v[0:2]==i and v[2]=="_":
-                        j.children[1].children[0].ids[v].ids[i].set_background_color(full_notes_color[i])
-                        for p in j.children[1].children[0].ids[v].ids['double_container'].ids:
-                            j.children[1].children[0].ids[v].ids['double_container'].ids[p].set_background_color(full_notes_color[p[:-1]])
+        #                 j.children[1].children[0].ids[i].set_background_color(full_notes_color[i])
+        #             elif "half" in v and v[0:3]==i:
+        #                 j.children[1].children[0].ids[v].ids[i].set_background_color(full_notes_color[i])
+        #                 for p in j.children[1].children[0].ids[v].ids['double_container'].ids:
+        #                     j.children[1].children[0].ids[v].ids['double_container'].ids[p].set_background_color(full_notes_color[p[:-1]])
+        #             elif "half" in v and v[0:2]==i and v[2]=="_":
+        #                 j.children[1].children[0].ids[v].ids[i].set_background_color(full_notes_color[i])
+        #                 for p in j.children[1].children[0].ids[v].ids['double_container'].ids:
+        #                     j.children[1].children[0].ids[v].ids['double_container'].ids[p].set_background_color(full_notes_color[p[:-1]])
         
         self.update_storage()
        
@@ -1259,15 +1825,16 @@ class PianoApp(MDApp):
                 
     def play_sound(self,file_nm):
         # Get the list of all .wav and .mp3 files in the 'instrument' folder
+        print(file_nm)
         file_name = ""
-        if self.piano_notes[file_nm-1]+".wav" in os.listdir('sounds/'+self.selected_instrument):
-            file_name=f"{self.piano_notes[file_nm-1]}.wav"
+        if file_nm+".wav" in os.listdir('sounds/'+self.selected_instrument): #self.piano_notes[file_nm-1]
+            file_name=f"{file_nm}.wav" #self.piano_notes[file_nm-1]
         else:
-            file_name=f"{self.piano_notes[file_nm-1]}.mp3"
+            file_name=f"{file_nm}.mp3" #self.piano_notes[file_nm-1]
         path = "sounds/"+self.selected_instrument+"/"+file_name
         
         file_path = f"{path}"
-        channel = pygame.mixer.Channel(file_nm)  
+        channel = pygame.mixer.Channel(self.piano_notes.index(file_nm))  
         if channel:
             if file_path not in self.sounds:
                 self.sounds[file_path] = pygame.mixer.Sound(file_path)
@@ -1296,77 +1863,113 @@ class PianoApp(MDApp):
                 #Checking which key is Clicked
                 num_key = 0
                 for v in i.children[1].children[0].children:
-                        
-                    if (touch.pos[0]>=v.pos[0]+i.pos[0] and touch.pos[0]<=v.pos[0]+v.size[0]+i.pos[0]) and (touch.pos[1]>=v.pos[1]+i.pos[1] and touch.pos[1]<=v.pos[1]+v.size[1]+i.pos[1]):
-                        #White keys color
-                        if len(v.children)<2 and isinstance(v,BoxLayout):
-                            self.update_color()
-                            v.set_background_color([108/255,122/255,137/255,1])
-                            sub_id = key_ids[num_key]+'a'
-                            if action=="down":
-                                self.play_sound(88-num_key)
-                            elif 88-num_key!=self.pre_music:
-                                if self.sustain_tune==False:
-                                    self.stop_all_sounds()
-                                self.play_sound(88-num_key)
-                            self.pre_music = 88-num_key
-                            for n in key_ids:
-                                if "half" in n:
-                                    if sub_id in list(i.children[1].children[0].ids[n].children[0].ids.keys()):
-                                        i.children[1].children[0].ids[n].children[0].ids[sub_id].set_background_color([108/255,122/255,137/255,1])
-                        elif len(v.children)>=2 and isinstance(v.children[0],Label) and isinstance(v.children[-1],Label):
-                            self.update_color()
-
-                            if action=="down":
-                                self.play_sound(88-num_key)
-                            elif 88-num_key!=self.pre_music:
-                                if self.sustain_tune==False:
-                                    self.stop_all_sounds()
-                                self.play_sound(88-num_key)
-                            self.pre_music = 88-num_key
+                    v_key=''
+                    for n in i.children[1].children[0].ids.keys():
+                        if i.children[1].children[0].ids[n]==v:
+                            v_key=n
                             
+                    if len(v.ids.keys())==0:
+                        if (touch.pos[0]>=v.pos[0]+i.pos[0] and touch.pos[0]<=v.pos[0]+v.size[0]+i.pos[0]) and (touch.pos[1]>=v.pos[1]+i.pos[1] and touch.pos[1]<=v.pos[1]+v.size[1]+i.pos[1]):
+                            self.update_color()
                             v.set_background_color([108/255,122/255,137/255,1])
-                                
-                                
-                        elif isinstance(v,BoxLayout):
-                            if (touch.pos[0]>=v.children[-1].pos[0]+i.pos[0] and touch.pos[0]<=v.children[-1].pos[0]+v.children[-1].size[0]+i.pos[0]) and (touch.pos[1]>=v.children[-1].pos[1]+i.pos[1] and touch.pos[1]<=v.children[-1].pos[1]+v.children[-1].size[1]+i.pos[1]):
-                                self.update_color()
-                                if action=="down":
-                                    self.play_sound(88-num_key)
-                                elif 88-num_key!=self.pre_music:
-                                    if self.sustain_tune==False:
-                                        self.stop_all_sounds()
-                                    self.play_sound(88-num_key)
-                                self.pre_music = 88-num_key
-                                v.children[-1].set_background_color([108/255,122/255,137/255,1])
-                            else:
-                                try:
-                                    pera_key = list(v.children[0].ids.keys())
-                                    for vir in pera_key:
-                                        child_pass = v.children[0].ids[vir]
-                                        if (touch.pos[0]>=child_pass.pos[0]+i.pos[0] and touch.pos[0]<=child_pass.pos[0]+child_pass.size[0]+i.pos[0]) and (touch.pos[1]>=child_pass.pos[1]+i.pos[1] and touch.pos[1]<=child_pass.pos[1]+child_pass.size[1]+i.pos[1]):
-                                            self.update_color()
-                                            new_in=self.piano_notes.index(vir[:-1])+1
-                                            if action=="down":
-                                                self.play_sound(new_in)
-                                            elif new_in!=self.pre_music:
-                                                if self.sustain_tune==False:
-                                                    self.stop_all_sounds()
-                                                self.play_sound(new_in)
-                                            self.pre_music = new_in
-                                            
-                                            child_pass.set_background_color([108/255,122/255,137/255,1])
-                                            vi = vir[:-1]
-                                            i.children[1].children[0].ids[vi].set_background_color([108/255,122/255,137/255,1])
-                                            for tin in i.children[1].children[0].children:
-                                                if len(tin.children)>=2:
-                                                    if vir in list(tin.children[0].ids.keys()):
-                                                        tin.children[0].ids[vir].set_background_color([108/255,122/255,137/255,1])
-                                except:
-                                    return
+                            if action=="down":
+                                self.play_sound(v_key)
+                            elif v_key!=self.pre_music:
+                                if self.sustain_tune==False:
+                                    self.stop_all_sounds()
+                                self.play_sound(v_key)
+                            self.pre_music = v_key
+                    else:
+                        if ((touch.pos[0]>=v.ids[v_key+'a'].pos[0]+i.pos[0] and touch.pos[0]<=v.ids[v_key+'a'].pos[0]+v.ids[v_key+'a'].size[0]+i.pos[0]) and (touch.pos[1]>=v.ids[v_key+'a'].pos[1]+i.pos[1] and touch.pos[1]<=v.ids[v_key+'a'].pos[1]+v.ids[v_key+'a'].size[1]+i.pos[1])) or ((touch.pos[0]>=v.ids[v_key+'b'].pos[0]+i.pos[0] and touch.pos[0]<=v.ids[v_key+'b'].pos[0]+v.ids[v_key+'b'].size[0]+i.pos[0]) and (touch.pos[1]>=v.ids[v_key+'b'].pos[1]+i.pos[1] and touch.pos[1]<=v.ids[v_key+'b'].pos[1]+v.ids[v_key+'b'].size[1]+i.pos[1])): 
+                            self.update_color()
+                            v.set_background_color([108/255,122/255,137/255,1])
+                            if action=="down":
+                                self.play_sound(v_key)
+                            elif v_key!=self.pre_music:
+                                if self.sustain_tune==False:
+                                    self.stop_all_sounds()
+                                self.play_sound(v_key)
+                            self.pre_music = v_key
+                         
+                         
+                        
+                        pass
+                        #print('down')
+                    # if (touch.pos[0]>=v.pos[0]+i.pos[0] and touch.pos[0]<=v.pos[0]+v.size[0]+i.pos[0]) and (touch.pos[1]>=v.pos[1]+i.pos[1] and touch.pos[1]<=v.pos[1]+v.size[1]+i.pos[1]):
+                    #     #White keys color
+                    #     print(v.ids)
+                    #     if len(v.children)<2 and isinstance(v,BoxLayout):
+                    #         self.update_color()
+                    #         v.set_background_color([108/255,122/255,137/255,1])
+                    #         sub_id = key_ids[num_key]+'a'
+                    #         if action=="down":
+                    #             self.play_sound(88-num_key)
+                    #         elif 88-num_key!=self.pre_music:
+                    #             if self.sustain_tune==False:
+                    #                 self.stop_all_sounds()
+                    #             self.play_sound(88-num_key)
+                    #         self.pre_music = 88-num_key
+                    #         for n in key_ids:
+                    #             if "half" in n:
+                    #                 if sub_id in list(i.children[1].children[0].ids[n].children[0].ids.keys()):
+                    #                     i.children[1].children[0].ids[n].children[0].ids[sub_id].set_background_color([108/255,122/255,137/255,1])
+                    #     elif len(v.children)>=2 and isinstance(v.children[0],Label) and isinstance(v.children[-1],Label):
+                    #         self.update_color()
 
-                    if isinstance(v,BoxLayout):
-                        num_key+=1   
+                    #         if action=="down":
+                    #             self.play_sound(88-num_key)
+                    #         elif 88-num_key!=self.pre_music:
+                    #             if self.sustain_tune==False:
+                    #                 self.stop_all_sounds()
+                    #             self.play_sound(88-num_key)
+                    #         self.pre_music = 88-num_key
+                            
+                    #         v.set_background_color([108/255,122/255,137/255,1])
+                                
+                                
+                    #     elif isinstance(v,BoxLayout):
+                            
+                    #         if (touch.pos[0]>=v.children[-1].pos[0]+i.pos[0] and touch.pos[0]<=v.children[-1].pos[0]+v.children[-1].size[0]+i.pos[0]) and (touch.pos[1]>=v.children[-1].pos[1]+i.pos[1] and touch.pos[1]<=v.children[-1].pos[1]+v.children[-1].size[1]+i.pos[1]):
+                    #             self.update_color()
+                    #             if action=="down":
+                    #                 self.play_sound(88-num_key)
+                    #             elif 88-num_key!=self.pre_music:
+                    #                 print("wwcc")
+                            
+                    #                 if self.sustain_tune==False:
+                    #                     self.stop_all_sounds()
+                    #                 self.play_sound(88-num_key)
+                    #             self.pre_music = 88-num_key
+                    #             v.children[-1].set_background_color([108/255,122/255,137/255,1])
+                    #         else:
+                            
+                    #             try:
+                    #                 pera_key = list(v.children[0].ids.keys())
+                    #                 for vir in pera_key:
+                    #                     child_pass = v.children[0].ids[vir]
+                    #                     if (touch.pos[0]>=child_pass.pos[0]+i.pos[0] and touch.pos[0]<=child_pass.pos[0]+child_pass.size[0]+i.pos[0]) and (touch.pos[1]>=child_pass.pos[1]+i.pos[1] and touch.pos[1]<=child_pass.pos[1]+child_pass.size[1]+i.pos[1]):
+                    #                         self.update_color()
+                    #                         new_in=self.piano_notes.index(vir[:-1])+1
+                    #                         if action=="down":
+                    #                             self.play_sound(new_in)
+                    #                         elif new_in!=self.pre_music:
+                    #                             if self.sustain_tune==False:
+                    #                                 self.stop_all_sounds()
+                    #                             self.play_sound(new_in)
+                    #                         self.pre_music = new_in
+                                            
+                    #                         child_pass.set_background_color([108/255,122/255,137/255,1])
+                    #                         vi = vir[:-1]
+                    #                         i.children[1].children[0].ids[vi].set_background_color([108/255,122/255,137/255,1])
+                    #                         for tin in i.children[1].children[0].children:
+                    #                             if len(tin.children)>=2:
+                    #                                 if vir in list(tin.children[0].ids.keys()):
+                    #                                     tin.children[0].ids[vir].set_background_color([108/255,122/255,137/255,1])
+                    #             except:
+                    #                 return
+
+                    # if isinstance(v,BoxLayout):
+                    #     num_key+=1   
               
     def update_rect(self, instance, value):
         self.rect.pos = instance.pos
@@ -1464,9 +2067,9 @@ class PianoApp(MDApp):
                 list_pair.append(i)
         minus_wid = 7 - len(list_pair)
         
-        if is_valid_ins==False:
-            self.warning_popup(miss_keys)
-            return
+        #if is_valid_ins==False:
+         #   self.warning_popup(miss_keys)
+            #return
         
         for t in range(total_ele,num):
             bx = BoxLayout(orientation='vertical')
@@ -1486,7 +2089,7 @@ class PianoApp(MDApp):
                 pass
             else:
                 layout_wid-=self.wid*3
-            bx2 = BoxLayout(orientation="horizontal",size_hint_x=None,width= layout_wid) #88.5
+            bx2 = BoxLayout(orientation="horizontal",size_hint_x=None,width= (self.wid)*(88-(88-len(piano_notes))),padding=0,spacing=0) #88.5
             bx.ids['hori_con']=bx2
             minus_an=0
             if add_first_layer:
@@ -1495,359 +2098,413 @@ class PianoApp(MDApp):
                 minus_an=3
             an =0
             exnel_label=0
-            for i in self.first_note:
-                note = self.piano_notes[an]
+            print(self.keys_label)
+            print(self.custom_label)
+            for i in piano_notes:
+                key_lbl=''
+                if self.keys_label==None:
+                    pass
+                elif self.keys_label=="Notes":
+                    key_lbl=i
+                else:
+                    key_lbl= self.custom_label[i[1:]]
+
+                if '#' in i:
+                    layout = y_box(wid=self.wid,note=i,lebel_text=key_lbl,border_width=self.wid/30)
+                    bx2.ids[i]=layout
+                    bx2.add_widget(layout)
+                elif i==piano_notes[0]:
+                    if '#' in piano_notes[1]:
+                        layout = wr_box(wid=self.wid,note=i,lebel_text=key_lbl,border_width=self.wid/30)
+                        bx2.ids[i]=layout
+                        bx2.add_widget(layout)
+                    else:
+                        layout = w_box(wid=self.wid,background_color=(0.3,0.4,0.5,1),note=i,lebel_text=key_lbl,border_width=self.wid/30)
+                        bx2.ids[i]=layout
+                        bx2.add_widget(layout)
+            
+                elif i==piano_notes[-1]:
+                    if '#' in piano_notes[-2]:
+                        layout = wl_box(wid=self.wid,note=i,lebel_text=key_lbl,border_width=self.wid/30)
+                        bx2.ids[i]=layout
+                        bx2.add_widget(layout)
+                    else:
+                        layout = w_box(wid=self.wid,background_color=(0.3,0.4,0.5,1),note=i,lebel_text=key_lbl,border_width=self.wid/30)
+                        bx2.ids[i]=layout
+                        bx2.add_widget(layout)
+                else:
+                    if '#' in piano_notes[piano_notes.index(i)+1] and '#' in piano_notes[piano_notes.index(i)-1]:
+                        layout = wb_box(wid=self.wid,note=i,lebel_text=key_lbl,border_width=self.wid/30)
+                        bx2.ids[i]=layout
+                        bx2.add_widget(layout)
+                    elif '#' in piano_notes[piano_notes.index(i)+1] and '#' not in piano_notes[piano_notes.index(i)-1]:
+                        layout = wr_box(wid=self.wid,note=i,lebel_text=key_lbl,border_width=self.wid/30)
+                        bx2.ids[i]=layout
+                        bx2.add_widget(layout)
+                    elif '#' not in piano_notes[piano_notes.index(i)+1] and '#' in piano_notes[piano_notes.index(i)-1]:
+                        layout = wl_box(wid=self.wid,note=i,lebel_text=key_lbl,border_width=self.wid/30)
+                        bx2.ids[i]=layout
+                        bx2.add_widget(layout)
+                    else:
+                        layout = w_box(wid=self.wid,background_color=(0.3,0.4,0.5,1),note=i,lebel_text=key_lbl,border_width=self.wid/30)
+                        bx2.ids[i]=layout
+                        bx2.add_widget(layout)
+
+                    
+            
+            # for i in self.first_note:
+            #     note = self.piano_notes[an]
                 
-                if i=='x':
-                    bx3 =ColoredBoxLayout(orientation="vertical",size_hint_x=None,always_release=True,width= self.wid,background_color=(1, 1, 1, 1),tone=note,layout=t,padding=[0,0,0,15]
-                                         ,b_width=self.wid/30 )
+            #     if i=='x':
+            #         bx3 =ColoredBoxLayout(orientation="vertical",size_hint_x=None,always_release=True,width= self.wid,background_color=(1, 1, 1, 1),tone=note,layout=t,padding=[0,0,0,15]
+            #                              ,b_width=self.wid/30 )
                     
-                    if self.keys_label!=None:
-                        if self.f_label[an]==1:
-                            ft_main = FloatLayout(size_hint= (None, None),size=(self.wid, self.wid),pos= (self.wid*(an)-(self.wid*1.5/6),self.wid*1.5/6))
+            #         if self.keys_label!=None:
+            #             if self.f_label[an]==1:
+            #                 ft_main = FloatLayout(size_hint= (None, None),size=(self.wid, self.wid),pos= (self.wid*(an)-(self.wid*1.5/6),self.wid*1.5/6))
                             
-                            with ft_main.canvas:
-                                Color(0, 1, 0, 1)  
-                                self.rect = Rectangle(size=ft_main.size, pos=ft_main.pos)
-                                Color(0, 0, 0, 1)  
-                                self.rect = Rectangle(size=(self.wid,self.wid/30), pos=(self.wid*(an)-(self.wid*1.5/6),0))
+            #                 with ft_main.canvas:
+            #                     Color(0, 1, 0, 1)  
+            #                     self.rect = Rectangle(size=ft_main.size, pos=ft_main.pos)
+            #                     Color(0, 0, 0, 1)  
+            #                     self.rect = Rectangle(size=(self.wid,self.wid/30), pos=(self.wid*(an)-(self.wid*1.5/6),0))
                                 
-                            n_lbl=''
-                            if self.keys_label=="Notes":
-                                n_lbl=note
-                            elif isinstance(self.keys_label, dict):
-                                n_lbl = self.keys_label[note[1:]]
-                            else:
-                                n_lbl=self.keys_label[exnel_label]
-                            exnel_label+=1
-                            if exnel_label==7:
-                                exnel_label=0
+            #                 n_lbl=''
+            #                 if self.keys_label=="Notes":
+            #                     n_lbl=note
+            #                 elif isinstance(self.keys_label, dict):
+            #                     n_lbl = self.keys_label[note[1:]]
+            #                 else:
+            #                     n_lbl=self.keys_label[exnel_label]
+            #                 exnel_label+=1
+            #                 if exnel_label==7:
+            #                     exnel_label=0
 
-                            ft = Label(text=n_lbl,pos=ft_main.pos,halign='center',color=[0,0,0,1])
-                            ft.text_size = (ft.width, None)
-                            ft.font_size = ft.height / (len(n_lbl)+2) 
-                            while ft.texture_size[1] > ft.height or ft.texture_size[0] > ft.width:
-                                ft.font_size -= 1
+            #                 ft = Label(text=n_lbl,pos=ft_main.pos,halign='center',color=[0,0,0,1])
+            #                 ft.text_size = (ft.width, None)
+            #                 ft.font_size = ft.height / (len(n_lbl)+2) 
+            #                 while ft.texture_size[1] > ft.height or ft.texture_size[0] > ft.width:
+            #                     ft.font_size -= 1
                             
-                            ft_main.add_widget(ft)
+            #                 ft_main.add_widget(ft)
                             
                             
-                            bx3.add_widget(ft_main)
-                    if  add_first_layer==False:
-                        bx3.width=0
-                    bx2.ids[note]=bx3
-                    bx2.add_widget(bx3)
-                    an+=1
-                elif i=='y':
-                    #black key
-                    bx3 =ColoredBoxLayout(orientation="vertical",size_hint_x=None,spacing=2,width= self.wid,background_color=(1, 1, 1, 1),b_width=self.wid/30)
-                    bx2.ids[note+"_half_container"]=bx3
+            #                 bx3.add_widget(ft_main)
+            #         if  add_first_layer==False:
+            #             bx3.width=0
+            #         bx2.ids[note]=bx3
+            #         bx2.add_widget(bx3)
+            #         an+=1
+            #     elif i=='y':
+            #         #black key
+            #         bx3 =ColoredBoxLayout(orientation="vertical",size_hint_x=None,spacing=2,width= self.wid,background_color=(1, 1, 1, 1),b_width=self.wid/30)
+            #         bx2.ids[note+"_half_container"]=bx3
                     
-                    #key full
-                    bx4 = ColoredBoxLayout(background_color=(0, 0, 0, 1),tone=note,layout=t,b_width=self.wid/30)
-                    bx3.ids[note]=bx4
-                    bx4_1 = BorderedBoxLayout(border_color=(0,0,0,1),border_width=self.wid/30,left_width=self.wid/30,other_width=self.wid/30)
-                    black_empty= MDLabel()
-                    black_lbl= MDLabel(text=note,size_hint_y= None,height=18,size_hint_x= None,width=self.wid,halign='center',bold=True)
-                    bx4_1.add_widget(black_empty)
+            #         #key full
+            #         bx4 = ColoredBoxLayout(background_color=(0, 0, 0, 1),tone=note,layout=t,b_width=self.wid/30)
+            #         bx3.ids[note]=bx4
+            #         bx4_1 = BorderedBoxLayout(border_color=(0,0,0,1),border_width=self.wid/30,left_width=self.wid/30,other_width=self.wid/30)
+            #         black_empty= MDLabel()
+            #         black_lbl= MDLabel(text=note,size_hint_y= None,height=18,size_hint_x= None,width=self.wid,halign='center',bold=True)
+            #         bx4_1.add_widget(black_empty)
                     
-                    bx4_1.add_widget(black_lbl)
+            #         bx4_1.add_widget(black_lbl)
                     
-                    bx4.add_widget(bx4_1)
-                    #half key
-                    bx5 = ColoredBoxLayout(orientation="horizontal",size_hint_y=0.382,b_width=self.wid/30)
-                    bx3.ids["double_container"]=bx5
-                    bx6 = ColoredBoxLayout(background_color=(1, 1, 1, 1),tone=self.piano_notes[an-1]+'a',layout=t,
-                                           b_width=self.wid/30)
-                    if self.keys_label!=None:
-                        if self.f_label[an]==1:
-                            ft_main = FloatLayout(size_hint= (None, None),size=(self.wid, self.wid),pos= (self.wid*(an)-(self.wid*1.5/2),self.wid*1.5/6))
+            #         bx4.add_widget(bx4_1)
+            #         #half key
+            #         bx5 = ColoredBoxLayout(orientation="horizontal",size_hint_y=0.382,b_width=self.wid/30)
+            #         bx3.ids["double_container"]=bx5
+            #         bx6 = ColoredBoxLayout(background_color=(1, 1, 1, 1),tone=self.piano_notes[an-1]+'a',layout=t,
+            #                                b_width=self.wid/30)
+            #         if self.keys_label!=None:
+            #             if self.f_label[an]==1:
+            #                 ft_main = FloatLayout(size_hint= (None, None),size=(self.wid, self.wid),pos= (self.wid*(an)-(self.wid*1.5/2),self.wid*1.5/6))
                             
-                            with ft_main.canvas:
-                                Color(0, 1, 0, 1)  
-                                self.rect = Rectangle(size=ft_main.size, pos=ft_main.pos)
-                            n_lbl=''
-                            if self.keys_label=="Notes":
-                                n_lbl=self.piano_notes[an-1]
-                            elif isinstance(self.keys_label, dict):
-                                n_lbl = self.keys_label[self.piano_notes[an-1][1:]]
-                            else:
-                                n_lbl=self.keys_label[exnel_label]
-                            exnel_label+=1
-                            if exnel_label==7:
-                                exnel_label=0
+            #                 with ft_main.canvas:
+            #                     Color(0, 1, 0, 1)  
+            #                     self.rect = Rectangle(size=ft_main.size, pos=ft_main.pos)
+            #                 n_lbl=''
+            #                 if self.keys_label=="Notes":
+            #                     n_lbl=self.piano_notes[an-1]
+            #                 elif isinstance(self.keys_label, dict):
+            #                     n_lbl = self.keys_label[self.piano_notes[an-1][1:]]
+            #                 else:
+            #                     n_lbl=self.keys_label[exnel_label]
+            #                 exnel_label+=1
+            #                 if exnel_label==7:
+            #                     exnel_label=0
 
-                            ft = Label(text=n_lbl,pos=ft_main.pos,halign='center',color=[0,0,0,1])
-                            ft.text_size = (ft.width, None)
-                            ft.font_size = ft.height / (len(n_lbl)+2) # Start with an arbitrary value
-                            while ft.texture_size[1] > ft.height or ft.texture_size[0] > ft.width:
-                                ft.font_size -= 1
+            #                 ft = Label(text=n_lbl,pos=ft_main.pos,halign='center',color=[0,0,0,1])
+            #                 ft.text_size = (ft.width, None)
+            #                 ft.font_size = ft.height / (len(n_lbl)+2) # Start with an arbitrary value
+            #                 while ft.texture_size[1] > ft.height or ft.texture_size[0] > ft.width:
+            #                     ft.font_size -= 1
                             
-                            ft_main.add_widget(ft)
+            #                 ft_main.add_widget(ft)
                             
-                            bx6.add_widget(ft_main)
+            #                 bx6.add_widget(ft_main)
                     
-                    bx5.ids[self.piano_notes[an-1]+'a']=bx6
-                    plbl = ColoredLabel(size_hint_x= None,width=0, background_color=(0, 0, 0, 1),)
+            #         bx5.ids[self.piano_notes[an-1]+'a']=bx6
+            #         plbl = ColoredLabel(size_hint_x= None,width=0, background_color=(0, 0, 0, 1),)
                     
-                    with plbl.canvas:
-                        Color(0, 0, 0, 1)
-                        Rectangle(pos=plbl.pos, size=plbl.size)
+            #         with plbl.canvas:
+            #             Color(0, 0, 0, 1)
+            #             Rectangle(pos=plbl.pos, size=plbl.size)
 
-                    bx7 = ColoredBoxLayout(background_color=(1, 1, 1, 1),tone=self.piano_notes[an+1]+'a',layout=t
-                                          ,b_width=self.wid/30)
-                    bx5.ids[self.piano_notes[an+1]+'a']=bx7
+            #         bx7 = ColoredBoxLayout(background_color=(1, 1, 1, 1),tone=self.piano_notes[an+1]+'a',layout=t
+            #                               ,b_width=self.wid/30)
+            #         bx5.ids[self.piano_notes[an+1]+'a']=bx7
                     
-                    bx6.add_widget(DownBordered(direction='right',left_width=self.wid/30,other_width=self.wid/30))   
+            #         bx6.add_widget(DownBordered(direction='right',left_width=self.wid/30,other_width=self.wid/30))   
                     
-                    bx7.add_widget(DownBordered(direction='left',left_width=self.wid/30,other_width=self.wid/30))   
-                    bx3.add_widget(bx4)
+            #         bx7.add_widget(DownBordered(direction='left',left_width=self.wid/30,other_width=self.wid/30))   
+            #         bx3.add_widget(bx4)
                     
-                    bx5.add_widget(bx6)
-                    bx5.add_widget(plbl)
+            #         bx5.add_widget(bx6)
+            #         bx5.add_widget(plbl)
                     
-                    bx5.add_widget(bx7)
+            #         bx5.add_widget(bx7)
                     
                         
 
-                    bx3.add_widget(bx5)
+            #         bx3.add_widget(bx5)
                     
-                    if  add_first_layer==False:
-                        bx3.width=0
+            #         if  add_first_layer==False:
+            #             bx3.width=0
                     
 
-                    bx2.add_widget(bx3)
-                    an+=1
-                else:
-                    p_lb =ColoredLabel(size_hint_x= None,width=0,background_color=(0,0,0,1))
+            #         bx2.add_widget(bx3)
+            #         an+=1
+            #     else:
+            #         p_lb =ColoredLabel(size_hint_x= None,width=0,background_color=(0,0,0,1))
 
-                    if  add_first_layer==False:
-                        p_lb.width=0
+            #         if  add_first_layer==False:
+            #             p_lb.width=0
                     
                     
-                    bx2.add_widget(p_lb)
+            #         bx2.add_widget(p_lb)
                     
-                    pass
+            #         pass
                 
             
-            for j in range(0,7):
-                asd_space =0 
-                sec_space = 0
-                sec_add=True
+            # for j in range(0,7):
+            #     asd_space =0 
+            #     sec_space = 0
+            #     sec_add=True
                 
-                for i in self.mid_note:
-                    note = self.piano_notes[an]
-                    if i=='x':
-                        bx3 =ColoredBoxLayout(orientation="vertical",size_hint_x=None,width= self.wid,background_color=(1, 1, 1, 1),tone=note,layout=t,b_width=self.wid/30
+            #     for i in self.mid_note:
+            #         note = self.piano_notes[an]
+            #         if i=='x':
+            #             bx3 =ColoredBoxLayout(orientation="vertical",size_hint_x=None,width= self.wid,background_color=(1, 1, 1, 1),tone=note,layout=t,b_width=self.wid/30
                                           
-                                              )
-                        if self.keys_label!=None:
-                            if self.m_label[an]==1:
-                                ft_main = FloatLayout(size_hint= (None, None),size=(self.wid, self.wid),pos= (self.wid*(an-minus_an)-(self.wid*1.5/6)+sec_space*2,self.wid*1.5/6))
-                                if sec_add:
-                                    sec_space+=1
-                                    sec_add=False
-                                with ft_main.canvas:
-                                    Color(0, 1, 0, 1) 
-                                    self.rect = Rectangle(size=ft_main.size, pos=ft_main.pos)
-                                n_lbl=''
-                                if self.keys_label=="Notes":
-                                    n_lbl=note
-                                elif isinstance(self.keys_label, dict):
-                                    n_lbl = self.keys_label[note[1:]]
+            #                                   )
+            #             if self.keys_label!=None:
+            #                 if self.m_label[an]==1:
+            #                     ft_main = FloatLayout(size_hint= (None, None),size=(self.wid, self.wid),pos= (self.wid*(an-minus_an)-(self.wid*1.5/6)+sec_space*2,self.wid*1.5/6))
+            #                     if sec_add:
+            #                         sec_space+=1
+            #                         sec_add=False
+            #                     with ft_main.canvas:
+            #                         Color(0, 1, 0, 1) 
+            #                         self.rect = Rectangle(size=ft_main.size, pos=ft_main.pos)
+            #                     n_lbl=''
+            #                     if self.keys_label=="Notes":
+            #                         n_lbl=note
+            #                     elif isinstance(self.keys_label, dict):
+            #                         n_lbl = self.keys_label[note[1:]]
                             
-                                else:
-                                    n_lbl=self.keys_label[exnel_label]
-                                exnel_label+=1
-                                if exnel_label==7:
-                                    exnel_label=0
+            #                     else:
+            #                         n_lbl=self.keys_label[exnel_label]
+            #                     exnel_label+=1
+            #                     if exnel_label==7:
+            #                         exnel_label=0
 
-                                ft = Label(text=n_lbl,pos=ft_main.pos,halign='center',color=[0,0,0,1])
-                                ft.text_size = (ft.width, None)
-                                ft.font_size = ft.height / (len(n_lbl)+2) 
-                                while ft.texture_size[1] > ft.height or ft.texture_size[0] > ft.width:
-                                    ft.font_size -= 1
+            #                     ft = Label(text=n_lbl,pos=ft_main.pos,halign='center',color=[0,0,0,1])
+            #                     ft.text_size = (ft.width, None)
+            #                     ft.font_size = ft.height / (len(n_lbl)+2) 
+            #                     while ft.texture_size[1] > ft.height or ft.texture_size[0] > ft.width:
+            #                         ft.font_size -= 1
                                 
-                                ft_main.add_widget(ft)
+            #                     ft_main.add_widget(ft)
                                 
-                                if int(note[0]) not in list_pair:
-                                    ft_main.opacity= 0
-                                    ft_main.width=0
+            #                     if int(note[0]) not in list_pair:
+            #                         ft_main.opacity= 0
+            #                         ft_main.width=0
                                 
-                                bx3.add_widget(ft_main)
-                            if self.m_label[an]==2:
-                                ft_main = FloatLayout(size_hint= (None, None),size=(self.wid, self.wid),pos= (self.wid*(an-minus_an)+sec_space*2,self.wid*1.5/6))
-                                if sec_add:
-                                    sec_space+=1
-                                    sec_add=False
-                                with ft_main.canvas:
-                                    Color(0, 1, 0, 1) 
-                                    self.rect = Rectangle(size=ft_main.size, pos=ft_main.pos)
-                                n_lbl=''
-                                if self.keys_label=="Notes":
-                                    n_lbl=note
-                                elif isinstance(self.keys_label, dict):
-                                    n_lbl = self.keys_label[note[1:]]
+            #                     bx3.add_widget(ft_main)
+            #                 if self.m_label[an]==2:
+            #                     ft_main = FloatLayout(size_hint= (None, None),size=(self.wid, self.wid),pos= (self.wid*(an-minus_an)+sec_space*2,self.wid*1.5/6))
+            #                     if sec_add:
+            #                         sec_space+=1
+            #                         sec_add=False
+            #                     with ft_main.canvas:
+            #                         Color(0, 1, 0, 1) 
+            #                         self.rect = Rectangle(size=ft_main.size, pos=ft_main.pos)
+            #                     n_lbl=''
+            #                     if self.keys_label=="Notes":
+            #                         n_lbl=note
+            #                     elif isinstance(self.keys_label, dict):
+            #                         n_lbl = self.keys_label[note[1:]]
                             
-                                else:
-                                    n_lbl=self.keys_label[exnel_label]
-                                exnel_label+=1
-                                if exnel_label==7:
-                                    exnel_label=0
+            #                     else:
+            #                         n_lbl=self.keys_label[exnel_label]
+            #                     exnel_label+=1
+            #                     if exnel_label==7:
+            #                         exnel_label=0
 
-                                ft = Label(text=n_lbl,pos=ft_main.pos,halign='center',color=[0,0,0,1])
-                                ft.text_size = (ft.width, None)
-                                ft.font_size = ft.height / (len(n_lbl)+2) 
-                                while ft.texture_size[1] > ft.height or ft.texture_size[0] > ft.width:
-                                    ft.font_size -= 1
+            #                     ft = Label(text=n_lbl,pos=ft_main.pos,halign='center',color=[0,0,0,1])
+            #                     ft.text_size = (ft.width, None)
+            #                     ft.font_size = ft.height / (len(n_lbl)+2) 
+            #                     while ft.texture_size[1] > ft.height or ft.texture_size[0] > ft.width:
+            #                         ft.font_size -= 1
                             
-                                ft_main.add_widget(ft)
-                                if int(note[0]) not in list_pair:
-                                    ft_main.opacity= 0
-                                    ft_main.width=0
+            #                     ft_main.add_widget(ft)
+            #                     if int(note[0]) not in list_pair:
+            #                         ft_main.opacity= 0
+            #                         ft_main.width=0
                                     
-                                bx3.add_widget(ft_main)
-                        bx2.ids[note]=bx3
-                        if int(note[0]) not in list_pair:
-                            bx3.opacity= 0
-                            bx3.width=0
-                            minus_an+=1
+            #                     bx3.add_widget(ft_main)
+            #             bx2.ids[note]=bx3
+            #             if int(note[0]) not in list_pair:
+            #                 bx3.opacity= 0
+            #                 bx3.width=0
+            #                 minus_an+=1
                                 
                         
-                        bx2.add_widget(bx3)
-                        an+=1
-                    elif i=='y':
-                        #black key
-                        bx3 =ColoredBoxLayout(orientation="vertical",size_hint_x=None,spacing=2,width= self.wid,background_color=(1, 1, 1, 1),b_width=self.wid/30)
-                        bx2.ids[note+"_half_container"]=bx3
+            #             bx2.add_widget(bx3)
+            #             an+=1
+            #         elif i=='y':
+            #             #black key
+            #             bx3 =ColoredBoxLayout(orientation="vertical",size_hint_x=None,spacing=2,width= self.wid,background_color=(1, 1, 1, 1),b_width=self.wid/30)
+            #             bx2.ids[note+"_half_container"]=bx3
                     
-                        #key full
-                        bx4 = ColoredBoxLayout(background_color=(0, 0, 0, 1),tone=note,layout=t,
-                                          b_width=self.wid/30
-                                               )
-                        bx3.ids[note]=bx4
+            #             #key full
+            #             bx4 = ColoredBoxLayout(background_color=(0, 0, 0, 1),tone=note,layout=t,
+            #                               b_width=self.wid/30
+            #                                    )
+            #             bx3.ids[note]=bx4
                     
-                        bx4_1 = BorderedBoxLayout(border_color=(0,0,0,1),border_width=self.wid/30,left_width=self.wid/30,other_width=self.wid/30)
-                        black_empty= MDLabel()
-                        black_lbl= MDLabel(text=note,size_hint_y= None,height=18,size_hint_x= None,width=self.wid,halign='center',bold=True)
-                        bx4_1.add_widget(black_empty)
+            #             bx4_1 = BorderedBoxLayout(border_color=(0,0,0,1),border_width=self.wid/30,left_width=self.wid/30,other_width=self.wid/30)
+            #             black_empty= MDLabel()
+            #             black_lbl= MDLabel(text=note,size_hint_y= None,height=18,size_hint_x= None,width=self.wid,halign='center',bold=True)
+            #             bx4_1.add_widget(black_empty)
                         
-                        bx4_1.add_widget(black_lbl)
+            #             bx4_1.add_widget(black_lbl)
                         
-                        bx4.add_widget(bx4_1)
+            #             bx4.add_widget(bx4_1)
                     
-                        #half key
-                        bx5 = ColoredBoxLayout(orientation="horizontal",size_hint_y=0.382,b_width=self.wid/30)
-                        bx3.ids["double_container"]=bx5
+            #             #half key
+            #             bx5 = ColoredBoxLayout(orientation="horizontal",size_hint_y=0.382,b_width=self.wid/30)
+            #             bx3.ids["double_container"]=bx5
                     
-                        bx6 = ColoredBoxLayout(background_color=(1, 1, 1, 1),tone=self.piano_notes[an-1]+'a',layout=t,
-                                           b_width=self.wid/30)
+            #             bx6 = ColoredBoxLayout(background_color=(1, 1, 1, 1),tone=self.piano_notes[an-1]+'a',layout=t,
+            #                                b_width=self.wid/30)
                         
-                        if self.keys_label!=None:
-                            if self.m_label[an]==1:
-                                ft_main = FloatLayout(size_hint= (None, None),size=(self.wid, self.wid),pos= (self.wid*(an-minus_an)-(self.wid*1.5/2)+asd_space*2,self.wid*1.5/6))
-                                asd_space+=1
-                                with ft_main.canvas:
-                                    Color(0, 1, 0, 1)  
-                                    self.rect = Rectangle(size=ft_main.size, pos=ft_main.pos)
-                                n_lbl=''
-                                if self.keys_label=="Notes":
-                                    n_lbl=self.piano_notes[an-1]
-                                elif isinstance(self.keys_label, dict):
-                                    n_lbl = self.keys_label[self.piano_notes[an-1][1:]]
+            #             if self.keys_label!=None:
+            #                 if self.m_label[an]==1:
+            #                     ft_main = FloatLayout(size_hint= (None, None),size=(self.wid, self.wid),pos= (self.wid*(an-minus_an)-(self.wid*1.5/2)+asd_space*2,self.wid*1.5/6))
+            #                     asd_space+=1
+            #                     with ft_main.canvas:
+            #                         Color(0, 1, 0, 1)  
+            #                         self.rect = Rectangle(size=ft_main.size, pos=ft_main.pos)
+            #                     n_lbl=''
+            #                     if self.keys_label=="Notes":
+            #                         n_lbl=self.piano_notes[an-1]
+            #                     elif isinstance(self.keys_label, dict):
+            #                         n_lbl = self.keys_label[self.piano_notes[an-1][1:]]
                             
-                                else:
-                                    n_lbl=self.keys_label[exnel_label]
-                                exnel_label+=1
-                                if exnel_label==7:
-                                    exnel_label=0
+            #                     else:
+            #                         n_lbl=self.keys_label[exnel_label]
+            #                     exnel_label+=1
+            #                     if exnel_label==7:
+            #                         exnel_label=0
 
-                                ft = Label(text=n_lbl,pos=ft_main.pos,halign='center',color=[0,0,0,1])
-                                ft.text_size = (ft.width, None)
-                                ft.font_size = ft.height / (len(n_lbl)+2) 
-                                while ft.texture_size[1] > ft.height or ft.texture_size[0] > ft.width:
-                                    ft.font_size -= 1
+            #                     ft = Label(text=n_lbl,pos=ft_main.pos,halign='center',color=[0,0,0,1])
+            #                     ft.text_size = (ft.width, None)
+            #                     ft.font_size = ft.height / (len(n_lbl)+2) 
+            #                     while ft.texture_size[1] > ft.height or ft.texture_size[0] > ft.width:
+            #                         ft.font_size -= 1
                                 
-                                ft_main.add_widget(ft)
-                                if int(note[0]) not in list_pair:
-                                    ft_main.opacity= 0
-                                    ft_main.width=0
+            #                     ft_main.add_widget(ft)
+            #                     if int(note[0]) not in list_pair:
+            #                         ft_main.opacity= 0
+            #                         ft_main.width=0
                                 
-                                bx6.add_widget(ft_main)
+            #                     bx6.add_widget(ft_main)
                         
-                        bx5.ids[self.piano_notes[an-1]+'a']=bx6
+            #             bx5.ids[self.piano_notes[an-1]+'a']=bx6
                     
-                        plbl = ColoredLabel(size_hint_x= None,width=0, background_color=(0, 0, 0, 1))
-                        with plbl.canvas:
-                            Color(0, 0, 0, 1)
-                            Rectangle(pos=plbl.pos, size=plbl.size)
+            #             plbl = ColoredLabel(size_hint_x= None,width=0, background_color=(0, 0, 0, 1))
+            #             with plbl.canvas:
+            #                 Color(0, 0, 0, 1)
+            #                 Rectangle(pos=plbl.pos, size=plbl.size)
 
-                        bx7 = ColoredBoxLayout(background_color=(1, 1, 1, 1),tone=self.piano_notes[an+1]+'a',layout=t,
-                                               b_width=self.wid/30)
-                        bx5.ids[self.piano_notes[an+1]+'a']=bx7
+            #             bx7 = ColoredBoxLayout(background_color=(1, 1, 1, 1),tone=self.piano_notes[an+1]+'a',layout=t,
+            #                                    b_width=self.wid/30)
+            #             bx5.ids[self.piano_notes[an+1]+'a']=bx7
                     
                         
                        
-                        bx5.add_widget(bx6)
-                        bx5.add_widget(plbl)
-                        bx5.add_widget(bx7)
-                        bx3.add_widget(bx4)
+            #             bx5.add_widget(bx6)
+            #             bx5.add_widget(plbl)
+            #             bx5.add_widget(bx7)
+            #             bx3.add_widget(bx4)
                         
                         
                             
 
-                        bx3.add_widget(bx5)
-                        if int(note[0]) not in list_pair:
-                            bx3.opacity= 0
-                            bx3.width=0
-                            minus_an+=1
+            #             bx3.add_widget(bx5)
+            #             if int(note[0]) not in list_pair:
+            #                 bx3.opacity= 0
+            #                 bx3.width=0
+            #                 minus_an+=1
                         
                         
 
 
-                        bx2.add_widget(bx3)
-                        an+=1
-                    else:
-                        p_lb =ColoredLabel(size_hint_x= None,width=0,background_color=(0,0,0,1))
+            #             bx2.add_widget(bx3)
+            #             an+=1
+            #         else:
+            #             p_lb =ColoredLabel(size_hint_x= None,width=0,background_color=(0,0,0,1))
 
-                        bx2.add_widget(p_lb)
-                        pass
+            #             bx2.add_widget(p_lb)
+            #             pass
                     
                         
-            bx3 =ColoredBoxLayout(orientation="vertical",size_hint_x=None,width= self.wid,background_color=(1, 1, 1, 1),tone=self.piano_notes[-1],layout=t,
-                                   b_width=self.wid/30       
-                                  )
-            if self.keys_label!=None:
-                ft_main = FloatLayout(size_hint= (None, None),size=(self.wid, self.wid),pos= (self.wid*(an-minus_an)+self.wid*1.5/6,self.wid*1.5/6))
+            # bx3 =ColoredBoxLayout(orientation="vertical",size_hint_x=None,width= self.wid,background_color=(1, 1, 1, 1),tone=self.piano_notes[-1],layout=t,
+            #                        b_width=self.wid/30       
+            #                       )
+            # if self.keys_label!=None:
+            #     ft_main = FloatLayout(size_hint= (None, None),size=(self.wid, self.wid),pos= (self.wid*(an-minus_an)+self.wid*1.5/6,self.wid*1.5/6))
                 
-                with ft_main.canvas:
-                    Color(0, 1, 0, 1)  
-                    self.rect = Rectangle(size=ft_main.size, pos=ft_main.pos)
-                n_lbl=''
-                if self.keys_label=="Notes":
-                    n_lbl=self.piano_notes[-1]
-                elif isinstance(self.keys_label, dict):
-                    n_lbl = self.keys_label[self.piano_notes[-1][1:]]
+            #     with ft_main.canvas:
+            #         Color(0, 1, 0, 1)  
+            #         self.rect = Rectangle(size=ft_main.size, pos=ft_main.pos)
+            #     n_lbl=''
+            #     if self.keys_label=="Notes":
+            #         n_lbl=self.piano_notes[-1]
+            #     elif isinstance(self.keys_label, dict):
+            #         n_lbl = self.keys_label[self.piano_notes[-1][1:]]
                             
-                else:
-                    n_lbl=self.keys_label[exnel_label]
-                exnel_label+=1
-                if exnel_label==7:
-                    exnel_label=0
+            #     else:
+            #         n_lbl=self.keys_label[exnel_label]
+            #     exnel_label+=1
+            #     if exnel_label==7:
+            #         exnel_label=0
 
-                ft = Label(text=n_lbl,pos=ft_main.pos,halign='center',color=[0,0,0,1])
-                ft.text_size = (ft.width, None)
-                ft.font_size = ft.height / (len(n_lbl)+2) 
-                while ft.texture_size[1] > ft.height or ft.texture_size[0] > ft.width:
-                    ft.font_size -= 1
+            #     ft = Label(text=n_lbl,pos=ft_main.pos,halign='center',color=[0,0,0,1])
+            #     ft.text_size = (ft.width, None)
+            #     ft.font_size = ft.height / (len(n_lbl)+2) 
+            #     while ft.texture_size[1] > ft.height or ft.texture_size[0] > ft.width:
+            #         ft.font_size -= 1
                             
-                ft_main.add_widget(ft)
+            #     ft_main.add_widget(ft)
                 
-                bx3.add_widget(ft_main)
+            #     bx3.add_widget(ft_main)
         
-            bx2.ids[self.piano_notes[-1]]=bx3
+            # bx2.ids[self.piano_notes[-1]]=bx3
                     
-            bx2.add_widget(bx3)
+            # bx2.add_widget(bx3)
             
                     
 
@@ -1899,9 +2556,9 @@ class PianoApp(MDApp):
                 is_valid_ins=False
                 miss_keys=str(i)
            
-        if is_valid_ins==False:
-            self.warning_popup(miss_keys)
-            return
+        # if is_valid_ins==False:
+        #     self.warning_popup(miss_keys)
+        #     return
         
         
         
@@ -1918,53 +2575,63 @@ class PianoApp(MDApp):
             bx2 = BoxLayout(orientation="horizontal",size_hint_x=None,width= (self.wid)*(88-(88-len(piano_notes))))
             x_cont=0
             exnel_label=0
-            for r in self.piano_notes:
-                bx3 =ColoredBoxLayout(orientation="vertical",size_hint_x=None,width= self.wid,background_color=(0.2, 0.6, 0.8, 1),padding=5)
-                
-                bx2.ids[r]=bx3
-                nt =Label()
-                bx3.add_widget(nt)
-                
-                if self.keys_label!=None:
-                    n_lbl=''
-                    if self.keys_label=="Notes":
-                        n_lbl=r
-                    elif isinstance(self.keys_label, dict):
-                        n_lbl = self.keys_label[r[1:]]
-                            
-                    else:
-                        n_lbl=self.keys_label[exnel_label]
-                    exnel_label+=1
-                    
-                    if exnel_label==7:
-                        exnel_label=0
-                    nt2 = Label(text=n_lbl,size_hint_y=None,height=self.wid-self.wid*1.5/5,halign='center',valign="middle",color=(0,0,0,1))
-                    nt2.text_size = (nt2.width, None)
-                    if len(n_lbl)==1:
-                        nt2.font_size = bx3.width / (len(n_lbl)+1) 
-                    else:
-                        nt2.font_size = bx3.width / (len(n_lbl)+1)
-                    while nt2.texture_size[1] > nt2.height or nt2.texture_size[0] > nt2.width:
-                        nt2.font_size -= 1
-                    
-                    with nt2.canvas.before:
-                        Color(0, 1, 0, 1)  
-                        self.rect = Rectangle(size=(self.wid-self.wid*1.5/5,self.wid-self.wid*1.5/5), pos=(self.wid*x_cont+self.wid*1.5/10,self.wid*1.5/10+8))
-                        
-                    bx3.add_widget(nt2)
+            for r in piano_notes:
+                key_lbl=''
+                if self.keys_label==None:
+                    pass
+                elif self.keys_label=="Notes":
+                    key_lbl=r
                 else:
-                    nt2 = Label(text='',size_hint_y=None,height=20,color=(0,0,0,1),font_size=self.wid/3)
-                    bx3.add_widget(nt2)
+                    key_lbl= self.custom_label[r[1:]]
+                layer =w_box(wid=self.wid,note=r,lebel_text=key_lbl,border_width=self.wid/30,as_main=True)
+                bx2.ids[r]=layer
+                bx2.add_widget(layer)
+                # bx3 =ColoredBoxLayout(orientation="vertical",size_hint_x=None,width= self.wid,background_color=(0.2, 0.6, 0.8, 1),padding=5)
+                
+                # bx2.ids[r]=bx3
+                # nt =Label()
+                # bx3.add_widget(nt)
+                
+                # if self.keys_label!=None:
+                #     n_lbl=''
+                #     if self.keys_label=="Notes":
+                #         n_lbl=r
+                #     elif isinstance(self.keys_label, dict):
+                #         n_lbl = self.keys_label[r[1:]]
+                            
+                #     else:
+                #         n_lbl=self.keys_label[exnel_label]
+                #     exnel_label+=1
+                    
+                #     if exnel_label==7:
+                #         exnel_label=0
+                #     nt2 = Label(text=n_lbl,size_hint_y=None,height=self.wid-self.wid*1.5/5,halign='center',valign="middle",color=(0,0,0,1))
+                #     nt2.text_size = (nt2.width, None)
+                #     if len(n_lbl)==1:
+                #         nt2.font_size = bx3.width / (len(n_lbl)+1) 
+                #     else:
+                #         nt2.font_size = bx3.width / (len(n_lbl)+1)
+                #     while nt2.texture_size[1] > nt2.height or nt2.texture_size[0] > nt2.width:
+                #         nt2.font_size -= 1
+                    
+                #     with nt2.canvas.before:
+                #         Color(0, 1, 0, 1)  
+                #         self.rect = Rectangle(size=(self.wid-self.wid*1.5/5,self.wid-self.wid*1.5/5), pos=(self.wid*x_cont+self.wid*1.5/10,self.wid*1.5/10+8))
+                        
+                #     bx3.add_widget(nt2)
+                # else:
+                #     nt2 = Label(text='',size_hint_y=None,height=20,color=(0,0,0,1),font_size=self.wid/3)
+                #     bx3.add_widget(nt2)
 
                 
-                nt3 = Label(size_hint_y=None,height=15)
-                bx3.add_widget(nt3)
-                if r not in piano_notes:
-                    bx3.width=0
-                    bx3.opacity=0.0
-                bx2.add_widget(bx3)
+                # nt3 = Label(size_hint_y=None,height=15)
+                # bx3.add_widget(nt3)
+                # if r not in piano_notes:
+                #     bx3.width=0
+                #     bx3.opacity=0.0
+                # bx2.add_widget(bx3)
                 
-                x_cont+=1
+                # x_cont+=1
             scroll_v.add_widget(bx2)
             #####################################################
             
@@ -2014,9 +2681,9 @@ class PianoApp(MDApp):
                 is_valid_ins=False
                 miss_keys=str(i)
            
-        if is_valid_ins==False:
-            self.warning_popup(miss_keys)
-            return
+        # if is_valid_ins==False:
+        #     self.warning_popup(miss_keys)
+        #     return
         
         
         
@@ -2032,160 +2699,183 @@ class PianoApp(MDApp):
             
             ######################white keyboard
             scroll_v = ScrollView(do_scroll_x=False,do_scroll_y=False,scroll_x=scr)
-            bx2 = MDBoxLayout(orientation="horizontal",md_bg_color= [0,0,0,1],size_hint_x=None,width= self.wid*(len(piano_notes)))
+            bx2 = MDBoxLayout(orientation="horizontal",md_bg_color= [1,1,1,1],size_hint_x=None,width= self.wid*(len(piano_notes)))
             bx.ids['hori_con']=bx2
             an =0
             minus_an=self.wid/2
             exnel_label=0
-            for p in range(0,89):
-                add_key=False
-                if self.piano_notes[an] in piano_notes: 
-                    add_key=True 
-                else:
-                    minus_an+=self.wid
+            for p in range(0,len(piano_notes)):
+                # add_key=False
+                # if self.piano_notes[an] in piano_notes: 
+                #     add_key=True 
+                # else:
+                #     minus_an+=self.wid
 
-                note = self.piano_notes[an]
-                if(p%2==0 and p!=88):
+                note = piano_notes[an]
+                if(p%2==0 and p!=len(piano_notes)):
                     #black key
-                    bx3 =ColoredBoxLayout(orientation="vertical",size_hint_x=None,spacing=2,width= self.wid,background_color=(1, 1, 1, 1))
-                    bx2.ids[note+"_half_container"]=bx3
-                    if add_key==False:
-                        bx3.width=0
-                    #key full
-                    bx4 = ColoredBoxLayout(background_color=(1, 1, 1, 1),bk='black')
-                    bx3.ids[note]=bx4
-                    bx4_1 = BorderedBoxLayout(border_color=(0,0,0,1),border_width=2,left_width=self.wid/30,other_width=self.wid/30)
-                    black_empty= MDLabel()
-                    black_lbl= MDLabel(text=note,size_hint_y= None,height=18,size_hint_x= None,width=self.wid,halign='center',bold=True)
-                    
-                    bx4_1.add_widget(black_empty)
-                    
-                    bx4_1.add_widget(black_lbl)
-                    bx4.add_widget(bx4_1)
-                    
-                    #half key
-                    bx5 = ColoredBoxLayout(orientation="horizontal",size_hint_y=0.382)
-                    bx3.ids["double_container"]=bx5
-                    
-                    bx6 = ColoredBoxLayout(background_color=(1, 1, 1, 1),bk='h1')
-                        
-
-                    
-                    kes_note= None
-                    x_cnt=0
-                    while kes_note==None:
-                        if self.piano_notes[an-1-x_cnt] in piano_notes:
-                            kes_note=self.piano_notes[an-1-x_cnt]+'a'
-                        x_cnt+=1
-                    if p==0:
-                        bx5.ids[note+"a"]=bx6
-                    else:    
-                        bx5.ids[kes_note]=bx6
-                    
-                    plbl = ColoredLabel(size_hint_x= None,width=0, background_color=(0, 0, 0, 1))
-                    with plbl.canvas:
-                        Color(0, 0, 0, 1)
-                        Rectangle(pos=plbl.pos, size=plbl.size)
-
-                    bx7 = ColoredBoxLayout(background_color=(1, 1, 1, 1),bk="h2")
-                    if an+1 < len(self.piano_notes):
-                        kes_note= None
-                        x_cnt=0
-                        while kes_note==None:
-                            if self.piano_notes[an+1+x_cnt] in piano_notes:
-                                kes_note=self.piano_notes[an+1+x_cnt]+'a'
-                            x_cnt+=1
-
-                        bx5.ids[kes_note]=bx7
+                    key_lbl=''
+                    if self.keys_label==None:
+                        pass
+                    elif self.keys_label=="Notes":
+                        key_lbl=note
                     else:
-                        kes_note= None
-                        x_cnt=0
-                        while kes_note==None:
-                            if self.piano_notes[an+x_cnt] in piano_notes:
-                                kes_note=self.piano_notes[an+x_cnt]+'a'
-                            x_cnt+=1
+                        key_lbl= self.custom_label[note[1:]]
 
-
-
-                        bx5.ids[kes_note]=bx7
+                    layout = y_box(wid=self.wid,border_width=self.wid/30,note=note,lebel_text=key_lbl)
+                    bx2.ids[note]=layout
+                    bx2.add_widget(layout)
+                    # bx3 =ColoredBoxLayout(orientation="vertical",size_hint_x=None,spacing=2,width= self.wid,background_color=(1, 1, 1, 1))
+                    # bx2.ids[note+"_half_container"]=bx3
+                    # if add_key==False:
+                    #     bx3.width=0
+                    # #key full
+                    # bx4 = ColoredBoxLayout(background_color=(1, 1, 1, 1),bk='black')
+                    # bx3.ids[note]=bx4
+                    # bx4_1 = BorderedBoxLayout(border_color=(0,0,0,1),border_width=2,left_width=self.wid/30,other_width=self.wid/30)
+                    # black_empty= MDLabel()
+                    # black_lbl= MDLabel(text=note,size_hint_y= None,height=18,size_hint_x= None,width=self.wid,halign='center',bold=True)
+                    
+                    # bx4_1.add_widget(black_empty)
+                    
+                    # bx4_1.add_widget(black_lbl)
+                    # bx4.add_widget(bx4_1)
+                    
+                    # #half key
+                    # bx5 = ColoredBoxLayout(orientation="horizontal",size_hint_y=0.382)
+                    # bx3.ids["double_container"]=bx5
+                    
+                    # bx6 = ColoredBoxLayout(background_color=(1, 1, 1, 1),bk='h1')
                         
-                    bx6.add_widget(DownBordered(direction='right',left_width=self.wid/30,other_width=self.wid/30))   
+
                     
-                    bx7.add_widget(DownBordered(direction='left',left_width=self.wid/30,other_width=self.wid/30))   
+                    # kes_note= None
+                    # x_cnt=0
+                    # while kes_note==None:
+                    #     if self.piano_notes[an-1-x_cnt] in piano_notes:
+                    #         kes_note=self.piano_notes[an-1-x_cnt]+'a'
+                    #     x_cnt+=1
+                    # if p==0:
+                    #     bx5.ids[note+"a"]=bx6
+                    # else:    
+                    #     bx5.ids[kes_note]=bx6
                     
-                    bx5.add_widget(bx6)
-                    bx5.add_widget(plbl)
-                    bx5.add_widget(bx7)
+                    # plbl = ColoredLabel(size_hint_x= None,width=0, background_color=(0, 0, 0, 1))
+                    # with plbl.canvas:
+                    #     Color(0, 0, 0, 1)
+                    #     Rectangle(pos=plbl.pos, size=plbl.size)
+
+                    # bx7 = ColoredBoxLayout(background_color=(1, 1, 1, 1),bk="h2")
+                    # if an+1 < len(self.piano_notes):
+                    #     kes_note= None
+                    #     x_cnt=0
+                    #     while kes_note==None:
+                    #         if self.piano_notes[an+1+x_cnt] in piano_notes:
+                    #             kes_note=self.piano_notes[an+1+x_cnt]+'a'
+                    #         x_cnt+=1
+
+                    #     bx5.ids[kes_note]=bx7
+                    # else:
+                    #     kes_note= None
+                    #     x_cnt=0
+                    #     while kes_note==None:
+                    #         if self.piano_notes[an+x_cnt] in piano_notes:
+                    #             kes_note=self.piano_notes[an+x_cnt]+'a'
+                    #         x_cnt+=1
+
+
+
+                    #     bx5.ids[kes_note]=bx7
+                        
+                    # bx6.add_widget(DownBordered(direction='right',left_width=self.wid/30,other_width=self.wid/30))   
                     
-                    bx3.add_widget(bx4)
+                    # bx7.add_widget(DownBordered(direction='left',left_width=self.wid/30,other_width=self.wid/30))   
                     
-                    bx3.add_widget(bx5)
+                    # bx5.add_widget(bx6)
+                    # bx5.add_widget(plbl)
+                    # bx5.add_widget(bx7)
+                    
+                    # bx3.add_widget(bx4)
+                    
+                    # bx3.add_widget(bx5)
                 
 
-                    bx2.add_widget(bx3)
+                    # bx2.add_widget(bx3)
                    
                 else:
+                    print(note)
+                    key_lbl=''
+                    if self.keys_label==None:
+                        pass
+                    elif self.keys_label=="Notes":
+                        key_lbl=note
+                    else:
+                        key_lbl= self.custom_label[note[1:]]
+                    layout = wb_box(wid=self.wid,note=note,lebel_text=key_lbl,border_width=self.wid/30)
+                    bx2.ids[note]=layout
+                    bx2.add_widget(layout)
+                an+=1
                     #white key
-                    w=self.wid
-                    pading= w/2
-                    if p==0:
-                        w=w+w/2
-                        pading=self.wid/4
-                    bx3 =ColoredBoxLayout(orientation="vertical",size_hint_x=None,width= w,background_color=(0, 0, 0, 1),tone=note,bk='full')
+                #     w=self.wid
+                #     pading= w/2
+                #     if p==0:
+                #         w=w+w/2
+                #         pading=self.wid/4
+                #     bx3 =ColoredBoxLayout(orientation="vertical",size_hint_x=None,width= w,background_color=(0, 0, 0, 1),tone=note,bk='full')
                     
                         
-                    bx3.radius=[0,0,0,0]
-                    if note in ["0A","0A#","0B"]:
-                        bx3.radius=[0,0,0,8]
-                    if add_key==False:
-                        bx3.width=0
-                    add_v=0
-                    if "0A" not in piano_notes or "0B" not in piano_notes or "0A#" not in piano_notes:
-                        add_v=self.wid/2
-                    if self.keys_label!=None:
-                        if True:
-                            ft_main = FloatLayout(size_hint= (None, None),size=(self.wid, self.wid),pos= (self.wid*(an)+pading-minus_an-add_v,self.wid*1.5/6))
-                            with ft_main.canvas:
-                                Color(0, 1, 0, 1)  
-                                self.rect = Rectangle(size=ft_main.size, pos=ft_main.pos)
-                                Color(0, 0, 0, 1)  
-                                self.rect = Rectangle(size=(self.wid,self.wid/30), pos=(self.wid*(an)+pading-minus_an-add_v,0))
+                #     bx3.radius=[0,0,0,0]
+                #     if note in ["0A","0A#","0B"]:
+                #         bx3.radius=[0,0,0,8]
+                #     if add_key==False:
+                #         bx3.width=0
+                #     add_v=0
+                #     if "0A" not in piano_notes or "0B" not in piano_notes or "0A#" not in piano_notes:
+                #         add_v=self.wid/2
+                #     if self.keys_label!=None:
+                #         if True:
+                #             ft_main = FloatLayout(size_hint= (None, None),size=(self.wid, self.wid),pos= (self.wid*(an)+pading-minus_an-add_v,self.wid*1.5/6))
+                #             with ft_main.canvas:
+                #                 Color(0, 1, 0, 1)  
+                #                 self.rect = Rectangle(size=ft_main.size, pos=ft_main.pos)
+                #                 Color(0, 0, 0, 1)  
+                #                 self.rect = Rectangle(size=(self.wid,self.wid/30), pos=(self.wid*(an)+pading-minus_an-add_v,0))
                                 
-                            n_lbl=''
-                            if self.keys_label=="Notes":
-                                n_lbl=note
-                            elif isinstance(self.keys_label, dict):
-                                n_lbl = self.keys_label[note[1:]]
+                #             n_lbl=''
+                #             if self.keys_label=="Notes":
+                #                 n_lbl=note
+                #             elif isinstance(self.keys_label, dict):
+                #                 n_lbl = self.keys_label[note[1:]]
                     
-                            else:
-                                n_lbl=self.keys_label[exnel_label]
-                            exnel_label+=1
-                            if exnel_label==7:
-                                exnel_label=0
+                #             else:
+                #                 n_lbl=self.keys_label[exnel_label]
+                #             exnel_label+=1
+                #             if exnel_label==7:
+                #                 exnel_label=0
 
-                            ft = Label(text=n_lbl,pos=ft_main.pos,halign='center',color=[0,0,0,1])
-                            ft.text_size = (ft.width, None)
-                            ft.font_size = ft.height / (len(n_lbl)+2) # Start with an arbitrary value
-                            while ft.texture_size[1] > ft.height or ft.texture_size[0] > ft.width:
-                                ft.font_size -= 1
-                            if self.piano_notes[an] not in piano_notes:
-                                ft_main.width=0
-                                ft_main.opacity= 0.0
-                                pass
-                            else:
-                                ft_main.add_widget(ft)
+                #             ft = Label(text=n_lbl,pos=ft_main.pos,halign='center',color=[0,0,0,1])
+                #             ft.text_size = (ft.width, None)
+                #             ft.font_size = ft.height / (len(n_lbl)+2) # Start with an arbitrary value
+                #             while ft.texture_size[1] > ft.height or ft.texture_size[0] > ft.width:
+                #                 ft.font_size -= 1
+                #             if self.piano_notes[an] not in piano_notes:
+                #                 ft_main.width=0
+                #                 ft_main.opacity= 0.0
+                #                 pass
+                #             else:
+                #                 ft_main.add_widget(ft)
                             
-                            if n_lbl!='':
-                                bx3.add_widget(ft_main)
+                #             if n_lbl!='':
+                #                 bx3.add_widget(ft_main)
                         
                          
 
-                    bx2.ids[note]=bx3
-                    bx2.add_widget(bx3)
-                an+=1
+                #     bx2.ids[note]=bx3
+                #     bx2.add_widget(bx3)
+                # an+=1
                 
-                if an==len(self.piano_notes):
-                    break
+                # if an==len(self.piano_notes):
+                #     break
 
             scroll_v.add_widget(bx2)
             #####################################################
