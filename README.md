@@ -17,7 +17,7 @@ Windows:
 https://www.youtube.com/watch?v=WQ0oNpsTJus  
 "instruction_with_googlecolab .ipynb"  
 
-## External Links
+## Links
 Rainbow Piano Reddit Community:  
 https://www.reddit.com/r/RainbowPiano/  
   
