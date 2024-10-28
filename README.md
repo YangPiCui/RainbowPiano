@@ -7,7 +7,7 @@ But now we can afford to rainbow-color all the keys, and evenly space them!
 ![](images_github/EvenlySpacedKeys_AllColored.jpg)  
 
 ## Build Instruction
-Ubuntu: 
+Ubuntu:  
 "instruction_with_ubuntu.txt"  
   
 Windows:  
