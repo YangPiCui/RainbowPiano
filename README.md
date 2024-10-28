@@ -6,14 +6,14 @@ But now we can afford to rainbow-color all the keys!
 And space the keys evenly without confusion!  
 
   
-![](EvenlySpacedKeys_AllColored.jpg)  
+![](images_github/EvenlySpacedKeys_AllColored.jpg)  
 
 ## Instruction
 
 ## Further Work
 Post on Reddit if you know someone who can turn a RainbowPiano into a digital piano such as the Yamaha Reface CP with fully weighted keys.  
 Ever had trouble reading music scores? Maybe we should also rainbow-color them for clarity!  
-![](Rainbow6Notation_2.jpg)  
+![](images_github/Rainbow6Notation_2.jpg)  
 
 ## External Links
 Rainbow Piano Reddit Community:  
