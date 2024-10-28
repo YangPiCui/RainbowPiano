@@ -4,7 +4,7 @@
 When piano was first invented, they could only afford the colors black and white...  
 But now we can afford to rainbow-color all the keys, and evenly space them!  
 
-![](images_github/EvenlySpacedKeys_AllColored.jpg)  
+![](images_github/lower_keys_only.jpg)  
 
 ## Build Instruction
 Ubuntu:  
