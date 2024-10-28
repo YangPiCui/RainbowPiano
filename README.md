@@ -6,8 +6,10 @@ But now we can afford to rainbow-color all the keys, and evenly space them!
 
 ![](images_github/EvenlySpacedKeys_AllColored.jpg)  
 
-## Instruction
-Ubuntu: "instruction_with_ubuntu.txt"  
+## Build Instruction
+Ubuntu: 
+"instruction_with_ubuntu.txt"  
+  
 Windows:  
 https://www.youtube.com/watch?v=WQ0oNpsTJus  
 "instruction_with_googlecolab .ipynb"  
