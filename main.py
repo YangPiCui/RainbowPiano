@@ -20,6 +20,8 @@ import json
 import webbrowser 
 from kivymd.uix.label import MDLabel
 from kivymd.uix.boxlayout import MDBoxLayout
+from kivymd.uix.floatlayout import MDFloatLayout
+
 from functools import partial
 import pygame   #for play sound only 
 from kivy.clock import Clock
@@ -37,7 +39,8 @@ base_width = int(base_height * phi)
 
 from kivy.core.window import Window
 Window.size = (base_width, base_height)
-
+n_multiply=2
+g_ratio = 1/(1.618**n_multiply)
 pera_keys=1
 class ColoredLabel(Label):
     def __init__(self, background_color=(1, 1, 1, 1), **kwargs):
@@ -67,8 +70,7 @@ class wb_box(MDBoxLayout):
         self.lebel_text=lebel_text
         self.color= background_color  
         self.bg_color = (0, 1, 0, 1) 
-        
-        self.tpm=MDBoxLayout(md_bg_color= self.color,size_hint_y=0.718,size_hint_x= None,width=self.width)
+        self.tpm=MDBoxLayout(md_bg_color= self.color,size_hint_y=1-g_ratio-0.1,size_hint_x= None,width=self.width)
         with self.tpm.canvas:
             Color(*self.border_color)
             self.tpm.left_line = Line(width=self.border_width)
@@ -82,7 +84,7 @@ class wb_box(MDBoxLayout):
         
         
         self.add_widget(self.tpm) 
-        self.btm = MDBoxLayout(md_bg_color= self.color,size_hint_y=0.282,size_hint_x= None,width=wid*2,radius = [0,0,20, 20],pos_hint={'center_x': 0.5,'center_y': 0.5},padding=15)
+        self.btm = MDBoxLayout(md_bg_color= self.color,size_hint_y=g_ratio+0.1,size_hint_x= None,width=wid*2,radius = [0,0,20, 20],pos_hint={'center_x': 0.5,'center_y': 0.5},padding=15)
         with self.btm.canvas:
             Color(*self.border_color)
             self.btm.left_line = Line(width=self.border_width)
@@ -176,7 +178,7 @@ class wl_box(MDBoxLayout):
         self.color= background_color
         self.bg_color = (0, 1, 0, 1) 
         
-        self.tpm=MDBoxLayout(md_bg_color= self.color,size_hint_y=0.718,size_hint_x= None,width=self.width)
+        self.tpm=MDBoxLayout(md_bg_color= self.color,size_hint_y=1-g_ratio-0.1,size_hint_x= None,width=self.width)
         with self.tpm.canvas:
             Color(*self.border_color)
             self.tpm.left_line = Line(width=self.border_width)
@@ -190,7 +192,7 @@ class wl_box(MDBoxLayout):
         self.ids[self.tune+'a'] = self.tpm
         
         self.add_widget(self.tpm) 
-        self.btm = MDBoxLayout(md_bg_color= self.color,size_hint_y=0.282,size_hint_x= None,width=wid*1.5,radius = [0,0,20, 20],pos_hint={'center_x': 0.25,'center_y': 0.5},padding=15)
+        self.btm = MDBoxLayout(md_bg_color= self.color,size_hint_y=g_ratio+0.1,size_hint_x= None,width=wid*1.5,radius = [0,0,20, 20],pos_hint={'center_x': 0.25,'center_y': 0.5},padding=15)
         with self.btm.canvas:
             Color(*self.border_color)
             self.btm.left_line = Line(width=self.border_width)
@@ -292,7 +294,7 @@ class wr_box(MDBoxLayout):
         
         self.color= background_color
         
-        self.tpm=MDBoxLayout(md_bg_color= self.color,size_hint_y=0.718,size_hint_x= None,width=self.width)
+        self.tpm=MDBoxLayout(md_bg_color= self.color,size_hint_y=1-g_ratio-0.1,size_hint_x= None,width=self.width)
         with self.tpm.canvas:
             Color(*self.border_color)
             self.tpm.left_line = Line(width=self.border_width)
@@ -306,7 +308,7 @@ class wr_box(MDBoxLayout):
         
         
         self.add_widget(self.tpm) 
-        self.btm = MDBoxLayout(md_bg_color= self.color,size_hint_y=0.282,size_hint_x= None,width=wid*1.5,radius = [0,0,20, 20],pos_hint={'center_x': 0.75,'center_y': 0.5},padding=15)
+        self.btm = MDBoxLayout(md_bg_color= self.color,size_hint_y=g_ratio+0.1,size_hint_x= None,width=wid*1.5,radius = [0,0,20, 20],pos_hint={'center_x': 0.75,'center_y': 0.5},padding=15)
         with self.btm.canvas:
             Color(*self.border_color)
             self.btm.left_line = Line(width=self.border_width)
@@ -406,7 +408,7 @@ class y_box(MDBoxLayout):
         self.radius = [0,0,20, 20]
         self.tune= note
         self.lebel_text=lebel_text
-        self.size_hint_y=0.716
+        self.size_hint_y=1-g_ratio
         self.pos_hint= {'top': 1}
         
         with self.canvas:
@@ -1561,19 +1563,7 @@ class PianoApp(MDApp):
                     for n in i.children[1].children[0].ids.keys():
                         if i.children[1].children[0].ids[n]==v:
                             v_key=n
-                            
-                    if len(v.ids.keys())==0:
-                        if (touch.pos[0]>=v.pos[0]+i.pos[0] and touch.pos[0]<=v.pos[0]+v.size[0]+i.pos[0]) and (touch.pos[1]>=v.pos[1]+i.pos[1] and touch.pos[1]<=v.pos[1]+v.size[1]+i.pos[1]):
-                            self.update_color()
-                            v.set_background_color([108/255,122/255,137/255,1])
-                            if action=="down":
-                                self.play_sound(v_key)
-                            elif v_key!=self.pre_music:
-                                if self.sustain_tune==False:
-                                    self.stop_all_sounds()
-                                self.play_sound(v_key)
-                            self.pre_music = v_key
-                    else:
+                    if len(v.ids.keys())!=0:
                         if ((touch.pos[0]>=v.ids[v_key+'a'].pos[0]+i.pos[0] and touch.pos[0]<=v.ids[v_key+'a'].pos[0]+v.ids[v_key+'a'].size[0]+i.pos[0]) and (touch.pos[1]>=v.ids[v_key+'a'].pos[1]+i.pos[1] and touch.pos[1]<=v.ids[v_key+'a'].pos[1]+v.ids[v_key+'a'].size[1]+i.pos[1])) or ((touch.pos[0]>=v.ids[v_key+'b'].pos[0]+i.pos[0] and touch.pos[0]<=v.ids[v_key+'b'].pos[0]+v.ids[v_key+'b'].size[0]+i.pos[0]) and (touch.pos[1]>=v.ids[v_key+'b'].pos[1]+i.pos[1] and touch.pos[1]<=v.ids[v_key+'b'].pos[1]+v.ids[v_key+'b'].size[1]+i.pos[1])): 
                             self.update_color()
                             v.set_background_color([108/255,122/255,137/255,1])
@@ -1584,10 +1574,27 @@ class PianoApp(MDApp):
                                     self.stop_all_sounds()
                                 self.play_sound(v_key)
                             self.pre_music = v_key
+                            break
+                        
+
+                    #if len(v.ids.keys())==0:
+                    else:
+                        if (touch.pos[0]>=v.pos[0]+i.pos[0] and touch.pos[0]<=v.pos[0]+v.size[0]+i.pos[0]) and (touch.pos[1]>=v.pos[1]+i.pos[1] and touch.pos[1]<=v.pos[1]+v.size[1]+i.pos[1]):
+                            self.update_color()
+                            v.set_background_color([108/255,122/255,137/255,1])
+                            if action=="down":
+                                self.play_sound(v_key)
+                            elif v_key!=self.pre_music:
+                                if self.sustain_tune==False:
+                                    self.stop_all_sounds()
+                                self.play_sound(v_key)
+                            self.pre_music = v_key
+                            break
+                    #else:
                          
                          
                         
-                        pass
+                        
                        
               
     def update_rect(self, instance, value):
@@ -1667,8 +1674,9 @@ class PianoApp(MDApp):
             scroll_v = ScrollView(do_scroll_x=False,do_scroll_y=False,scroll_x=scr)
             slider.bind(value=lambda instance, value, lbu=scroll_v: self.scroll_piano(instance,lbu, float(value)))
             
-            bx2 = BoxLayout(orientation="horizontal",size_hint_x=None,width= (self.wid)*(88-(88-len(piano_notes))),padding=0,spacing=0) #88.5
+            bx2 = MDFloatLayout(size_hint_x=None,width= (self.wid)*(88-(88-len(piano_notes)))) #88.5
             bx.ids['hori_con']=bx2
+            ann=0
             for i in piano_notes:
                 key_lbl=''
                 if self.keys_label==None:
@@ -1680,46 +1688,78 @@ class PianoApp(MDApp):
 
                 if '#' in i:
                     layout = y_box(wid=self.wid,note=i,lebel_text=key_lbl,border_width=self.wid/30)
-                    bx2.ids[i]=layout
-                    bx2.add_widget(layout)
+                    #bx2.ids[i]=layout
+                    #bx2.add_widget(layout)
                 elif i==piano_notes[0]:
                     if '#' in piano_notes[1]:
                         layout = wr_box(wid=self.wid,note=i,lebel_text=key_lbl,border_width=self.wid/30)
+                        layout.pos = (ann*self.wid,0)
+                    
                         bx2.ids[i]=layout
                         bx2.add_widget(layout)
                     else:
                         layout = w_box(wid=self.wid,background_color=(0.3,0.4,0.5,1),note=i,lebel_text=key_lbl,border_width=self.wid/30)
+                        layout.pos = (ann*self.wid,0)
+                    
                         bx2.ids[i]=layout
                         bx2.add_widget(layout)
             
                 elif i==piano_notes[-1]:
                     if '#' in piano_notes[-2]:
                         layout = wl_box(wid=self.wid,note=i,lebel_text=key_lbl,border_width=self.wid/30)
+                        layout.pos = (ann*self.wid,0)
+                    
                         bx2.ids[i]=layout
                         bx2.add_widget(layout)
                     else:
                         layout = w_box(wid=self.wid,background_color=(0.3,0.4,0.5,1),note=i,lebel_text=key_lbl,border_width=self.wid/30)
+                        layout.pos = (ann*self.wid,0)
+                    
                         bx2.ids[i]=layout
                         bx2.add_widget(layout)
                 else:
                     if '#' in piano_notes[piano_notes.index(i)+1] and '#' in piano_notes[piano_notes.index(i)-1]:
                         layout = wb_box(wid=self.wid,note=i,lebel_text=key_lbl,border_width=self.wid/30)
+                        layout.pos = (ann*self.wid,0)
+                    
                         bx2.ids[i]=layout
                         bx2.add_widget(layout)
                     elif '#' in piano_notes[piano_notes.index(i)+1] and '#' not in piano_notes[piano_notes.index(i)-1]:
                         layout = wr_box(wid=self.wid,note=i,lebel_text=key_lbl,border_width=self.wid/30)
+                        layout.pos = (ann*self.wid,0)
+                    
                         bx2.ids[i]=layout
                         bx2.add_widget(layout)
                     elif '#' not in piano_notes[piano_notes.index(i)+1] and '#' in piano_notes[piano_notes.index(i)-1]:
                         layout = wl_box(wid=self.wid,note=i,lebel_text=key_lbl,border_width=self.wid/30)
+                        layout.pos = (ann*self.wid,0)
+                    
                         bx2.ids[i]=layout
                         bx2.add_widget(layout)
                     else:
                         layout = w_box(wid=self.wid,background_color=(0.3,0.4,0.5,1),note=i,lebel_text=key_lbl,border_width=self.wid/30)
+                        layout.pos = (ann*self.wid,0)
+                    
                         bx2.ids[i]=layout
                         bx2.add_widget(layout)
         
-
+                ann+=1
+            ann=0
+            for i in piano_notes:
+                key_lbl=''
+                if self.keys_label==None:
+                    pass
+                elif self.keys_label=="Notes":
+                    key_lbl=i
+                else:
+                    key_lbl= self.custom_label[i[1:]]
+                if '#' in i:
+                    layout = y_box(wid=self.wid,note=i,lebel_text=key_lbl,border_width=self.wid/30)
+                    layout.pos = (ann*self.wid,0)
+                    
+                    bx2.ids[i]=layout
+                    bx2.add_widget(layout)
+                ann+=1
 
             if self.keyboard_lock:
                 slider.opacity = 0
@@ -1831,7 +1871,7 @@ class PianoApp(MDApp):
             
             ######################white keyboard
             scroll_v = ScrollView(do_scroll_x=False,do_scroll_y=False,scroll_x=scr)
-            bx2 = MDBoxLayout(orientation="horizontal",md_bg_color= [1,1,1,1],size_hint_x=None,width= self.wid*(len(piano_notes)))
+            bx2 = MDFloatLayout(md_bg_color= [1,1,1,1],size_hint_x=None,width= self.wid*(len(piano_notes)))
             bx.ids['hori_con']=bx2
             an =0
             for p in range(0,len(piano_notes)):
@@ -1848,6 +1888,40 @@ class PianoApp(MDApp):
                         key_lbl= self.custom_label[note[1:]]
 
                     layout = y_box(wid=self.wid,border_width=self.wid/30,note=note,lebel_text=key_lbl)
+                    
+                    # bx2.ids[note]=layout
+                    # bx2.add_widget(layout)
+                    
+                else:
+                    print(note)
+                    key_lbl=''
+                    if self.keys_label==None:
+                        pass
+                    elif self.keys_label=="Notes":
+                        key_lbl=note
+                    else:
+                        key_lbl= self.custom_label[note[1:]]
+                    layout = wb_box(wid=self.wid,note=note,lebel_text=key_lbl,border_width=self.wid/30)
+                    layout.pos = (an*self.wid,0)
+                    bx2.ids[note]=layout
+                    bx2.add_widget(layout)
+                an+=1
+            an=0
+            for p in range(0,len(piano_notes)):
+                
+                note = piano_notes[an]
+                if(p%2==0 and p!=len(piano_notes)):
+                    #black key
+                    key_lbl=''
+                    if self.keys_label==None:
+                        pass
+                    elif self.keys_label=="Notes":
+                        key_lbl=note
+                    else:
+                        key_lbl= self.custom_label[note[1:]]
+
+                    layout = y_box(wid=self.wid,border_width=self.wid/30,note=note,lebel_text=key_lbl)
+                    layout.pos = (an*self.wid,0)
                     bx2.ids[note]=layout
                     bx2.add_widget(layout)
                     
@@ -1861,8 +1935,8 @@ class PianoApp(MDApp):
                     else:
                         key_lbl= self.custom_label[note[1:]]
                     layout = wb_box(wid=self.wid,note=note,lebel_text=key_lbl,border_width=self.wid/30)
-                    bx2.ids[note]=layout
-                    bx2.add_widget(layout)
+                    # bx2.ids[note]=layout
+                    # bx2.add_widget(layout)
                 an+=1
                     
             scroll_v.add_widget(bx2)
