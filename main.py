@@ -1372,13 +1372,13 @@ class PianoApp(MDApp):
 
         store.put('equalizer', equalizer=self.equalizer)
         
-        store.put('selected_instrument', selected_instrument=self.selected_instrument)
+        store.put('selected_instrument', selected_instrument=self.selected_instrument) #8
 
         
-        store.put('keys_label', keys_label=self.keys_label)
-        store.put('custom_label', custom_label=self.custom_label)
+        store.put('keys_label', keys_label=self.keys_label) #9
+        store.put('custom_label', custom_label=self.custom_label) #10
 
-        store.put('save_scroll', save_scroll=self.save_scroll)
+        store.put('save_scroll', save_scroll=self.save_scroll) #11
     def retrieve_data(self,val):
         store = JsonStore('app.json')
         try:
