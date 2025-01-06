@@ -21,9 +21,10 @@ https://www.youtube.com/watch?v=WQ0oNpsTJus
 Rainbow Piano Reddit Community:  
 https://www.reddit.com/r/RainbowPiano/  
   
-Bharat's Github and Upwork Profiles:  
+Bharat's Github,Gmail and Upwork Profiles:  
 https://github.com/muchhar  
-https://upwork.com/freelancers/bharatm2  
+https://upwork.com/freelancers/bharatm2
+muchharbharat10@gmail.com
 
 ## Further Work
 Post on Reddit if you know someone who can turn a RainbowPiano into a digital piano such as the Yamaha Reface CP with fully weighted keys.  
