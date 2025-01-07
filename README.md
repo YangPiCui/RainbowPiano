@@ -7,6 +7,7 @@ But now we can rainbow-color all the keys, and evenly space them!
 
 
 ## Download
+Please go into the "android" folder for the .apk file.
 
 
 ## Build Instruction
