@@ -32,4 +32,4 @@ Post on Reddit if you know someone who can turn a RainbowPiano into a digital pi
 Ever had trouble reading music scores? Maybe we should also rainbow-color them for clarity!  
 ![](images_github/Rainbow6Notation_2.jpg)  
   
-## [Donations](https://github.com/YangPiCui/ProjectIdeas/blob/main/README.md#how-to-donate-in-descending-preference-for-me)
+## [How to Donate](https://github.com/YangPiCui/ProjectIdeas/blob/main/README.md#how-to-donate-in-descending-preference-for-me)
